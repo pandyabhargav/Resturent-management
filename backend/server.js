@@ -45,12 +45,11 @@ app.use("/", require("./routes/index.js"));
 app.get("/", (req, res) => {
   res.send(`
     <center>
-        <h1>Welcome to Self Learning!</h1>
+        <h1>Welcome to Restaurant Managment System!</h1>
         <br>
         <p>
-            Get Self Learning: 
-        <a href="https://github.com/MaulikPatel63/Inventory_Management.git" target="_blank">
-            Repository: Self Learning
+            Get Restaurant Managment: 
+        <a href="https://github.com/MaulikPatel63" target="_blank">
         </a>
         </p>
     </center>
