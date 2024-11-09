@@ -403,9 +403,9 @@ select:focus {
         max-width: 100%;
     }
 
-    .input-group {
+    /* .input-group {
         flex-direction: column;
-    }
+    } */
 
     .half-width,
     .third-width,
@@ -436,7 +436,7 @@ select:focus {
 }
 
 /* Styling for tablets */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1366px) {
     .registration-wrapper {
         padding: 40px;
     }
@@ -446,9 +446,12 @@ select:focus {
     }
 
     .login-info {
+        position: relative;
+        top: 0;
         right: 0;
-        max-width: 100%;
         transform: none;
+        margin-top: 20px;
+        max-width: 100%;
     }
 
     .input-group {
@@ -457,12 +460,8 @@ select:focus {
 }
 
 /* Larger screens (desktops and laptops) */
-@media (min-width: 1025px) {
+@media (min-width: 1366px) {
     .registration-wrapper {
         padding: 0 70px;
-    }
-
-    .login-info {
-        right: 300px;
     }
 }
