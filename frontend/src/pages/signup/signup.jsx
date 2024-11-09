@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
     import 'bootstrap/dist/css/bootstrap.min.css';
     import logo from '../../assets/logo.png';
     import { Modal, Button, Row, Col, Form  } from 'react-bootstrap'; 
+import { Link } from 'react-router-dom';
 
     const Registration = () => {
     const [formData, setFormData] = useState({
@@ -173,7 +174,7 @@ import React, { useEffect, useState } from 'react';
         const selectedValue = e.target.value;
         
         if (selectedValue === "addNewRestaurant") {
-            setShowModal(true);  // Show the modal when "+ Add Restaurant" is selected
+            setShowModal(true);  
         } else {
             setFormData({
                 ...formData,
@@ -195,7 +196,7 @@ import React, { useEffect, useState } from 'react';
             });
             setNewRestaurant('');
         }
-        setShowModal(false);  // Close the modal
+        setShowModal(false);  
     };
 
     const getStates = () => {
@@ -205,7 +206,7 @@ import React, { useEffect, useState } from 'react';
         return countryData ? countryData.states : [];
       };
     
-      // Get cities based on the selected state
+  
       const getCities = () => {
         const stateData = getStates().find(
           (state) => state.state === formData.state
@@ -353,7 +354,7 @@ import React, { useEffect, useState } from 'react';
         {restaurants.map((restaurant, index) => (
             <option key={index} value={restaurant}>{restaurant}</option>
         ))}
-        {/* Add a new option for adding a restaurant */}
+        
         <option value="addNewRestaurant"  className="add-restaurant-option" >+ Add Restaurant</option>
     </select>
                 
@@ -412,7 +413,7 @@ import React, { useEffect, useState } from 'react';
 
             <div className="login-link">
             <p className="text-center mt-3">
-                Already have an account? <a href="/login">Login here</a>
+                Already have an account? <Link href="/login">Login here</Link>
             </p>
             </div>
         </div>
@@ -434,13 +435,13 @@ import React, { useEffect, useState } from 'react';
                 </Modal.Header>
                 <Modal.Body>
 <Form>
-    {/* Restaurant Name */}
+  
     <Row>
         <Col md={12}>
             <Form.Group controlId="newRestaurantName">
                 <Form.Label>
                     Restaurant Name 
-                    <span style={{ color: 'red', marginLeft: '5px' }}></span> {/ Red Asterisk */}
+                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
                 </Form.Label>
                 <Form.Control
                     type="text"
@@ -455,13 +456,13 @@ import React, { useEffect, useState } from 'react';
         </Col>
     </Row>
 
-    {/* Restaurant Address */}
+   
     <Row>
         <Col md={12}>
             <Form.Group controlId="restaurantAddress">
                 <Form.Label>
                     Restaurant Address 
-                    <span style={{ color: 'red', marginLeft: '5px' }}></span> {/ Red Asterisk */}
+                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
                 </Form.Label>
                 <Form.Control
                     type="text"
@@ -476,13 +477,12 @@ import React, { useEffect, useState } from 'react';
         </Col>
     </Row>
 
-    {/* Country, State, and City */}
     <Row>
         <Col md={6}>
             <Form.Group controlId="restaurantCountry">
                 <Form.Label>
                     Country
-                    <span style={{ color: 'red', marginLeft: '5px' }}></span> {/ Red Asterisk */}
+                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
                 </Form.Label>
                 <Form.Control
                     type="text"
@@ -500,7 +500,7 @@ import React, { useEffect, useState } from 'react';
             <Form.Group controlId="restaurantState">
                 <Form.Label>
                     State
-                    <span style={{ color: 'red', marginLeft: '5px' }}></span> {/ Red Asterisk */}
+                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
                 </Form.Label>
                 <Form.Control
                     type="text"
@@ -515,13 +515,13 @@ import React, { useEffect, useState } from 'react';
         </Col>
     </Row>
 
-    {/* City and ZIP */}
+   
     <Row>
         <Col md={6}>
             <Form.Group controlId="restaurantCity">
                 <Form.Label>
                     City
-                    <span style={{ color: 'red', marginLeft: '5px' }}></span> {/ Red Asterisk */}
+                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
                 </Form.Label>
                 <Form.Control
                     type="text"
@@ -539,8 +539,8 @@ import React, { useEffect, useState } from 'react';
             <Form.Group controlId="restaurantZip">
                 <Form.Label>
                     ZIP Code
-                    <span style={{ color: 'red', marginLeft: '5px' }}></span> {/ Red Asterisk */}
-                </Form.Label>
+                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span> 
+                                    </Form.Label>
                 <Form.Control
                     type="text"
                     name="zip"

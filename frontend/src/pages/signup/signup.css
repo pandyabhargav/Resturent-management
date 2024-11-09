@@ -162,16 +162,14 @@
 }
 
 /* add resturent */
-/* Add this to your CSS file for the modal */
-/* Modal Overlay */
-/* Overall Modal Styling */
+
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Darker overlay for better focus */
+    background: rgba(0, 0, 0, 0.8); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,60 +177,47 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Modal Content */
 .modal-content {
-    background: #1a1a1a; /* Darker background for content */
-    padding: 30px;
-    background: #2c2f36; /* Slightly lighter background for content */
+    background: #2c2f36; 
     padding: 20px;
     border-radius: 12px;
-    width: 350px;
-    text-align: center;
     width: 100%;
-    max-width: 500px; /* Make the modal content responsive */
+    max-width: 500px;
     height: auto;
     color: #fff;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6); /* Deeper shadow */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Softer shadow */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.3s ease-out;
-    position: relative;
 }
 
-/* Header Styling */
-.modal-content h4 {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
-/* Modal Header Styling (Title in one line) */
+
 .modal-header {
     border-bottom: 1px solid #444;
     text-align: center;
-    padding: 10px 0; /* Reduced padding */
+    padding: 10px 0; 
 }
+
 .modal-header {
     border-bottom: 1px solid #444;
     text-align: center;
-    padding: 10px 0; /* Reduced padding */
+    padding: 10px 0; 
     display: flex;
-    justify-content: center; /* Center title horizontally */
-    align-items: center; /* Align title vertically */
+    justify-content: center; 
+    align-items: center; 
 }
+
 .modal-header .modal-title {
     font-size: 1.8rem;
     font-weight: 600;
     color: #f1f1f1;
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden;    /* Hide overflow text */
-    text-overflow: ellipsis; /* Optional: add ellipsis if the text overflows */
+    white-space: nowrap; 
+    overflow: hidden;    
+    text-overflow: ellipsis; 
     margin-bottom: 0;
     text-align: center;
 }
 
-/* Input Fields */
-/* Input Fields Styling */
 .modal-content input {
-    margin-bottom: 20px;
-    margin-bottom: 15px; /* Reduced space between inputs */
+    margin-bottom: 15px; 
     width: 100%;
     padding: 12px;
     background-color: #333;
@@ -249,32 +234,31 @@
     outline: none;
 }
 
-/* Buttons */
-/* Input Field Placeholder */
+
 .modal-content input::placeholder {
     color: #aaa;
 }
-/* Buttons Layout (Side by Side) */
+
 .modal-footer {
     padding: 15px 0;
     display: flex;
-    justify-content: space-between; /* Align buttons side by side */
+    justify-content: space-between; 
     text-align: center;
 }
-/* Button Styling */
+
+
 .modal-content button {
     padding: 12px 24px;
-    margin: 8px;
     border-radius: 8px;
     color: #fff;
     font-size: 1rem;
     font-weight: bold;
     transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
-    width: 48%; /* 50% width minus margin */
+    width: 48%; 
     cursor: pointer;
 }
 
-/* Primary Button (Create) */
+
 .modal-content button.btn-primary {
     background-color: #007bff;
     border: none;
@@ -283,32 +267,23 @@
 .modal-content button.btn-primary:hover {
     background-color: #0056b3;
 }
-/* Secondary Button (Cancel) */
+
 .modal-content button.btn-secondary {
     background-color: #6c757d;
     border: none;
 }
 
-.modal-content button:hover {
-    opacity: 0.9;
-    transform: translateY(-2px); 
-}/* Slight lift effect */
 .modal-content button.btn-secondary:hover {
     background-color: #5a6268;
 }
 
-/* Active Button */
+
 .modal-content button:active {
-    transform: translateY(2px); /* Pressed effect */
     transform: translateY(2px);
     opacity: 0.8;
 }
 
-/* Modal Close Button */
-.modal-content button.btn-secondary {
-    background-color: #dc3545; /* Red for cancel button */
-}
-/* Animations */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -318,9 +293,6 @@
     }
 }
 
-.modal-content button.btn-secondary:hover {
-    background-color: #c82333; /* Darker red on hover */
-}
 @keyframes slideUp {
     from {
         transform: translateY(20px);
@@ -331,7 +303,7 @@
         opacity: 1;
     }
 }
-/* addresturent */
+
 select option.add-restaurant-option {
     color: #fff;  
     font-weight: bold;  
@@ -341,6 +313,7 @@ select option.add-restaurant-option {
     text-align: center;  
     transition: none;
 }
+
 select option {
     background-color: #2D303E; 
     color: white; 
@@ -351,6 +324,7 @@ select option.add-restaurant-option:hover {
     color: white;  
     cursor: pointer; 
 }
+
 select {
     width: 100%;
     padding: 12px;
@@ -366,14 +340,18 @@ select {
     background-size: 10px 5px;
     transition: all 0.3s ease;
 }
+
 select:hover {
     background-color: #1A1C26;
 }
+
 select:focus {
     border: 2px solid #FFC107;  
     background-color: #1A1C26;
 }
-/* Animations */
+
+
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -395,12 +373,11 @@ select:focus {
 }
 
 
-/* General styling for mobile and small devices */
 @media (max-width: 768px) {
     .registration-wrapper {
         flex-direction: column;
         padding: 20px;
-        height: auto; /* Allow scrolling if content exceeds screen height */
+        height: auto; 
     }
 
     .registration-container {
@@ -419,15 +396,12 @@ select:focus {
         max-width: 100%;
     }
 
-    .input-group {
-        flex-direction: column;
-    }
 
     .half-width,
     .third-width,
     .full-width {
         width: 100%;
-        margin-bottom: 10px; /* Space between inputs */
+        margin-bottom: 10px; 
     }
 
     .register-button {
@@ -451,8 +425,7 @@ select:focus {
     }
 }
 
-/* Styling for tablets */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1366px) {
     .registration-wrapper {
         padding: 40px;
     }
@@ -462,9 +435,12 @@ select:focus {
     }
 
     .login-info {
+        position: relative;
+        top: 0;
         right: 0;
-        max-width: 100%;
         transform: none;
+        margin-top: 20px;
+        max-width: 100%;
     }
 
     .input-group {
@@ -472,13 +448,8 @@ select:focus {
     }
 }
 
-/* Larger screens (desktops and laptops) */
-@media (min-width: 1025px) {
+@media (min-width: 1366px) {
     .registration-wrapper {
         padding: 0 70px;
-    }
-
-    .login-info {
-        right: 300px;
     }
 }

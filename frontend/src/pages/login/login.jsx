@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './login.css'
+import { Link } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -85,9 +86,9 @@ function Login() {
                       Login
                     </button>
                     <div className="text-center">
-                      <a href="#" className="text-white pt-2">
+                      <Link to={"/"} className="text-white pt-2">
                         Don’t have an account? <span className="text-primary">Register</span>
-                      </a>
+                        </Link>
                     </div>
                   </form>
                 </div>
