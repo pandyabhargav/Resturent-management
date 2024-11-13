@@ -1,40 +1,26 @@
-import React, { useEffect, useState } from 'react';
-    import './signup.css';
-    import 'bootstrap/dist/css/bootstrap.min.css';
-    import logo from '../../assets/logo.png';
-    import { Modal, Button, Row, Col, Form  } from 'react-bootstrap'; 
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import './signup.css';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from '../../assets/logo.png';
+import { Modal, Button, Row, Col, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
-    const Registration = () => {
+const Registration = () => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
-        phone: '',
+        phoneNumber: '',
         country: '',
-        state: '',
-        city: '',
-        restaurant: '',
+        state: '',       // Newly added
+        city: '',        // Newly added
+        restaurant: '',  // Newly added
         password: '',
         confirmPassword: '',
         agree: false,
     });
-
-    const [restaurants, setRestaurants] = useState([
-        "McDonald's",
-        'Starbucks',
-        'KFC',
-        'Domino\'s Pizza',
-        'Pizza Hut',
-        'Burger King',
-        'Subway',
-        'Chipotle',
-        'Taco Bell',
-        'Wendy\'s',
-    ]);
-
-    const [newRestaurant, setNewRestaurant] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
     const locations = [
         {
@@ -158,443 +144,521 @@ import { Link } from 'react-router-dom';
             ],
         },
     ];
-        
-    
-      const [countriesData, setCountriesData] = useState(locations);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-        ...formData,
-        [name]: type === 'checkbox' ? checked : value,
-        });
+    const [countriesData, setCountriesData] = useState(locations);
+
+
+
+    const [restaurants, setRestaurants] = useState([]);
+    const [formRestData, setFormRestData] = useState({
+        restaurant: '',
+    });
+    const [showModal, setShowModal] = useState(false);
+    const [newRestaurant, setNewRestaurant] = useState({
+        restaurantName: '',
+        restaurantAddress: '',
+        country: '',
+        state: '',
+        city: '',
+        zipCode: '',
+    });
+
+    // Fetch all restaurants from the API on component mount
+    useEffect(() => {
+        fetchRestaurants();
+    }, []);
+
+    const fetchRestaurants = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/v1/restaurant/restaurants-get');
+            console.log('Fetched restaurants:', response.data); // Debug log
+
+            // Check if the API response contains the 'data' field and use it to set the restaurants state
+            if (response.data.success && Array.isArray(response.data.data)) {
+                setRestaurants(response.data.data); // Set restaurants state with the data array
+            } else {
+                console.error("Invalid data format:", response.data);
+                setRestaurants([]); // Fallback to empty array if the data format is incorrect
+            }
+        } catch (error) {
+            console.error("Error fetching restaurants:", error);
+            setRestaurants([]); // Fallback to empty array in case of error
+        }
     };
 
     const handleRestaurantChange = (e) => {
         const selectedValue = e.target.value;
-        
         if (selectedValue === "addNewRestaurant") {
-            setShowModal(true);  
+            setShowModal(true); // Show the modal when "+ Add New Restaurant" is selected
         } else {
             setFormData({
                 ...formData,
-                restaurant: selectedValue,
+                restaurant: selectedValue, // Set the selected restaurant ID
             });
         }
     };
 
     const handleNewRestaurantChange = (e) => {
-        setNewRestaurant(e.target.value);
+        setNewRestaurant({
+            ...newRestaurant,
+            [e.target.name]: e.target.value,
+        });
     };
 
-    const handleAddRestaurant = () => {
-        if (newRestaurant && !restaurants.includes(newRestaurant)) {
-            setRestaurants([...restaurants, newRestaurant]);
-            setFormData({
-                ...formData,
-                restaurant: newRestaurant,
+    const handleAddRestaurant = async () => {
+        try {
+            const response = await axios.post(
+                'http://localhost:5000/api/v1/restaurant/restaurant-add',
+                newRestaurant
+            );
+            console.log("Restaurant added:", response.data);
+
+            // Add the newly added restaurant to the list without refetching
+            setRestaurants((prevRestaurants) => [
+                ...prevRestaurants,
+                response.data.restaurant
+            ]);
+
+            // Close the modal and reset the new restaurant form
+            setShowModal(false);
+            setNewRestaurant({
+                restaurantName: '',
+                restaurantAddress: '',
+                country: '',
+                state: '',
+                city: '',
+                zipCode: ''
             });
-            setNewRestaurant('');
+        } catch (error) {
+            if (error.response) {
+                console.error("Server response error:", error.response.data);
+            } else {
+                console.error("Error adding restaurant:", error);
+            }
         }
-        setShowModal(false);  
     };
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value,
+        });
+    };
+
+
+
 
     const getStates = () => {
         const countryData = countriesData.find(
-          (country) => country.country === formData.country
+            (country) => country.country === formData.country
         );
         return countryData ? countryData.states : [];
-      };
-    
-  
-      const getCities = () => {
+    };
+
+    // Get cities based on the selected state
+    const getCities = () => {
         const stateData = getStates().find(
-          (state) => state.state === formData.state
+            (state) => state.state === formData.state
         );
         return stateData ? stateData.cities : [];
-      };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
     };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Log the current form data to the console
+        console.log("Form Data:", formData);
+
+        // Check if passwords match
+        if (formData.password !== formData.confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        // Check if all fields are filled and agree is checked
+        if (!formData.agree) {
+            alert("You must agree to the T&C and Privacy Policies.");
+            return;
+        }
+
+        if (!formData.firstName || !formData.lastName || !formData.email || !formData.phoneNumber || !formData.country || !formData.state || !formData.city || !formData.restaurant || !formData.password) {
+            alert("Please fill all the required fields.");
+            return;
+        }
+
+        try {
+            // Prepare data to send to the backend
+            const dataToSend = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                password: formData.password,
+                country: formData.country,
+                state: formData.state,
+                city: formData.city,
+                restaurant: formData.restaurant,
+                phoneNumber: formData.phoneNumber,
+                confirmPassword: formData.confirmPassword,  // Add confirmPassword if needed
+                agree: formData.agree  // Add agree if needed
+            };
+
+            // Log the data that will be sent to the backend
+            console.log("Data to send:", dataToSend);
+
+            // Send form data to the backend API
+            const response = await axios.post('http://localhost:5000/api/v1/owner/owner-add', dataToSend);
+
+            if (response.status === 201) {
+                alert("Registration successful!");
+                navigate('/login'); // Navigate to the login page on successful registration
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+            alert("Registration failed. Please try again.");
+        }
+    };
+
+
+
 
     return (
         <div className="registration-wrapper">
-        <div className="registration-container">
-            <h2>Registration</h2>
-            <br />
-            <form onSubmit={handleSubmit} className="registration-form">
-            <div className="input-group">
-                <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="form-control half-width"
-                required
-                style={{ color: '#fff' }}
-                />
-                <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="form-control half-width"
-                required
-                style={{ color: '#fff' }}
-                />
+            <div className="registration-container">
+                <h2>Registration</h2>
+                <br />
+                <form onSubmit={handleSubmit} className="registration-form">
+                    <div className="input-group">
+                        <input
+                            type="text"
+                            name="firstName"
+                            placeholder="First Name"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            className="form-control half-width"
+                            required
+                            style={{ color: '#fff' }}
+                        />
+                        <input
+                            type="text"
+                            name="lastName"
+                            placeholder="Last Name"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            className="form-control half-width"
+                            required
+                            style={{ color: '#fff' }}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="form-control half-width"
+                            required
+                            style={{ color: '#fff' }}
+                        />
+                        <input
+                            type="tel"
+                            name="phoneNumber"
+                            placeholder="Phone Number"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            className="form-control half-width"
+                            required
+                            style={{ color: '#fff' }}
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <select
+                            name="country"
+                            value={formData.country}
+                            onChange={handleChange}
+                            className="form-control third-width"
+                            required
+                            style={{ color: '#fff', backgroundColor: '#2D303E' }}
+                        >
+                            <option value="" disabled>Select a Country</option>
+                            {/* Map through countries data */}
+                            {countriesData.map((location, index) => (
+                                <option key={index} value={location.country}>
+                                    {location.country}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            name="state"
+                            value={formData.state}
+                            onChange={handleChange}
+                            className="form-control third-width"
+                            required
+                            style={{ color: '#fff', backgroundColor: '#2D303E' }}
+                        >
+                            <option value="" disabled>Select a State</option>
+                            {getStates().map((state, index) => (
+                                <option key={index} value={state.state}>
+                                    {state.state}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            name="city"
+                            value={formData.city}
+                            onChange={handleChange}
+                            className="form-control third-width"
+                            required
+                            style={{ color: '#fff', backgroundColor: '#2D303E' }}
+                        >
+                            <option value="" disabled>Select a City</option>
+                            {getCities().map((city, index) => (
+                                <option key={index} value={city}>
+                                    {city}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="mb-3">
+                        <select
+                            name="restaurant"
+                            value={formData.restaurant}
+                            onChange={handleRestaurantChange}
+                            required
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                borderRadius: '5px',
+                                color: '#fff',
+                                backgroundColor: '#2D303E',
+                                border: '1px solid #2A2A38',
+                                marginBottom: '-10px',
+                                appearance: 'none',
+                            }}
+                        >
+                            <option value="">Select a restaurant</option>
+
+                            {Array.isArray(restaurants) && restaurants.length > 0 ? (
+                                restaurants.map((restaurant) =>
+                                    restaurant && restaurant._id ? (
+                                        <option key={restaurant._id} value={restaurant._id}>
+                                            {restaurant.restaurantName || 'Unnamed Restaurant'}
+                                        </option>
+                                    ) : null
+                                )
+                            ) : (
+                                <option value="" disabled>No restaurants available</option>
+                            )}
+                            <option value="addNewRestaurant" className='text-center register-button'>+ Add New Restaurant</option>
+                        </select>
+                    </div>
+
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="form-control full-width"
+                            required
+                            style={{ color: '#fff' }}
+                        />
+                    </div>
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="Confirm Password"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            className="form-control full-width"
+                            required
+                            style={{ color: '#fff' }}
+                        />
+                    </div>
+
+                    <div className="form-group mt-3">
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <input
+                                type="checkbox"
+                                name="agree"
+                                checked={formData.agree}
+                                onChange={handleChange}
+                                style={{ width: '16px', height: '16px', margin: '0' }}
+                            />
+                            <span>
+                                I agree to all the <a href="#">T&C</a> and <a href="#">Privacy Policies</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" className="btn register-button w-100">
+                        Register
+                    </button>
+                </form>
+
+
+
+                <div className="login-link">
+                    <p className="text-center mt-3">
+                        Already have an account? <a href="/login">Login here</a>
+                    </p>
+                </div>
+            </div>
+            <div className="login-info">
+                <div className="logo-container">
+                    <img src={logo} className="logo" alt="Logo" />
+                </div>
+                <p className="info-text">
+                    Where every <span className="highlight">flavor</span> tells a story.
+                </p>
             </div>
 
-            <div className="input-group">
-                <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                className="form-control half-width"
-                required
-                style={{ color: '#fff' }}
-                />
-                <input
-                type="tel"
-                name="phone"
-                placeholder="Phone Number"
-                value={formData.phone}
-                onChange={handleChange}
-                className="form-control half-width"
-                required
-                style={{ color: '#fff' }}
-                />
-            </div>
-
-            <div className="input-group">
-            <select
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="form-control third-width"
-              required
-              style={{ color: '#fff', backgroundColor: '#2D303E' }}
-            >
-              <option value="" disabled>
-                Select a Country
-              </option>
-              {countriesData.map((location, index) => (
-                <option key={index} value={location.country}>
-                  {location.country}
-                </option>
-              ))}
-            </select>
-
-                <select
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              className="form-control third-width"
-              required
-              style={{ color: '#fff', backgroundColor: '#2D303E' }}
-            >
-              <option value="" disabled>
-                Select a State
-              </option>
-              {getStates().map((state, index) => (
-                <option key={index} value={state.state}>
-                  {state.state}
-                </option>
-              ))}
-            </select>
-            
-            <select
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="form-control third-width"
-              required
-              style={{ color: '#fff', backgroundColor: '#2D303E' }}
-            >
-              <option value="" disabled>
-                Select a City
-              </option>
-              {getCities().map((city, index) => (
-                <option key={index} value={city}>
-                  {city}
-                </option>
-              ))}
-            </select>
-
-            </div>
-
-            <br />
-            <div className="mb-3">
-                <select
-                name="restaurant"
-                value={formData.restaurant}
-                onChange={handleRestaurantChange}
-                required
-                style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    color: '#fff',
-                    backgroundColor: '#2D303E',
-                    border: '1px solid #2A2A38',
-                    marginBottom: '-10px',
-                    appearance: 'none',
-                    backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 8 8%22%3E%3Cpath fill=%22%23FFF%22 d=%22M4 5L1 2h6L4 5z%22/%3E%3C/svg%3E")',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 10px center',
-                    backgroundSize: '10px 5px',
-                }}
-                >
-                 <option value="" disabled>Select a Restaurant</option>
-        {restaurants.map((restaurant, index) => (
-            <option key={index} value={restaurant}>{restaurant}</option>
-        ))}
-        
-        <option value="addNewRestaurant"  className="add-restaurant-option" >+ Add Restaurant</option>
-    </select>
-                
-            </div>
-
-            <div className="input-group">
-                <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="form-control full-width"
-                required
-                style={{ color: '#fff' }}
-                />
-            </div>
-            <div className="input-group">
-                <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="form-control full-width"
-                required
-                style={{ color: '#fff' }}
-                />
-            </div>
-            
-            <div className="form-group mt-3">
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input
-                    type="checkbox"
-                    name="agree"
-                    checked={formData.agree}
-                    onChange={handleChange}
-                    style={{
-                    width: '16px',
-                    height: '16px',
-                    margin: '0',
-                    }}
-                />
-                <span>
-                    I agree to all the <a href="#">T&C</a> and <a href="#">Privacy Policies</a>
-                </span>
-                </label>
-            </div>
-
-            <button type="submit" className="btn register-button w-100">
-                Register
-            </button>
-            </form>
-
-            
-
-            <div className="login-link">
-            <p className="text-center mt-3">
-                Already have an account? <Link href="/login">Login here</Link>
-            </p>
-            </div>
-        </div>
-        <div className="login-info">
-            <div className="logo-container">
-            <img src={logo} className="logo" alt="Logo" />
-            </div>
-            <p className="info-text">
-            Where every <span className="highlight">flavor</span> tells a story.
-            </p>
-        </div>
-
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-            
-                <Modal.Header >
-                <Modal.Title style={{ textAlign: 'left', width: '100%' }}>
-               Create New Resturent
-            </Modal.Title>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header>
+                    <Modal.Title style={{ textAlign: 'left', width: '100%' }}>
+                        Create New Restaurant
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-<Form>
-  
-    <Row>
-        <Col md={12}>
-            <Form.Group controlId="newRestaurantName">
-                <Form.Label>
-                    Restaurant Name 
-                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
-                </Form.Label>
-                <Form.Control
-                    type="text"
-                    name="name"
-                    value={newRestaurant.name}
-                    onChange={handleNewRestaurantChange}
-                    placeholder="Enter restaurant name"
-                    required
-                    style={{ width: '100%' }}
-                />
-            </Form.Group>
-        </Col>
-    </Row>
-
-   
-    <Row>
-        <Col md={12}>
-            <Form.Group controlId="restaurantAddress">
-                <Form.Label>
-                    Restaurant Address 
-                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
-                </Form.Label>
-                <Form.Control
-                    type="text"
-                    name="address"
-                    value={newRestaurant.address}
-                    onChange={handleNewRestaurantChange}
-                    placeholder="Enter restaurant address"
-                    required
-                    style={{ width: '100%' }}
-                />
-            </Form.Group>
-        </Col>
-    </Row>
-
-    <Row>
-        <Col md={6}>
-            <Form.Group controlId="restaurantCountry">
-                <Form.Label>
-                    Country
-                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
-                </Form.Label>
-                <Form.Control
-                    type="text"
-                    name="country"
-                    value={newRestaurant.country}
-                    onChange={handleNewRestaurantChange}
-                    placeholder="Enter country"
-                    required
-                    style={{ width: '100%' }}
-                />
-            </Form.Group>
-        </Col>
-
-        <Col md={6}>
-            <Form.Group controlId="restaurantState">
-                <Form.Label>
-                    State
-                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
-                </Form.Label>
-                <Form.Control
-                    type="text"
-                    name="state"
-                    value={newRestaurant.state}
-                    onChange={handleNewRestaurantChange}
-                    placeholder="Enter state"
-                    required
-                    style={{ width: '100%' }}
-                />
-            </Form.Group>
-        </Col>
-    </Row>
-
-   
-    <Row>
-        <Col md={6}>
-            <Form.Group controlId="restaurantCity">
-                <Form.Label>
-                    City
-                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
-                </Form.Label>
-                <Form.Control
-                    type="text"
-                    name="city"
-                    value={newRestaurant.city}
-                    onChange={handleNewRestaurantChange}
-                    placeholder="Enter city"
-                    required
-                    style={{ width: '100%' }}
-                />
-            </Form.Group>
-        </Col>
-
-        <Col md={6}>
-            <Form.Group controlId="restaurantZip">
-                <Form.Label>
-                    ZIP Code
-                    <span style={{ color: 'red', marginLeft: '5px' }}>*</span> 
+                    <Form>
+                        <Row>
+                            <Col md={12}>
+                                <Form.Group controlId="newRestaurantName">
+                                    <Form.Label>
+                                        Restaurant Name
+                                        <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
                                     </Form.Label>
-                <Form.Control
-                    type="text"
-                    name="zip"
-                    value={newRestaurant.zip}
-                    onChange={handleNewRestaurantChange}
-                    placeholder="Enter ZIP code"
-                    required
-                    style={{ width: '100%' }}
-                />
-            </Form.Group>
-        </Col>
-    </Row>
-</Form>
-
+                                    <Form.Control
+                                        type="text"
+                                        name="restaurantName"
+                                        value={newRestaurant.restaurantName}
+                                        onChange={handleNewRestaurantChange}
+                                        placeholder="Enter restaurant name"
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={12}>
+                                <Form.Group controlId="restaurantAddress">
+                                    <Form.Label>
+                                        Restaurant Address
+                                        <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="restaurantAddress"
+                                        value={newRestaurant.restaurantAddress}
+                                        onChange={handleNewRestaurantChange}
+                                        placeholder="Enter restaurant address"
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group controlId="restaurantCountry">
+                                    <Form.Label>
+                                        Country
+                                        <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="country"
+                                        value={newRestaurant.country}
+                                        onChange={handleNewRestaurantChange}
+                                        placeholder="Enter country"
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group controlId="restaurantState">
+                                    <Form.Label>
+                                        State
+                                        <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="state"
+                                        value={newRestaurant.state}
+                                        onChange={handleNewRestaurantChange}
+                                        placeholder="Enter state"
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group controlId="restaurantCity">
+                                    <Form.Label>
+                                        City
+                                        <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="city"
+                                        value={newRestaurant.city}
+                                        onChange={handleNewRestaurantChange}
+                                        placeholder="Enter city"
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group controlId="restaurantZip">
+                                    <Form.Label>
+                                        ZIP Code
+                                        <span style={{ color: 'red', marginLeft: '5px' }}>*</span>
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="zipCode"
+                                        value={newRestaurant.zipCode}
+                                        onChange={handleNewRestaurantChange}
+                                        placeholder="Enter ZIP code"
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button
-        variant="secondary"
-        onClick={() => setShowModal(false)}
-        style={{
-            backgroundColor: '#333', 
-            borderColor: '#444',     
-            color: '#fff',          
-            fontSize: '1rem',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            fontWeight: 'bold',
-            width: '48%',           
-            transition: 'background-color 0.3s ease, transform 0.2s ease-in-out',
-        }}
-    >
-        Cancel
-    </Button>
-    <Button
-        variant="primary"
-        onClick={handleAddRestaurant}
-        style={{
-            backgroundColor: '#444',
-            borderColor: '#555',     
-            color: '#fff',          
-            fontSize: '1rem',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            fontWeight: 'bold',
-            width: '48%',          
-            transition: 'background-color 0.3s ease, transform 0.2s ease-in-out',
-        }}
-    >
-        Create
-    </Button>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowModal(false)}
+                        style={{ width: '48%', fontWeight: 'bold', color: '#fff' }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={handleAddRestaurant}
+                        style={{ width: '48%', fontWeight: 'bold', color: '#fff' }}
+                    >
+                        Create
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </div>
     );
-    };
+};
 
-    export default Registration;
+export default Registration;

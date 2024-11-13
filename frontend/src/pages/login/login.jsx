@@ -1,34 +1,50 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { Container, Row, Col } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import './login.css'
+import './login.css';
 import { Link } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(false); // State for tracking login errors
+  const [error, setError] = useState(null); // State for tracking login errors
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add actual validation logic here
-    if (password !== 'correctPassword') { // Replace with real validation
-      setError(true);
-    } else {
-      setError(false);
-      // Proceed with successful login actions
-      alert('Login successful!');
+  
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
+        email,
+        password,
+      });
+  
+      console.log("Response:", response); // Log the response for debugging
+  
+      // Check if the response is successful
+      if (response.data.message === "restaurantowner successfully login") {
+        alert('Login successful!');
+        setError(null); // Clear any previous error
+        // Redirect or update state as needed
+      } else {
+        setError('Invalid email or password'); // If there's no success message, set error
+      }
+    } catch (err) {
+      console.error("Error:", err); // Log error details for debugging
+      setError('An error occurred. Please try again later'); // General error message
     }
   };
+  
+
+
   return (
     <>
-     <section className="login">
+      <section className="login">
         <div className="login-content">
           <Container>
             <Row className="d-flex flex-wrap justify-content-center align-items-center">
-              <Col xs={12} md={6} className="d-flex flex-wrap">
+              <Col xs={12} s={12} md={8} xl={6} className="d-flex flex-wrap">
                 <div className="bg-col col-12 p-5 rounded-4">
                   <h2 className="pb-2">Login</h2>
                   <form onSubmit={handleSubmit}>
@@ -70,7 +86,7 @@ function Login() {
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </span>
                       {error && (
-                        <div className="text-danger mt-1">Incorrect password</div>
+                        <div className="text-danger mt-1">{error}</div>
                       )}
                     </div>
                     <div className="mb-3 form-check">
@@ -79,7 +95,7 @@ function Login() {
                         <label className="form-check-label" htmlFor="exampleCheck1">
                           Remember Me
                         </label>
-                        <a href="#">Forgot password?</a>
+                        <Link to={"/forgotpass"}>Forgot password?</Link>
                       </div>
                     </div>
                     <button type="submit" className="btn login-btn col-12 mb-2">
@@ -88,13 +104,13 @@ function Login() {
                     <div className="text-center">
                       <Link to={"/"} className="text-white pt-2">
                         Don’t have an account? <span className="text-primary">Register</span>
-                        </Link>
+                      </Link>
                     </div>
                   </form>
                 </div>
               </Col>
 
-              <Col xs={12} md={6}>
+              <Col xs={12} s={12} md={4} xl={6}>
                 <div className="d-flex flex-wrap justify-content-center col-12 align-items-center">
                   <div className="d-flex flex-wrap justify-content-center p-3 align-items-center login-logo">
                     <img src="public/Group.png" alt="login-logo" />
@@ -116,7 +132,7 @@ function Login() {
         </div>
       </section>
     </>
-  )
+  );
 }
 
-export default Login
+export default Login;

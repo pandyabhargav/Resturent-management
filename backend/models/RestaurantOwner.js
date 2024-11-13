@@ -32,9 +32,7 @@ const restaurantownerSchema = new mongoose.Schema(
       required: true,
     },
     restaurant: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Restaurant",
-      required: true,
+      type:String
     },
     phoneNumber: {
       type: Number,

@@ -17,12 +17,7 @@ const router = express.Router();
 router.post("/owner-add", AddValidation, RestaurantOwnerAdd);
 router.get("/owners-get", authMiddleware, RestaurantOwnersGet);
 router.get("/owner-get/:id", authMiddleware, RestaurantOwnerGet);
-router.put(
-  "/owner-update/:id",
-  authMiddleware,
-  UpdateValidation,
-  RestaurantOwnerUpdate
-);
+router.put("/owner-update/:id",authMiddleware, UpdateValidation,RestaurantOwnerUpdate);
 router.delete("/owner-delete/:id", authMiddleware, RestaurantOwnerDelete);
 
 function AddValidation(req, res, next) {
