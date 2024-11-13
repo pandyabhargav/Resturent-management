@@ -17,7 +17,12 @@ const router = express.Router();
 router.post("/owner-add", AddValidation, RestaurantOwnerAdd);
 router.get("/owners-get", authMiddleware, RestaurantOwnersGet);
 router.get("/owner-get/:id", authMiddleware, RestaurantOwnerGet);
-router.put("/owner-update/:id",authMiddleware, UpdateValidation,RestaurantOwnerUpdate);
+router.put(
+  "/owner-update/:id",
+  authMiddleware,
+  UpdateValidation,
+  RestaurantOwnerUpdate
+);
 router.delete("/owner-delete/:id", authMiddleware, RestaurantOwnerDelete);
 
 function AddValidation(req, res, next) {
@@ -49,6 +54,7 @@ function UpdateValidation(req, res, next) {
     state: Joi.string().min(1).max(100).optional(),
     city: Joi.string().min(1).max(100).optional(),
     restaurant: Joi.string().optional(),
+    gender: Joi.string().valid("male", "female", "other").optional(),
     phoneNumber: Joi.number()
       .integer()
       .min(1000000000)

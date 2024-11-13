@@ -41,41 +41,41 @@ const requestPasswordReset = async (req, res) => {
       return res.status(400).json({ message: "RestaurantOwner not found" });
     }
 
-    // Generate reset token
-    const resetToken = crypto.randomBytes(20).toString("hex");
+    // Generate a 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Set reset token and expiration
+    // Hash the OTP and set expiration
     restaurantowner.resetPasswordToken = crypto
       .createHash("sha256")
-      .update(resetToken)
+      .update(otp)
       .digest("hex");
     restaurantowner.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
     await restaurantowner.save();
 
-    // Send email
-    const resetUrl = `http://yourfrontend.com/reset-password/${resetToken}`;
-    const message = `You requested a password reset. Please make a PUT request to: \n\n ${resetUrl}`;
-    
-    console.log("restaurantowner.email", restaurantowner.email);
+    // Send OTP via email
+    const message = `Your password reset OTP is: ${otp}. This OTP is valid for 10 minutes.`;
 
     await sendEmail({
       to: restaurantowner.email,
-      subject: "Password Reset",
+      subject: "Password Reset OTP",
       text: message,
     });
 
-    res
-      .status(200)
-      .json({ message: "Password reset email sent", resetToken: resetToken });
+    return res.status(200).json({ message: "Password reset email sent" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
 const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
-    const { password } = req.body;
+    const { otp, password } = req.body;
+    if (!otp) {
+      return res.status(400).json({ message: "OTP are required" });
+    }
     if (!password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -84,11 +84,10 @@ const resetPassword = async (req, res) => {
         message: "Password must be at least 6 characters",
       });
     }
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
-    // Find restaurantowner by token and check expiration
     const restaurantowner = await RestaurantOwner.findOne({
-      resetPasswordToken: hashedToken,
+      resetPasswordToken: hashedOtp,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
@@ -109,6 +108,40 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const resetCurrantPassword = async (req, res) => {
+  try {
+    const { currantPassword, password, confirmPassword } = req.body;
+    console.log(req.user._id);
+
+    // Find restaurantowner by token and check expiration
+    const restaurantowner = await RestaurantOwner.findById(req.user._id);
+    if (!restaurantowner) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+    const isMatch = await bcryptjs.compare(
+      currantPassword,
+      restaurantowner.password
+    );
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    // Check if new password and confirm password match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+    restaurantowner.password = hashedPassword;
+    await restaurantowner.save();
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 const authCheck = async (req, res) => {
   try {
     res.status(200).json({ restaurantowner: req.restaurantowner });
@@ -123,4 +156,5 @@ module.exports = {
   requestPasswordReset,
   resetPassword,
   authCheck,
+  resetCurrantPassword,
 };
