@@ -32,7 +32,9 @@ const restaurantownerSchema = new mongoose.Schema(
       required: true,
     },
     restaurant: {
-      type:String
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
     },
     phoneNumber: {
       type: Number,
@@ -41,6 +43,10 @@ const restaurantownerSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ['owner', 'user'],
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other'],
     },
     resetPasswordExpires: {
       type: Date,
