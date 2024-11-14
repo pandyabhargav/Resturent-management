@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Row, Col, Button,Container } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { Form, Row, Col, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './otp.css'; // Import your CSS file
+import './otp.css';
 
 const Otp = () => {
   const [otp, setOtp] = useState(Array(6).fill(''));
+  const [password, setPassword] = useState('');
   const inputsRef = useRef([]);
+  const navigate = useNavigate();
 
-  // Handle input change
   const handleChange = (e, index) => {
     const { value } = e.target;
     if (/^[0-9]{0,1}$/.test(value)) {
@@ -15,32 +17,47 @@ const Otp = () => {
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Move to the next input box
       if (value && index < otp.length - 1) {
         inputsRef.current[index + 1].focus();
       }
     }
   };
 
-  // Handle key down event for backspace
+ 
+
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputsRef.current[index - 1].focus();
     }
   };
 
-  // Handle form submission (e.g., submit OTP)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const otpCode = otp.join('');
     console.log('OTP Entered:', otpCode);
-    // Handle OTP submission logic here
+
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/password-reset-otp-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ otp: otpCode, password }),
+      });
+
+      if (response.ok) {
+        console.log('OTP and Password submitted successfully.');
+        navigate('/Resetpass'); // Redirect to change password page
+      } else {
+        console.error('Failed to submit OTP and password.');
+      }
+    } catch (error) {
+      console.error('Error submitting OTP:', error);
+    }
   };
 
-  // Focus on the first input box when the component mounts
   useEffect(() => {
     inputsRef.current[0].focus();
   }, []);
+
   return (
     <section className='Forgot'>
       <Container>
@@ -48,7 +65,7 @@ const Otp = () => {
           <Col xs={12} md={6} className="d-flex flex-wrap">
             <div className="form-container">
               <h2>Enter OTP</h2>
-              <p>A Verification Code Has Been Sent On XXX98. Enter the code Beloe.</p>
+              <p>A Verification Code Has Been Sent On XXX98. Enter the code below.</p>
               <Form onSubmit={handleSubmit}>
                 <Row className="otp-input-row">
                   {otp.map((value, index) => (
@@ -65,11 +82,10 @@ const Otp = () => {
                     </Col>
                   ))}
                 </Row>
-                <a href="">Resend OTP</a>
-                <Button type="submit"  className="mt-3 login-btn">
+                <Link to={"/forgotpass"}>Resend OTP</Link>
+                <Button type="submit" className="mt-3 login-btn">
                   Submit OTP
                 </Button>
-                
               </Form>
             </div>
             <div className="background-image">
@@ -80,7 +96,7 @@ const Otp = () => {
             <div className="d-flex flex-wrap justify-content-center col-12 align-items-center">
               <div className="d-flex flex-wrap justify-content-center p-3 align-items-center login-logo">
                 <div className='d-flex'>
-                   <img src="public/Group.png" alt="login-logo" />
+                  <img src="public/Group.png" alt="login-logo" />
                   <div>
                     <h4 className="px-2 pt-2 m-0">Restaurants</h4>
                     <h6 className="px-2 pb-2 m-0">Your Tagline</h6>
@@ -98,9 +114,7 @@ const Otp = () => {
         </Row>
       </Container>
     </section>
-    
   );
-  
 };
 
 export default Otp;
