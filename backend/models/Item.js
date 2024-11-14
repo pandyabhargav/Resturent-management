@@ -2,15 +2,16 @@ const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema(
   {
-    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
     name: { type: String, required: true },
     ingredients: { type: String },
-    price: { type: String, required: true },
-    discount: { type: String },
+    price: { type: Number, required: true },
+    discount: { type: Number },
     type: { type: String, enum: ["Spicy", "Sweet"], required: true },
     options: {
       type: String,
-      enum: ["Less Spicy", "Regular Spicy", "Extra Spicy"],
+      enum: ["Less", "Regular", "Extra"],
+      default: "Less",
     },
     image: { type: String },
     availability: {
@@ -24,11 +25,15 @@ const itemSchema = new mongoose.Schema(
         selection: {
           type: String,
           enum: ["Single", "Multiple"],
-          required: true,
+          default: "Multiple",
         },
-        name: { type: String, required: true },
-        detail: { type: String },
-        extraRate: { type: Number },
+        list: [
+          {
+            name: { type: String, required: true },
+            detail: { type: String },
+            extraRate: { type: Number },
+          },
+        ],
       },
     ],
     createdBy: { type: String },

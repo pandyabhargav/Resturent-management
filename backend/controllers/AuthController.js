@@ -69,20 +69,11 @@ const requestPasswordReset = async (req, res) => {
   }
 };
 
-const resetPassword = async (req, res) => {
+const resetPasswordOTP = async (req, res) => {
   try {
-    const { token } = req.params;
-    const { otp, password } = req.body;
+    const { otp } = req.body;
     if (!otp) {
-      return res.status(400).json({ message: "OTP are required" });
-    }
-    if (!password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-    if (password.length < 6) {
-      return res.status(400).json({
-        message: "Password must be at least 6 characters",
-      });
+      return res.status(400).json({ message: "OTP is required" });
     }
     const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
@@ -92,7 +83,36 @@ const resetPassword = async (req, res) => {
     });
 
     if (!restaurantowner) {
-      return res.status(400).json({ message: "Invalid or expired token" });
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+    res.status(200).json({ message: "OTP successfully verified" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const resetPassword = async (req, res) => {
+  try {
+    const { otp, confirmPassword, password } = req.body;
+    if (!password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
+    }
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+    const restaurantowner = await RestaurantOwner.findOne({
+      resetPasswordToken: hashedOtp,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!restaurantowner) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
     }
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
@@ -157,4 +177,5 @@ module.exports = {
   resetPassword,
   authCheck,
   resetCurrantPassword,
+  resetPasswordOTP,
 };

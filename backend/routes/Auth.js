@@ -7,6 +7,7 @@ const {
   resetPassword,
   authCheck,
   resetCurrantPassword,
+  resetPasswordOTP,
 } = require("../controllers/AuthController.js");
 
 const validateRequest = require("../middleware/validate-request.js");
@@ -16,6 +17,7 @@ const router = express.Router();
 
 router.post("/login", LoginValidation, login);
 router.post("/password-reset", ResetPasswordValidation, requestPasswordReset);
+router.post("/password-reset-otp-check", resetPasswordOTP);
 router.post("/password-reset-otp", resetPassword);
 router.post(
   "/password-reset-currant",
