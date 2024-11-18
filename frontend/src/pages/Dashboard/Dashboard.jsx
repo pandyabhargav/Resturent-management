@@ -62,9 +62,9 @@
           labels: ['Parcel Order', 'On-Site Order'],
           datasets: [
             {
-              data: [587, 475], // Data points
-              backgroundColor: ['rgb(231 ,76 , 60 )', 'rgb(250 , 190 , 37 )'], // Segment colors
-              borderColor: 'black', // Border color for each segment
+              data: [587, 475], 
+              backgroundColor: ['rgb(231 ,76 , 60 )', 'rgb(250 , 190 , 37 )'],
+              borderColor: 'black', 
               borderWidth: 1,
             },
           ],
@@ -83,7 +83,7 @@
             title: {
               display: true,
               text: 'Orders (This Week)',
-              color: 'white', // Sets title color to white
+              color: 'white', 
             },
           },
         };

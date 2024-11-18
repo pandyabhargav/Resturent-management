@@ -2,6 +2,9 @@ import React from 'react';
 import Profile from '../Profile/Profile';
 import './main.css';
 import Dashboard from '../Dashboard/Dashboard';
+import Managemenu from '../Managemenu/Managemenu';
+import Additem from '../Additem/Additem';
+
 
 const Main = ({ showProfile }) => {
   return (
@@ -11,7 +14,11 @@ const Main = ({ showProfile }) => {
         <Profile />
       ) : (  
         <div>
-         <Dashboard/>
+         {/* <Dashboard/> */}
+         <div className="wrapper">
+         {/* <Managemenu /> */}
+        <Additem />
+         </div>
         </div>
       )}
     </div>
