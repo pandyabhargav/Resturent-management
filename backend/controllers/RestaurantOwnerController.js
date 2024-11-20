@@ -34,7 +34,9 @@ const RestaurantOwnerAdd = async (req, res) => {
 
 const RestaurantOwnersGet = async (req, res) => {
   try {
-    const restaurantOwners = await RestaurantOwner.find();
+    const restaurantOwners = await RestaurantOwner.find().populate(
+      "restaurant"
+    );
     res.status(200).json({ success: true, data: restaurantOwners });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -44,13 +46,16 @@ const RestaurantOwnersGet = async (req, res) => {
 const RestaurantOwnerGet = async (req, res) => {
   try {
     const { id } = req.params;
-    const restaurantOwners = await RestaurantOwner.findById(id);
+    const restaurantOwners = await RestaurantOwner.findById(id).populate(
+      "restaurant"
+    );
     if (!restaurantOwners) {
       return res.status(400).json({
         success: false,
         message: "The Owner ID data does not exist.",
       });
     }
+
     res.status(200).json({ success: true, data: restaurantOwners });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

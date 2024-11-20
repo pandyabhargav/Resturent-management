@@ -2,11 +2,15 @@ const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema(
   {
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
     name: { type: String, required: true },
     ingredients: { type: String },
     price: { type: Number, required: true },
-    discount: { type: Number },
+    discount: { type: Number, default: 0 },
     type: { type: String, enum: ["Spicy", "Sweet"], required: true },
     options: {
       type: String,
@@ -21,19 +25,9 @@ const itemSchema = new mongoose.Schema(
     },
     customization: [
       {
-        title: { type: String, required: true },
-        selection: {
-          type: String,
-          enum: ["Single", "Multiple"],
-          default: "Multiple",
-        },
-        list: [
-          {
-            name: { type: String, required: true },
-            detail: { type: String },
-            extraRate: { type: Number },
-          },
-        ],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Customization",
+        required: true,
       },
     ],
     createdBy: { type: String },

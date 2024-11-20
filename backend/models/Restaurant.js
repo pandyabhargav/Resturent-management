@@ -13,7 +13,6 @@ const restaurantSchema = new mongoose.Schema(
     country: {
       type: String,
       required: true,
-      unique: true,
     },
     state: {
       type: String,
