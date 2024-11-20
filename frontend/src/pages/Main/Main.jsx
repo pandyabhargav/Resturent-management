@@ -4,6 +4,8 @@ import './main.css';
 import Dashboard from '../Dashboard/Dashboard';
 import Managemenu from '../Managemenu/Managemenu';
 import Additem from '../Additem/Additem';
+import Qr from '../Qr/Qr';
+import CreateQr from '../CreateQr/CreateQr';
 
 
 const Main = ({ showProfile }) => {
@@ -17,7 +19,9 @@ const Main = ({ showProfile }) => {
          {/* <Dashboard/> */}
          <div className="wrapper">
          {/* <Managemenu /> */}
-        <Additem />
+         {/* <Additem /> */}
+         <Qr/>
+         {/* <CreateQr/> */}
          </div>
         </div>
       )}
