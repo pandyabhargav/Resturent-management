@@ -66,9 +66,7 @@ function AddValidation(req, res, next) {
 
 function UpdateValidation(req, res, next) {
   const schema = Joi.object({
-    category: Joi.string()
-      .optional()
-      .regex(/^[0-9a-fA-F]{24}$/),
+    // category: Joi.string().optional().regex(/^[0-9a-fA-F]{24}$/),
     name: Joi.string().min(1).max(100).optional(),
     ingredients: Joi.string().optional(),
     price: Joi.number().positive().optional(),
@@ -76,23 +74,29 @@ function UpdateValidation(req, res, next) {
     type: Joi.string().valid("Spicy", "Sweet").optional(),
     options: Joi.string().valid("Less", "Regular", "Extra").optional(),
     image: Joi.string().uri().optional(),
-    customization: Joi.array()
-      .items(
-        Joi.object({
-          title: Joi.string().optional(),
-          selection: Joi.string().valid("Single", "Multiple").optional(),
-          list: Joi.array()
-            .items(
-              Joi.object({
-                name: Joi.string().optional(),
-                detail: Joi.string().optional(),
-                extraRate: Joi.number().positive().optional(),
-              })
-            )
-            .optional(),
-        })
-      )
-      .optional(),
+    // customization: Joi.array()
+    //   .items(
+    //     Joi.object({
+    //       customizationid: Joi.string()
+    //         .optional()
+    //         .regex(/^[0-9a-fA-F]{24}$/),
+    //       title: Joi.string().optional(),
+    //       selection: Joi.string().valid("Single", "Multiple").optional(),
+    //       list: Joi.array()
+    //         .items(
+    //           Joi.object({
+    //             listid: Joi.string()
+    //               .optional()
+    //               .regex(/^[0-9a-fA-F]{24}$/),
+    //             name: Joi.string().optional(),
+    //             detail: Joi.string().optional(),
+    //             extraRate: Joi.number().positive().optional(),
+    //           })
+    //         )
+    //         .optional(),
+    //     })
+    //   ).optional(),
+    availability: Joi.string().valid("Available", "Unavailable").optional(),
     lastModifiedBy: Joi.string().default(
       req.user.firstName + " " + req.user.lastName
     ),

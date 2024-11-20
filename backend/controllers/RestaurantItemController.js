@@ -1,8 +1,9 @@
 const RestaurantItem = require("../models/Item.js");
+const RestaurantItemCustomization = require("../models/Customization.js");
 
 const RestaurantItemAdd = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, customization } = req.body;
 
     const restaurantitems = await RestaurantItem.findOne({ name });
     if (restaurantitems) {
@@ -13,12 +14,26 @@ const RestaurantItemAdd = async (req, res) => {
       });
     }
 
-    const restaurantitem = new RestaurantItem({
-      ...req.body,
-    });
+    let customizationIds = [];
+    if (customization && customization.length > 0) {
+      const savedCustomizations = await Promise.all(
+        customization.map(async (custom) => {
+          const newCustomization = new RestaurantItemCustomization(custom);
+          const savedCustomization = await newCustomization.save();
+          return savedCustomization._id;
+        })
+      );
+      customizationIds = savedCustomizations; // Store all IDs
+    }
 
-    await restaurantitem.save();
-    res.status(201).json({ success: true, data: restaurantitem });
+    if (customizationIds.length > 0) {
+      const restaurantitem = new RestaurantItem({
+        ...req.body,
+        customization: customizationIds,
+      });
+      await restaurantitem.save();
+      res.status(201).json({ success: true, data: restaurantitem });
+    }
   } catch (error) {
     res
       .status(500)
@@ -33,6 +48,7 @@ const RestaurantItemsGet = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const existingRestaurantItem = await RestaurantItem.find()
+      .populate("customization")
       .skip(skip)
       .limit(parseInt(limit))
       .exec();
@@ -64,7 +80,7 @@ const RestaurantItemsGet = async (req, res) => {
 const RestaurantItemGet = async (req, res) => {
   try {
     const { id } = req.params;
-    const restaurantitems = await RestaurantItem.findById(id);
+    const restaurantitems = await RestaurantItem.findById(id).populate("customization");
     if (!restaurantitems) {
       return res.status(400).json({
         success: false,

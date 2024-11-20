@@ -15,6 +15,9 @@ router.use("/api/v1/category", require("./RestaurantCategory.js"));
 //! Restaurant Item Router
 router.use("/api/v1/item", require("./RestaurantItem.js"));
 
+//! Restaurant Item Router
+router.use("/api/v1/cart", require("./RestaurantCart.js"));
+
 //! Restaurant IMG Upload Router
 router.use("/api/v1/upload", require("./Upload.js"));
 
