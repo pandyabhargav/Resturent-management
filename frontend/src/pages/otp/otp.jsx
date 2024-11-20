@@ -23,7 +23,7 @@ const Otp = () => {
     }
   };
 
- 
+
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
@@ -35,7 +35,7 @@ const Otp = () => {
     e.preventDefault();
     const otpCode = otp.join('');
     console.log('OTP Entered:', otpCode);
-
+    
     try {
       const response = await fetch('http://localhost:5000/api/v1/auth/password-reset-otp-check', {
         method: 'POST',
@@ -45,12 +45,19 @@ const Otp = () => {
 
       if (response.ok) {
         console.log('OTP and Password submitted successfully.');
+        if (typeof window !== 'undefined') {
+          try {
+            window.localStorage.setItem('OTP', otpCode);
+          } catch (error) {
+            console.error('Error saving OTP to localStorage:', error);
+          }
+        }
         navigate('/Resetpass'); // Redirect to change password page
       } else {
         console.error('Failed to submit OTP and password.');
       }
     } catch (error) {
-      console.error('Error submitting OTP:', error);
+      console.error('Error submitting OTP:', error, error.message);
     }
   };
 
@@ -77,7 +84,7 @@ const Otp = () => {
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         ref={(el) => (inputsRef.current[index] = el)}
                         maxLength={1}
-                        className="otp-input"
+                        className="otp-input text-center"
                       />
                     </Col>
                   ))}

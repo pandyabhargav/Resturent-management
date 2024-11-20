@@ -1,114 +1,117 @@
 .Reset {
-    background-size: cover;
-    background-position: center;  
-    background-image: url("../../../public/d75bfbbb18fefcba2a744eb559378aad.jfif"); /* Dark background color */
-    color: #fff; /* White text color */
-    font-family: 'Arial', sans-serif; /* Choose your font */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    min-height: 100vh;
-  }
-  
-  .container {
-    /* background-color: linear-gradient(89.95deg, rgba(31, 29, 43, 0.96) 0.04%, rgba(30, 28, 42, 0.43) 70.08%, rgba(30, 28, 41, 0.37) 99.14%),
-  linear-gradient(89.47deg, #1F1D2B 0.37%, rgba(31, 28, 42, 0.74) 99.48%); */
+  background-size: cover;
+  background-position: center;  
+  background-image: url("../../../public/d75bfbbb18fefcba2a744eb559378aad.jfif");
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
-  z-index: 2; /* Ensures content appears above the overlay */
+  min-height: 100vh;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
   color: white;
   padding: 20px;
   width: 100%;
-  }
-  .Reset::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity for desired darkness */
-    z-index: 1;
-    
-  }
-  h2 {
-    /* text-align: center; */
-    margin-bottom: 20px;
-    
-    
-  }
-  h4{
-    font-size: 26px;
-    line-height: 36.4px;
-    color: #DE9739;
-  }
-  .Reset h6{
-    font-size: 18px;
-    line-height: 21.6px;
-    color: #FFFFFF;
-    font-weight: 400;
-  }
-  .Reset h3{ 
+}
+
+.Reset::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+h4{
+  font-size: 26px;
+  line-height: 36.4px;
+  color: #DE9739;
+}
+
+.Reset h6{
+  font-size: 18px;
+  line-height: 21.6px;
+  color: #FFFFFF;
+  font-weight: 400;
+}
+
+.Reset h3{ 
   font-size: 26px;
   font-weight: 500;
   line-height: 31.2px;
-  }
-  .Reset span{
-  color: #CA923D;
-  }
-  
-  .form-container{
-    width: 100%;
-    background-color: rgba(37, 40, 54, 1);
-    padding: 50px;
-    border:1px rgba(51, 55, 72, 1) solid;
-    border-radius: 15px;
-  }
-  .Reset img {
-    width: 50px;
-    height: auto;
-    margin-right: 15px; /* Space between logo and title */
-    margin-left: 0px; /* Move logo away from the left edge */
-    flex-wrap: wrap;
+}
 
-  }
-  
-  .form-control:focus{
-    background-color: transparent;
-  }
-  .form-control{
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    color:black ;
-    border: 1px rgba(45, 48, 62, 1)solid;
-    border-radius: 10px;
-    color: #fff;
-  }
-  
- .form-control{
-    outline: none;
-    background-color: rgba(45, 48, 62, 1); /* Even lighter focus background */
-  }
-  
-  button {
-    background-color:rgba(202, 146, 61, 1); /* Yellow button color */
-    color: #fff;
-    padding: 10px 30px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    
-  }
-  
-  button:hover {
-    background-color: #e0a800; /* Darker yellow on hover */
-  }
-  
-  .message {
-    text-align: center;
-    margin-top: 15px;
-  }
+.Reset span{
+  color: #CA923D;
+}
+
+.form-container{
+  width: 100%;
+  background-color: rgba(37, 40, 54, 1);
+  padding: 50px;
+  border: 1px rgba(51, 55, 72, 1) solid;
+  border-radius: 15px;
+}
+
+.Reset img {
+  width: 50px;
+  height: auto;
+  margin-right: 15px;
+  margin-left: 0px;
+  flex-wrap: wrap;
+}
+
+.form-control:focus {
+  background-color: rgba(45, 48, 62, 1);
+  color: #ABBBC2; 
+  border: none;
+  box-shadow: none; /* Remove focus shadow */
+}
+
+.form-control::placeholder {
+  color: #ABBBC2;  /* Set placeholder text color to white */
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: #ABBBC2;  /* Input text color */
+  border: 1px rgba(45, 48, 62, 1) solid;
+  border-radius: 10px;
+  background-color: rgba(45, 48, 62, 1);
+  outline: none;
+}
+
+button {
+  background-color: rgba(202, 146, 61, 1); /* Yellow button color */
+  color: #fff;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #e0a800; /* Darker yellow on hover */
+}
+
+.message {
+  text-align: center;
+  margin-top: 15px;
+}

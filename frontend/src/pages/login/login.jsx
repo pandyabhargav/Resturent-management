@@ -3,13 +3,14 @@ import axios from 'axios';
 import { Container, Row, Col } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './login.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null); // State for tracking login errors
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +27,23 @@ function Login() {
       if (response.data.message === "restaurantowner successfully login") {
         alert('Login successful!');
         setError(null); // Clear any previous error
-        // Redirect or update state as needed
+  
+        // Save token to localStorage (if needed)
+        const token = response.data.token;
+        if (token) {
+          localStorage.setItem('jwtToken', token);
+          console.log("Token saved:", token); // Log token for checking
+        }
+  
+        // Save userId to localStorage (from response.data.data._id)
+        const userId = response.data.data._id;
+        if (userId) {
+          localStorage.setItem('userId', userId);
+          console.log("User ID saved:", userId); // Log user ID for checking
+        }
+  
+        // Redirect to Home page
+        navigate('/');
       } else {
         setError('Invalid email or password'); // If there's no success message, set error
       }
@@ -36,7 +53,6 @@ function Login() {
     }
   };
   
-
 
   return (
     <>
@@ -102,7 +118,7 @@ function Login() {
                       Login
                     </button>
                     <div className="text-center">
-                      <Link to={"/"} className="text-white pt-2">
+                      <Link to={"/signup"} className="text-white pt-2">
                         Don’t have an account? <span className="text-primary">Register</span>
                       </Link>
                     </div>

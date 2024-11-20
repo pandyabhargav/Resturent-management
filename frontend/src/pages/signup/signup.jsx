@@ -220,6 +220,7 @@ const Registration = () => {
             ]);
 
             // Close the modal and reset the new restaurant form
+            window.location.reload();
             setShowModal(false);
             setNewRestaurant({
                 restaurantName: '',

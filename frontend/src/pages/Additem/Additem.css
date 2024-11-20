@@ -1,0 +1,131 @@
+.add-btn{
+    margin-left: 920px;
+}
+
+.add-bg{
+    background-color: rgba(31, 29, 43, 1);
+    padding: 10px;
+    border-radius: 15px;
+}
+.add-form-bg{
+    background-color: rgba(31, 29, 43, 1);
+    padding: 15px;
+    border-radius: 15px;
+}
+
+input.form-control {
+    background-color: rgba(45, 48, 62, 1) !important;
+    color: #fff; 
+  }
+  
+
+  input.form-control::placeholder {
+    color: #bbb; 
+  }
+  
+  select.form-select {
+    background-color: rgba(45, 48, 62, 1) !important;
+    color: #fff;
+  }
+  
+  select.form-select::placeholder {
+    color: #bbb;
+  }
+  
+  p.text-center {
+    color: #bbb; 
+  }
+  
+  textarea.form-control::placeholder {
+    color: #bbb; 
+  }
+  
+  .customization-section .form-check-input {
+    border: 1px solid #bbb;
+    background-color: transparent;
+  }
+ .form-wrap{
+    background-color: rgba(37, 40, 54, 1);
+    padding: 5px;
+ }
+
+ .padded-section {
+    padding: 10px;
+}
+
+.padded-section-2 {
+    padding: 10px;
+    background-color: rgba(37, 40, 54, 1);
+    border-radius: 10px;
+}   
+.step-icon {
+    padding-top: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    background: rgba(231, 76, 60, 1);
+    position: relative;
+}
+.form-check-label {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  line-height: 2;
+}
+
+.iconnn{
+    position: absolute;
+    top:8px;
+    left: 7px;
+}
+.checkbox-group label{
+    gap: 5px;
+}
+
+  @media (min-width: 1024px) {
+    .add-btn {
+        margin-left: 900px; 
+    }
+   .row{
+    flex-direction: unset;
+   }
+   .form-check-label {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    line-height: 2;
+}
+  }
+  
+  @media (min-width: 768px) {
+    .add-btn {
+        margin-left: 0; 
+    }
+   .row{
+    flex-direction: unset;
+   }
+   .form-check-label {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    line-height: 2;
+}
+  }
+
+  @media (max-width: 1024px) {
+    .add-btn {
+        margin-left: 430px;
+    }
+  }
+  @media (max-width: 768px ) {
+    .add-btn {
+        margin-left: 180px; 
+    }
+  }
+  @media (min-width: 1440px ) {
+    .add-btn {
+        margin-left: 920px; 
+    }
+  }
+
+  
