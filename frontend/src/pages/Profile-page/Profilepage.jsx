@@ -13,7 +13,7 @@ const Profilepage = () => {
     lname: '',
     email: '',
     phone: '',
-    restaurant: '',
+    restaurant: '', // Restaurant will be updated with the restaurant ObjectId
     gender: '',
     city: '',
     state: '',
@@ -24,40 +24,52 @@ const Profilepage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false); // New state for editing mode
 
-  // Function to fetch user data
   useEffect(() => {
     if (!userId) {
-      navigate('/login'); // If no user ID is found, redirect to login page
+      navigate('/login'); // Redirect to login page if no user ID
       return;
     }
 
     const fetchUserData = async () => {
-      const token = localStorage.getItem('jwtToken'); // Get the token from local storage
+      const token = localStorage.getItem('jwtToken');
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/owner/owner-get/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`  // Add token to request headers
+        const response = await axios.get(
+          `http://localhost:5000/api/v1/owner/owner-get/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        const userData = response.data.data; // Assuming response contains a `data` object
+        );
 
-        const restaurant = userData.restaurant || {}; // Fallback to empty object if no restaurant
+        const userData = response.data.data;
+        const restaurant = userData.restaurant || {};
+        const address = restaurant.restaurantAddress || '';
+
+        console.log("User Data:", userData, "Restaurant Data:", restaurant);
+
+
         setFormData({
           fname: userData.firstName || '',
           lname: userData.lastName || '',
           email: userData.email || '',
           phone: userData.phoneNumber || '',
-          restaurant: restaurant.restaurantName || '',
-          gender: userData.gender || '',
+          restaurant: restaurant.restaurantName || '', // Show restaurant name (editable)
+          gender: userData.gender || 'male',
           city: userData.city || '',
           state: userData.state || '',
           country: userData.country || '',
-          address: userData.address || '',
+          address: address,
         });
+
+        localStorage.setItem('firstName', userData.firstName);
+
+        console.log( userData.firstName );
+        
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
-        setIsLoading(false); // Stop loading spinner
+        setIsLoading(false);
       }
     };
 
@@ -74,23 +86,34 @@ const Profilepage = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('jwtToken');
-    try {
-      const response = await axios.put(
-        `http://localhost:5000/api/v1/owner/owner-get/${userId}`, // Update endpoint with user ID
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      console.log('Profile updated successfully:', response.data);
-      setIsEditing(false); // Exit editing mode after saving
-    } catch (error) {
-      console.error('Error updating profile:', error);
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  
+    const updatedData = {
+      ...formData,
+      restaurant: formData.restaurant._id,  // Pass restaurant._id instead of restaurantName
+    };
+  
+    const token = localStorage.getItem('jwtToken'); // Get the JWT token from localStorage
+  
+    axios
+      .put(`http://localhost:5000/api/v1/owner/owner-update/${userId}`, updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+        },
+      })
+      .then((response) => {
+        console.log('Profile updated successfully', response.data);
+  
+        // After successful update, switch the button to 'Edit Profile' and disable editing
+        setIsEditing(false);
+      })
+      .catch((error) => {
+        console.error('Error updating profile:', error.response.data);
+      });
   };
+  
+  
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -102,7 +125,7 @@ const Profilepage = () => {
         <div className="banner">
           <button
             className={`banner-btn col-3 ${isEditing ? 'editing' : ''}`}
-            onClick={() => setIsEditing(true)} // Enable editing mode on click
+            onClick={() => setIsEditing(!isEditing)} // Toggle edit mode
           >
             <FaEdit style={{ marginRight: '6px' }} /> {isEditing ? 'Save Changes' : 'Edit Profile'}
           </button>
@@ -128,7 +151,7 @@ const Profilepage = () => {
               placeholder="Enter your first name"
               required
               style={{ backgroundColor: isEditing ? 'rgb(31, 29, 43)' : 'transparent', color: 'white' }}
-              disabled={!isEditing} // Disable input when not editing
+              disabled={!isEditing}
             />
           </div>
 
@@ -183,7 +206,7 @@ const Profilepage = () => {
               type="text"
               id="restaurant"
               name="restaurant"
-              value={formData.restaurant}
+              value={formData.restaurant} // Display restaurant name (editable)
               onChange={handleChange}
               placeholder="Enter your restaurant name"
               style={{ backgroundColor: isEditing ? 'rgb(31, 29, 43)' : 'transparent', color: 'white' }}
@@ -192,15 +215,20 @@ const Profilepage = () => {
           </div>
 
           <div className="form-group">
-            <label>Gender:</label>
-            <input
+            <label htmlFor="gender">Gender:</label>
+            <select
+              id="gender"
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              required
               style={{ backgroundColor: isEditing ? 'rgb(31, 29, 43)' : 'transparent', color: 'white' }}
               disabled={!isEditing}
-            />
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
           </div>
 
           <div className="form-group">
@@ -259,9 +287,9 @@ const Profilepage = () => {
           </div>
 
           {isEditing && (
-            <div className="button-container">
-              <button type="submit" className="submit-btn">Save Changes</button>
-            </div>
+            <button type="submit" className="btn-submit">
+              Save Changes
+            </button>
           )}
         </form>
       </div>

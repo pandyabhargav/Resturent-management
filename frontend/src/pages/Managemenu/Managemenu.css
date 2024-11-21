@@ -17,7 +17,7 @@
   }
   
   .card {
-    width: 230px;
+    width: 300px;
     background-color: rgba(37, 40, 54, 1);
   }
   
@@ -226,4 +226,11 @@
     }
   }
   
+
+  .tab-products{
+    padding: 0px 20px;
+  }
+  .nav-item{
+    margin: 0px 10px;
+  }
   

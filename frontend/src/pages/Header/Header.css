@@ -34,7 +34,10 @@ x
 .nav-link:hover {
   color: #ccc;
 }
-
+.search-bar-container{
+  display: flex;
+  align-items: center;
+}
 .search-bar-container .form-control::placeholder {
   color: rgb(171, 187, 194) !important;
   opacity: 1;

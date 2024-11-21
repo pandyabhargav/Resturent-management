@@ -9,6 +9,11 @@ import Otp from './pages/otp/otp';
 import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
 import Managemenu from './pages/Managemenu/Managemenu';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Additem from './pages/Additem/Additem';
+import Qr from './pages/Qr/Qr';
+import CreateQr from './pages/CreateQr/CreateQr';
+import Header from './pages/Header/Header';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('jwtToken');
@@ -28,15 +33,22 @@ function App() {
           <Route path="/forgotpass" element={<Forget />} />
           <Route path="/resetpass" element={<Resetpassword />} />
           <Route path="/otp" element={<Otp />} />
-          <Route path="/managemenu" element={<Managemenu />} />
-          <Route 
-            path="/" 
+          <Route path="/head" element={<Header />} />
+          <Route
+            path="/"
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
-            } 
-          />
+            }
+          >
+            {/* Nested routes for the Main component */}
+            <Route index element={<Dashboard />} />
+            <Route path="managemenu" element={<Managemenu />} />
+            <Route path="additems" element={<Additem />} />
+            <Route path="qr" element={<Qr/>} />
+            <Route path="createqr" element={<CreateQr/>} />
+          </Route>
         </Routes>
       </div>
     </Router>

@@ -240,14 +240,14 @@ const Additem = () => {
                                                 {/* Add Customization Button */}
                                                 <span className="form-group-1 mt-3 text-end">
                                                     <button
-                                                        className="btn-custom"
+                                                        className="btn-custom col-4"
                                                         style={{
                                                             padding: "4px 8px",
                                                             background: "rgba(202, 146, 61, 1)",
                                                             border: "none",
                                                             borderRadius: "5px",
                                                             color: "#fff",
-                                                            marginLeft: '250px',
+                                                            marginLeft: '500px',
                                                             fontWeight: "bold",
                                                             cursor: "pointer",
                                                             transition: "background-color 0.3s ease",
@@ -405,14 +405,14 @@ const Additem = () => {
                                                 {/* Add Customization Button */}
                                                 <div className="form-group-1 mt-3 text-end">
                                                     <button
-                                                        className="btn-custom"
+                                                        className="btn-custom col-4"
                                                         style={{
                                                             padding: "4px 8px",
                                                             background: "rgba(202, 146, 61, 1)",
                                                             border: "none",
                                                             borderRadius: "5px",
                                                             color: "#fff",
-                                                            marginLeft: '250px',
+                                                            marginLeft: '500px',
                                                             fontWeight: "bold",
                                                             cursor: "pointer",
                                                             transition: "background-color 0.3s ease",
