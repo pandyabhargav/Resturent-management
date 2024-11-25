@@ -3,7 +3,7 @@ const Category = require("../models/Category.js");
 const RestaurantCategoryAdd = async (req, res) => {
   try {
     const { name, restaurant } = req.body;
-    console.log("req.user.restaurant", req.user.restaurant);
+    console.log("name, restaurant", req.body);
 
     const restaurantcategorys = await Category.findOne({
       name: name,

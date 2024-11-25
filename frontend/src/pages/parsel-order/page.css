@@ -1,0 +1,539 @@
+/* App.css or Page.css */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Barlow", sans-serif;
+    font-weight: 500;
+  }
+  
+  .container {
+    padding: 20px; /* Padding around the container */
+    /* background-color: #212529; */
+    color: #fff;
+    max-width: 1600px; /* Set a maximum width for the container */
+    margin: 0 auto; /* Center the container horizontally */
+    border-radius: 10px; /* Rounded corners */
+}
+  .text-center{
+    margin: 10px;
+    padding: 10px;
+    display: block;
+  }
+  .table-background {
+    border: rgba(31, 29, 43, 1);
+    background-color: rgba(31, 29, 43, 1); /* Light gray background for the table */
+  }
+  .table-bordered:not(caption){
+    border-width: 0 var(--bs-border-width);
+}
+  .table-background{
+    width: 1550px;
+    height: 62px;
+    background-color: rgba(202, 146, 61, 1); /* Blue background for header */
+    color: white; /* White text for header */
+  }
+  
+
+  .table-background th, .table-background td {
+    border: 2px solid rgba(42, 42, 56, 1); /* Change this to your desired border color */
+  }
+  .table-background td .time{
+    background-color: red;
+  }
+  /* .box{
+    margin: 20px;
+    border-radius: 10px 0 0 0;
+  } */
+  .box2{
+    margin: 20px;
+    border-radius: 0 10px 0 0;
+  }
+  /* .Parcel-Order{
+    padding: 50px;
+  
+  } */
+  p{
+    display: flex;
+    /* color: red; */
+  }
+  .info {
+    display: flex;
+    gap: 10px;
+    
+  }
+
+  /* Hover effects */
+
+    
+  
+  
+  /* Page.css */
+
+  /* .table-background */
+  .table-background {
+    border-collapse: collapse; /* Ensure borders collapse together */
+  }
+  
+  .table-background th,
+  .table-background td {
+    border: none; /* Remove all borders */
+  }
+  
+  .table-background th:first-child,
+  .table-background td:first-child,
+  .table-background th:last-child,
+  .table-background td:last-child {
+    border-left: none; /* Remove left border */
+    border-right: none; /* Remove right border */
+  }
+  
+  .table-background td {
+    text-align: center;
+    background-color: rgba(31, 29, 43, 1);
+    color: rgba(171, 187, 194, 1);
+    border-bottom: 2px solid rgba(42, 42, 56, 1); /* Bottom border for each cell */
+   
+  }
+  
+  .table-background th {
+    border-bottom: 2px solid rgba(42, 42, 56, 1); /* Bottom border for header cells */
+  }
+  
+  .total-bill-background {
+    position: relative;
+    text-align: center;
+    color: rgba(171, 187, 194, 1);
+    color: #218838;
+    padding: 10px; /* Adds space inside the background */
+  }
+  
+  .total-bill-background::before {
+   
+    content: '';
+    position: absolute;
+    width: 61px;
+    height: 35px;
+    top: 5px;
+    left: 30px;
+    bottom: 5px;
+    border-radius: 25px;
+    color: white;
+    background-color: rgba(37, 40, 54, 1);
+    z-index: -1;
+  }
+  .total-bill-background {
+    color: white;
+    z-index: 1; /* Bring text above the inner background */
+
+  }
+  /* Time  background */
+  .Time-background {
+    position: relative;
+    text-align: center;
+    color: rgba(171, 187, 194, 1);
+    color: #218838;
+    padding: 10px; /* Adds space inside the background */
+  }
+  
+  .Time-background::before {
+   
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 33px;
+      top: 5px;
+      left: 19px;
+      bottom: 5px;
+      border-radius: 23px;
+      background-color:rgba(45, 48, 62, 1);
+      z-index: -1;
+  }
+  .Time-background {
+    z-index: 1; /* Bring text above the inner background */
+   
+  }
+  .order-item{
+    flex: 1;
+
+  }
+  .header{
+    font-size: 20px;
+  }
+
+.order-header{
+    display: flex; /* Use flexbox layout */
+    justify-content: space-between; /* Space elements evenly */
+    align-items: center; /* Center items vertically */
+    padding: 5px;
+    background-color: rgba(31, 29, 43, 1);
+}
+
+.order-header {
+    border-radius: 20px 20px 0 0;
+    font-weight: bold; /* Make headers bold */
+    background-color: rgba(202, 146, 61, 1);
+    color: white; /* Header text color */
+}
+.order-row {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically */
+  gap: 93px; /* Add gap between items */
+  border-bottom: #2A2A38 1px solid;
+}
+/* Center text in the header and items */
+.Customer-Name,
+.Time-background,
+.total-bill-background {
+    /* flex: 1;  */
+    /* Make this span take available space */
+    text-align: center; /* Center text within this span */
+}
+.order-container {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr); /* 8 equal columns */
+
+}
+.order-list div{
+  border-bottom: 1px #2A2A38 solid;
+  margin: 10px;
+}
+
+.order-header div {
+  display: flex; /* Use flexbox layout */
+    justify-content: space-between; /* Space elements evenly */
+    align-items: center; /* Center items vertically */
+    padding: 15px;
+    background-color: rgba(31, 29, 43, 1);
+}
+
+.order-item {
+  display: contents; /* Each row aligns with the grid */
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+
+.order-header div {
+    border-radius: 20px 20px 0 0;
+    font-weight: bold; /* Make headers bold */
+    background-color: rgba(202, 146, 61, 1);
+    color: white; /* Header text color */
+}
+
+
+.total-bill {
+  font-weight: bold;
+}
+
+.check-button {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  size: 20px;
+  background-color:rgba(45, 48, 62, 1);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Added transitions */
+}  
+
+.check-button:hover {
+  background-color: #373d55;
+}
+img, svg {
+  vertical-align: middle;
+  color: #ffffff;
+}
+
+/* Additional styles for buttons */
+
+/* footer */
+
+
+.invoice-header {
+  background-color: #f0f0f0;
+  display: flex;
+  padding: 10px;
+}
+
+.invoice-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc; /* Separator between rows */
+}
+
+.invoice-cell {
+  flex: 1;
+  padding: 5px;
+}
+
+.grand-total {
+  font-weight: bold; /* Make grand total bold */
+  background-color: #f9f9f9; /* Different background for grand total row */
+}
+
+.online{
+  color: green;
+}
+.total-amount strong{
+  color: #CA923D;
+}
+.item-table {
+  width: 100%; /* Full width of the container */
+  border: 1px solid #ccc; /* Optional: border around the table */
+  border-radius: 8px; /* Optional: rounded corners */
+  overflow: hidden; /* Prevent overflow of content */
+  margin: 20px 0; /* Space around the table */
+}
+
+
+
+.item-table-row {
+  display: flex;
+  justify-content: space-between; /* Space out cells */
+  padding: 10px; /* Padding inside rows */
+  border-bottom: 1px solid #ccc; /* Separator between rows */
+}
+
+.item-table-cell {
+  flex: 1; /* Equal width for all cells */
+  padding: 8px; /* Padding inside cells */
+  text-align: left; /* Align text to the left */
+}
+
+.item-table-cell:last-child {
+  text-align: right; /* Align the last column (amount) to the right */
+}
+
+.total-row {
+  font-weight: bold; /* Make total row bold */
+  background-color: #f9f9f9; /* Light background for the total row */
+}
+
+.total-amount {
+  color: #2c3e50; 
+}
+.invoice-row .invoice-cell2 strong {
+  color: #CA923D;
+}
+.modal-content{
+  /* background-color: #252836 !important; */
+  width: 92% !important;
+  background-color: #252836 !important;
+}
+.modal-title{
+  color: white !important;
+}
+
+
+/* extera */
+/* General container styling */
+.bill-container {
+  width: 85%;
+  margin: 20px auto;
+  color: white;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 8px; */
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+  font-family: Arial, sans-serif;
+  background-color: #252836;
+  overflow: hidden;
+}
+
+/* Header section */
+.header {
+  /* background-color: #007bff; */
+  color: #fff;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  /* font-size: 1.5em; */
+}
+
+.close-button {
+  font-size: 1.2em;
+  cursor: pointer;
+  background-color: #ff4d4d;
+  padding: 5px 10px;
+  border-radius: 50%;
+  color: #fff;
+  border: none;
+}
+
+/* Details section */
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  font-size: 14px;
+}
+
+.detail-item {
+  display: flex;
+  gap: 10px;
+  min-width: 200px;
+  flex-grow: 1; /* Allows the span inside to take up the remaining space */
+}
+
+.details > .detail-item:nth-child(odd) {
+  justify-content: flex-start; /* Align items to the left */
+}
+
+.details > .detail-item:nth-child(even) {
+  justify-content: flex-end; /* Align items to the right */
+}
+
+.details span:first-child {
+  font-weight: bold;
+}
+
+.details span.online {
+  color: green;
+  font-weight: bold;
+}
+/* Items table */
+.items {
+  /* padding: 20px; */
+  font-size: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  background-color: #252836;
+  text-align: left;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+}
+
+tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody td:nth-child(3) {
+  text-align: right;
+}
+
+tbody td:nth-child(2) {
+  text-align: center;
+}
+
+/* Total section */
+.total {
+  padding: 20px;
+  text-align: right;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #252836;
+  border-top: 1px solid #ddd;
+}
+
+/* Payment status */
+.online {
+  color: green;
+  font-weight: bold;
+}
+.modal-header .btn-close{
+  background-color: red !important;
+  border-radius: 20px;
+}
+
+/* bill  */
+.invoice-summary {
+  /* width: 300px;
+  margin: 20px auto; */
+  /* padding: 20px; */
+  /* border: 1px solid #ccc; */
+  /* border-radius: 8px;
+  background-color: #f8f9fa;
+  font-family: "Barlow", sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.amount-details {
+  margin-bottom: 20px;
+  display: flex;
+  text-align: center;
+  justify-content: ce;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.row span:last-child {
+  font-weight: 600;
+  color: #000;
+}
+
+.grand-total {
+  font-size: 20px;
+  font-weight: bold;
+  color: #218838;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.grand-total span {
+  font-size: 22px;
+}
+  /* Additional styles for responsive design */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .info {
+      flex-wrap: wrap;
+    }
+  
+    .label {
+      flex-basis: 100%; /* Stack labels on small screens */
+      margin-bottom: 5px;
+    }
+  }
+
+
+
+
+  
+  

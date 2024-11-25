@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs, Tab, Card, Row, Modal, Button, Form, Col, Container } from 'react-bootstrap';
 import { FaSquarePlus } from "react-icons/fa6";
 import './Managemenu.css';
 import { FaTrashAlt } from "react-icons/fa";
 import { useDropzone } from 'react-dropzone';
 import { FaImage } from "react-icons/fa";
+import axios from 'axios';
 
 const Managemenu = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -23,6 +24,42 @@ const Managemenu = () => {
     price: '',
     image: null,
   });
+
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const token = localStorage.getItem('jwtToken');
+      try {
+        const response = await axios.get('http://localhost:5000/api/v1/category/restaurantcategorys-get', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data.success) {
+          setCategories(response.data.categories || []); // Assuming response contains a `categories` array
+        } else {
+          setError('Failed to fetch categories');
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Error fetching categories');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+
+
+
+
+
+
+
+
+
   const handleAddBurger = () => {
     console.log('New Burger Data:', burgerData);
     setShowAddBurgerPopup(false);
@@ -34,10 +71,71 @@ const Managemenu = () => {
   };
 
 
-  const handleAddCategory = () => {
-    console.log('Adding new category:', newCategory);
-    setShowAddCategoryPopup(false); // Close the popup
+  const handleAddCategory = async () => {
+    // if (!newCategory.name || !newCategory.image) {
+    //   alert("Both name and image are required");
+    //   return;
+    // }
+
+    // Create FormData to upload the image first
+    const imageFormData = new FormData();
+    imageFormData.append('image', newCategory.image);
+
+    const token = localStorage.getItem('jwtToken');
+
+    try {
+      // Upload image to /upload/img-upload
+      const imageResponse = await axios.post(
+        'http://localhost:5000/api/v1/upload/img-upload',
+        imageFormData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Check if the image upload was successful
+      if (imageResponse.data.success === true) {
+        const imageUrl = imageResponse.data.imagePath; 
+
+        const imageName = imageUrl;
+
+        const categoryFormData = new FormData();
+        
+        const categoryData = {
+          name: newCategory.name,
+          image: imageName,
+        };
+        
+        const categoryResponse = await axios.post(
+          'http://localhost:5000/api/v1/category/restaurantcategory-add',
+          
+          categoryData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      
+
+        console.log('Category added successfully:', categoryResponse.data);
+        alert("Category added successfully!");
+        setNewCategory({ name: '', image: null });
+        setShowAddCategoryPopup(false);
+      } else {
+        console.error("Error uploading image:", imageResponse.data);
+        alert("Error uploading image. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error adding category:', error.response?.data || error.message);
+      alert("Error adding category. Please try again.");
+    }
   };
+
+
 
   const handleCloseDelete = () => setShowDeleteModal(false);
 
@@ -62,15 +160,14 @@ const Managemenu = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleDrop = (acceptedFiles) => {
-    setFormData({ ...formData, image: acceptedFiles[0] });
-  };
-
-  // Use react-dropzone for image drag-and-drop functionality
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: handleDrop,
-    accept: 'image/*',
+    onDrop: (acceptedFiles) => {
+      setNewCategory({ ...newCategory, image: acceptedFiles[0] }); // Store the File object
+    },
   });
+
+
+
 
   const indianFoods = [
     'Butter Chicken',
@@ -99,76 +196,21 @@ const Managemenu = () => {
   const categoryData = {
     all: [
       { title: ' Cheeseburger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$10.99', imgSrc: 'https://img.freepik.com/free-photo/view-homemade-delicious-sandwiches-black-board-gray-blurred-surface_179666-42327.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Green Leaves Burger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$20.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-vegetarian-burger-counter-with-tomatoes_23-2148784525.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Snack Pack', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.99', imgSrc: 'https://img.freepik.com/free-photo/high-angle-arrangement-with-cheeseburger-fries_23-2148289438.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Kids Special', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$8.99', imgSrc: 'https://img.freepik.com/free-photo/top-view-delicious-fried-chicken-with-french-fries_140725-114722.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Classic Combo', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$12.99', imgSrc: 'https://img.freepik.com/free-photo/cook-holding-tasty-burgers-front-view_23-2149897387.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Value Pack', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$9.99', imgSrc: 'https://img.freepik.com/free-photo/high-angle-mix-alcoholic-drinks_23-2148673763.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Mini Feast', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$7.99', imgSrc: 'https://img.freepik.com/free-photo/high-angle-family-celebrating-birthday_23-2150599007.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Super Snack', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$6.49', imgSrc: 'https://img.freepik.com/free-photo/top-view-different-kind-snacks-as-nuts-crackers-cookies-bowls-dark-surface-horizontal_176474-950.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Budget Meal', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$4.99', imgSrc: 'https://img.freepik.com/free-photo/dollar-burger_1401-440.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Gourmet Pack', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$15.99', imgSrc: 'https://img.freepik.com/free-photo/three-mini-chicken-burgers-served-with-french-fries-coleslaw-mayonnaise-ketchup_140725-7062.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' }
     ],
     burger: [
       { title: ' Cheeseburger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.99', imgSrc: 'https://img.freepik.com/free-photo/huge-burger-with-fried-meat-vegetables_140725-971.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Green Leaves Burger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$4.49', imgSrc: 'https://img.freepik.com/free-photo/front-view-vegetarian-burger-counter-with-tomatoes_23-2148784525.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: ' Cheese Burger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$6.99', imgSrc: 'https://img.freepik.com/free-photo/still-life-delicious-american-hamburger_23-2149637305.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Miso Burgers', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$8.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-fresh-beef-burgers-with-bacon-beer_23-2148784481.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Burger Chefs', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$6.49', imgSrc: 'https://img.freepik.com/free-photo/smiling-young-male-baker-holding-bun-eyes_23-2147883342.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Burger Monsta', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$7.49', imgSrc: 'https://img.freepik.com/free-photo/spooky-burger-city_23-2150902136.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Cheese Burger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$7.99', imgSrc: 'https://img.freepik.com/free-photo/still-life-delicious-american-hamburger_23-2149637312.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Paneer Burger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$8.49', imgSrc: 'https://img.freepik.com/free-photo/high-angle-delicious-hamburger_23-2148575449.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Green Leaves Burger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$6.99', imgSrc: 'https://img.freepik.com/free-photo/high-angle-beef-burger-with-salad_23-2148784488.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Hamburger ', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$7.49', imgSrc: 'https://img.freepik.com/free-photo/huge-burger-with-fried-meat-vegetables_140725-971.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' }
     ],
     icecream: [
       { title: 'Vanila', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.49', imgSrc: 'https://img.freepik.com/free-photo/ice-cream-balls-bowl_1220-571.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Choclate', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/bowl-with-ice-cream-table_23-2148422032.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Pineple', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.79', imgSrc: 'https://img.freepik.com/free-photo/flat-lay-yummy-popsicles-plate-with-ice_23-2148763667.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Dry fruit', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/closeup-shot-bowl-ice-cream-with-beautiful-flower-decorations_181624-1766.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Mix cone ', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.49', imgSrc: 'https://img.freepik.com/free-photo/four-scoops-ice-cream_144627-8359.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Vanila', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.49', imgSrc: 'https://img.freepik.com/free-photo/ice-cream-balls-bowl_1220-571.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Choclate', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/bowl-with-ice-cream-table_23-2148422032.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Pineple', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.79', imgSrc: 'https://img.freepik.com/free-photo/flat-lay-yummy-popsicles-plate-with-ice_23-2148763667.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Dry fruit', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/closeup-shot-bowl-ice-cream-with-beautiful-flower-decorations_181624-1766.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Mix cone ', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.49', imgSrc: 'https://img.freepik.com/free-photo/four-scoops-ice-cream_144627-8359.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' }
     ],
     frenchfries: [
       { title: 'Small Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/french-fries-with-mayonnaise-ketchup_140725-2742.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Large Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/crispy-french-fries-with-ketchup-mayonnaise_1150-26588.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Cheese Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.49', imgSrc: 'https://img.freepik.com/free-photo/top-view-chips-with-sauses-bowls-black-stone_176474-1209.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Curly Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/fries-cone-yellow-background_23-2148258398.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Sweet Potato Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.99', imgSrc: 'https://img.freepik.com/free-photo/french-fries_144627-34655.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Small Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/french-fries-with-mayonnaise-ketchup_140725-2742.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Large Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/crispy-french-fries-with-ketchup-mayonnaise_1150-26588.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Cheese Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.49', imgSrc: 'https://img.freepik.com/free-photo/top-view-chips-with-sauses-bowls-black-stone_176474-1209.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Curly Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/fries-cone-yellow-background_23-2148258398.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Sweet Potato Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.99', imgSrc: 'https://img.freepik.com/free-photo/french-fries_144627-34655.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' }
-
     ],
     sandwich: [
       { title: 'Club Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-delicious-ham-sandwiches-with-french-fries-seasonings-dark-surface_179666-34427.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Veggie Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$4.49', imgSrc: 'https://img.freepik.com/free-photo/vegetable-sandwich-with-cheese-ham-lemon-avocado-wooden-cutting-board-flat-lay_176474-8423.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Chicken Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$6.99', imgSrc: 'https://img.freepik.com/free-photo/club-sandwich-chicken-breast-lettuce-cheese-toast-bread-tomato-cucumber-french-fries-side-view_141793-3533.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'BLT Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.49', imgSrc: 'https://img.freepik.com/free-photo/top-view-four-triangle-sandwiches-with-tomatoes-salad_23-2148640147.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Grilled Cheese Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.99', imgSrc: 'https://img.freepik.com/free-photo/high-angle-triangle-sandwiches-with-tomatoes_23-2148640141.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Club Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-delicious-ham-sandwiches-with-french-fries-seasonings-dark-surface_179666-34427.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Veggie Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$4.49', imgSrc: 'https://img.freepik.com/free-photo/vegetable-sandwich-with-cheese-ham-lemon-avocado-wooden-cutting-board-flat-lay_176474-8423.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Chicken Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$6.99', imgSrc: 'https://img.freepik.com/free-photo/club-sandwich-chicken-breast-lettuce-cheese-toast-bread-tomato-cucumber-french-fries-side-view_141793-3533.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'BLT Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.49', imgSrc: 'https://img.freepik.com/free-photo/top-view-four-triangle-sandwiches-with-tomatoes-salad_23-2148640147.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Grilled Cheese Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.99', imgSrc: 'https://img.freepik.com/free-photo/high-angle-triangle-sandwiches-with-tomatoes_23-2148640141.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' }
     ],
     drinkjuice: [
       { title: 'Cola', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.49', imgSrc: 'https://img.freepik.com/free-photo/fresh-cola-drink-with-green-lime_144627-12396.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Lemonade', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-lemonade-wooden-serving-board-lemon-slices-potted-plant-brown-surface_140725-103295.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Iced Tea', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.79', imgSrc: 'https://img.freepik.com/free-photo/refreshing-drink_144627-20873.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Coffee', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/side-view-cup-coffee-with-wafer-roll-filled-with-condensed-milk-plate-coffee-beans_141793-6962.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Orange Juice', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.49', imgSrc: 'https://img.freepik.com/free-photo/colorful-orange-juice-glass_23-2148226010.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Cola', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.49', imgSrc: 'https://img.freepik.com/free-photo/fresh-cola-drink-with-green-lime_144627-12396.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Lemonade', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-lemonade-wooden-serving-board-lemon-slices-potted-plant-brown-surface_140725-103295.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Iced Tea', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.79', imgSrc: 'https://img.freepik.com/free-photo/refreshing-drink_144627-20873.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Coffee', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/side-view-cup-coffee-with-wafer-roll-filled-with-condensed-milk-plate-coffee-beans_141793-6962.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-      { title: 'Orange Juice', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$3.49', imgSrc: 'https://img.freepik.com/free-photo/colorful-orange-juice-glass_23-2148226010.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' }
     ]
   };
 
@@ -226,13 +268,13 @@ const Managemenu = () => {
               {/* <Row className="menu-grid row-cols-1 row-cols-sm-2 row-cols-md-3"> */}
               <Row className='d-flex flex-wrap col-12'>
                 {(categoryData[category.key] || []).map((card, index) => (
-                 <div className="d-flex ml-5" style={{ width: "18%" }}>
+                  <div className="d-flex ml-5" style={{ width: "18%" }}>
                     <div
                       className="card-item"
                       key={card.key}
-                      style={{  margin: '10px', position: 'relative' }}
+                      style={{ margin: '10px', position: 'relative' }}
                     >
-                      <Card className="h-100" style={{ border: 'none', overflow: 'hidden',}}>
+                      <Card className="h-100" style={{ border: 'none', overflow: 'hidden', }}>
                         <div className="card-img-wrapper">
                           <Card.Img variant="top" src={card.imgSrc} />
                           <div
@@ -469,14 +511,6 @@ const Managemenu = () => {
                 value={newCategory.name}
                 onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                 placeholder="Enter category name"
-                style={{
-                  padding: '0.75rem 1rem',
-                  fontSize: '1rem',
-                  borderRadius: '5px',
-                  border: '1px solid #bbb',
-                  backgroundColor: 'rgba(45, 48, 62, 1)',
-                  color: '#bbb',
-                }}
               />
             </Form.Group>
 
@@ -489,8 +523,6 @@ const Managemenu = () => {
                 textAlign: 'center',
                 marginBottom: '15px',
                 cursor: 'pointer',
-                backgroundColor: 'rgba(45, 48, 62, 1)',
-                color: '#bbb',
               }}
             >
               <input {...getInputProps()} />
@@ -499,7 +531,7 @@ const Managemenu = () => {
               ) : (
                 <p>
                   <span style={{ fontSize: '20px' }}>
-                    <FaImage />ㅤ
+                    <FaImage /> ㅤ
                   </span>
                   Drag & drop an image here, or click to select files
                 </p>
@@ -508,19 +540,10 @@ const Managemenu = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowAddCategoryPopup(false)}
-            style={{ backgroundColor: 'rgba(51, 55, 72, 1)', border: '1px solid #bbb' }}
-          >
+          <Button variant="secondary" onClick={() => setShowAddCategoryPopup(false)}>
             Cancel
           </Button>
-          <Button
-            onClick={handleAddCategory}
-            style={{ backgroundColor: 'rgba(202, 146, 61, 1)' }}
-          >
-            Add Category
-          </Button>
+          <Button onClick={handleAddCategory}>Add Category</Button>
         </Modal.Footer>
       </Modal>
 

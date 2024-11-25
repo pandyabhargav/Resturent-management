@@ -14,6 +14,8 @@ import Additem from './pages/Additem/Additem';
 import Qr from './pages/Qr/Qr';
 import CreateQr from './pages/CreateQr/CreateQr';
 import Header from './pages/Header/Header';
+import Page2 from './pages/parsel-page/mainpage';
+// import Page2 from './pages/parsel-page/mainpage';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('jwtToken');
@@ -44,6 +46,7 @@ function App() {
           >
             {/* Nested routes for the Main component */}
             <Route index element={<Dashboard />} />
+            <Route path='page' element={<Page2/>} />
             <Route path="managemenu" element={<Managemenu />} />
             <Route path="additems" element={<Additem />} />
             <Route path="qr" element={<Qr/>} />

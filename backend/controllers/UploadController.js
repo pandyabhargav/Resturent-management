@@ -4,6 +4,7 @@ const ImgUpload = async (req, res) => {
     const imagePath = `${serverUrl}/${req.file.path.replace(/\\/g, "/")}`; // Construct the full image URL
 
     return res.status(200).json({
+      success: true,
       message: "Image uploaded successfully!",
       imagePath: imagePath,
     });
