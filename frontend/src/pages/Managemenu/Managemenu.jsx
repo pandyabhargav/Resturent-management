@@ -26,30 +26,30 @@ const Managemenu = () => {
   });
 
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const token = localStorage.getItem('jwtToken');
-      try {
-        const response = await axios.get('http://localhost:5000/api/v1/category/restaurantcategorys-get', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     const token = localStorage.getItem('jwtToken');
+  //     try {
+  //       const response = await axios.get('http://localhost:5000/api/v1/category/restaurantcategorys-get', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-        if (response.data.success) {
-          setCategories(response.data.categories || []); // Assuming response contains a `categories` array
-        } else {
-          setError('Failed to fetch categories');
-        }
-      } catch (err) {
-        setError(err.response?.data?.message || 'Error fetching categories');
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       if (response.data.success) {
+  //         setCategories(response.data.categories || []); // Assuming response contains a `categories` array
+  //       } else {
+  //         setError('Failed to fetch categories');
+  //       }
+  //     } catch (err) {
+  //       setError(err.response?.data?.message || 'Error fetching categories');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchCategories();
-  }, []);
+  //   fetchCategories();
+  // }, []);
 
 
 
@@ -72,12 +72,7 @@ const Managemenu = () => {
 
 
   const handleAddCategory = async () => {
-    // if (!newCategory.name || !newCategory.image) {
-    //   alert("Both name and image are required");
-    //   return;
-    // }
-
-    // Create FormData to upload the image first
+  
     const imageFormData = new FormData();
     imageFormData.append('image', newCategory.image);
 

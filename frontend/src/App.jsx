@@ -15,6 +15,7 @@ import Qr from './pages/Qr/Qr';
 import CreateQr from './pages/CreateQr/CreateQr';
 import Header from './pages/Header/Header';
 import Page2 from './pages/parsel-page/mainpage';
+import CustomDate from './pages/payment-order/Date';
 // import Page2 from './pages/parsel-page/mainpage';
 
 const ProtectedRoute = ({ children }) => {
@@ -51,6 +52,7 @@ function App() {
             <Route path="additems" element={<Additem />} />
             <Route path="qr" element={<Qr/>} />
             <Route path="createqr" element={<CreateQr/>} />
+            <Route path="parelorder" element={<CustomDate />} />
           </Route>
         </Routes>
       </div>

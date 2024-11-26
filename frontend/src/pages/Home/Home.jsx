@@ -74,8 +74,8 @@ const Home = () => {
                   <IoMdArrowDropdown className={`dropdown-arrow ${openDropdown === 'paymentHistory' ? 'open' : ''}`} />
                 </div>
                 <div className="dropdown-menu" style={{ display: openDropdown === 'paymentHistory' ? 'block' : 'none' }}>
-                  <a href="#transactions" className="dropdown-item">Parcel order</a>
-                  <a href="#invoices" className="dropdown-item">Onsite Order</a>
+                  <Link to={'/parelorder'} className="dropdown-item">Parcel order</Link>
+                  <Link to={''} className="dropdown-item">Onsite Order</Link>
                 </div>
               </div>
 

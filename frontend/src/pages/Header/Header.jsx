@@ -58,7 +58,7 @@ const Header = ({ onProfileClick }) => {
 
   return (
     <header className="header text-white py-3 mt-2">
-      <div className="container d-flex justify-content-between align-items-center">
+      <div className="container heade d-flex justify-content-between align-items-center">
         <div className="col-auto d-flex align-items-center">
           <img
             src={hello}

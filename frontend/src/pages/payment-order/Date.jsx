@@ -1,56 +1,26 @@
 import React, { useState } from 'react';
-import Table from 'react-bootstrap/Table';
-import { Row, Col, } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button'; // Add this line
-import Modal from 'react-bootstrap/Modal'; // Add this line
-import { FaEye } from "react-icons/fa";
-import "./page.css"
+import { FaEye, FaWallet } from 'react-icons/fa';
+import { Modal, Button, Dropdown } from 'react-bootstrap';
+import './CustomDate.css'; // Import CSS for styling
 
-function Pageorder2() {
-  const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const items = [
-    { name: "Jeera Rice", qty: 2, amount: 290.00 },
-    { name: "Veg Manhwa So", qty: 1, amount: 119.00 },
-    { name: "Dal Tadka", qty: 1, amount: 215.00 },
-    { name: "Butter Tandoor", qty: 1, amount: 45.00 },
-    { name: "Garlic Naan", qty: 5, amount: 300.00 },
-    { name: "Veg Sweet Corn", qty: 1, amount: 119.00 },
-    { name: "Plain Papad", qty: 2, amount: 160.00 },
-    { name: "Baked Veg With", qty: 1, amount: 270.00 },
-  ];
+const CustomDate = () => {
+  const [showDateModal, setShowDateModal] = useState(false);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
-  const totalAmount = items.reduce((total, item) => total + item.amount, 0);
   const orders = [
+    {
+      customerName: 'Davis Lipshutz',
+      itemName: 'Rice',
+      date: '10/02/2024',
+      time: '3:45 PM',
+      customerPhone: '98566 85214',
+      quantity: '500 G.M',
+      totalBill: '₹500',
+      paymentType: "Online"
 
-    {
-      customerName: 'Davis Lipshutz',
-      itemName: 'Rice',
-      date: '10/02/2024',
-      time: '3:45 PM',
-      customerPhone: '98566 85214',
-      quantity: '500 G.M',
-      totalBill: '₹500'
-    },
-    {
-      customerName: 'Marcus Dorwart',
-      itemName: 'Biryani Rice',
-      date: '11/02/2024',
-      time: '2:45 PM',
-      customerPhone: '98566 85214',
-      quantity: '100 G.M',
-      totalBill: '₹500'
-    },
-    {
-      customerName: 'Davis Lipshutz',
-      itemName: 'Rice',
-      date: '10/02/2024',
-      time: '3:45 PM',
-      customerPhone: '98566 85214',
-      quantity: '500 G.M',
-      totalBill: '₹500',
     },
     {
       customerName: 'Marcus Dorwart',
@@ -60,6 +30,31 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '100 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
+
+
+    },
+    {
+      customerName: 'Davis Lipshutz',
+      itemName: 'Rice',
+      date: '10/02/2024',
+      time: '3:45 PM',
+      customerPhone: '98566 85214',
+      quantity: '500 G.M',
+      totalBill: '₹500',
+      paymentType: "Online"
+    },
+    {
+      customerName: 'Marcus Dorwart',
+      itemName: 'Biryani Rice',
+      date: '11/02/2024',
+      time: '2:45 PM',
+      customerPhone: '98566 85214',
+      quantity: '100 G.M',
+      totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Angel Bator',
@@ -69,6 +64,8 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '2K.G',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Jaydon Rhiel ',
@@ -78,6 +75,8 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '500 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Leo Carder',
@@ -87,6 +86,8 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '900 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Cristofer Calzoni',
@@ -96,6 +97,8 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '500 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Wilson Vaccaro',
@@ -105,6 +108,9 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '800 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
+
     },
     {
       customerName: 'Jaxson Culhane',
@@ -114,6 +120,8 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '1K.G',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Lincoln Dias',
@@ -123,6 +131,8 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '500 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Corey Ekstrom',
@@ -132,65 +142,149 @@ function Pageorder2() {
       customerPhone: '98566 85214',
       quantity: '300 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
+
     },
     {
       customerName: 'Zain Bator',
-      itemName: 'RPaneer Chiliice',
+      itemName: 'Paneer Chiliice',
       date: '20/02/2024',
       time: '6:45 PM',
       customerPhone: '98566 85214',
       quantity: '900 G.M',
       totalBill: '₹500',
+      paymentType: "Online"
     },
-
-    // Add more orders...
+    // Add other orders here...
   ];
 
+  const handleDateModalClose = () => setShowDateModal(false);
+  const handleDateModalShow = () => setShowDateModal(true);
+  const handleOrderModalClose = () => setShowOrderModal(false);
+  const handleOrderModalShow = () => setShowOrderModal(true);
+
+  const handleFromDateChange = (e) => setFromDate(e.target.value);
+  const handleToDateChange = (e) => setToDate(e.target.value);
+
+  const filteredOrders = orders.filter((order) => {
+    const orderDate = new Date(order.date);
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    return (!fromDate || orderDate >= from) && (!toDate || orderDate <= to);
+  });
+
   return (
-    <>
-    {/* <div className="container mt-4"> */}
-     {/* <h1 className="text-center">Parcel Orders</h1> */}
-      <div className="order-header hello-wold">
-        <div>Customer Name </div>
-        <div>Item</div>
-        <div>Date</div>
-        <div>Time</div>
-        <div>Phone</div>
-        <div>Quantity</div>
-        <div>Total Bill</div>
-        <div>Actions</div>
+    <div className='payment-order co'>
+    <div className='header-component'>
+        <div className='custom-table'>
+          <h2>Payment Details</h2>
+
+          <Dropdown className="">
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              Month
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item>Month</Dropdown.Item>
+              <Dropdown.Item>Week</Dropdown.Item>
+              <Dropdown.Item>Day</Dropdown.Item>
+              <Dropdown.Item onClick={handleDateModalShow}>Custom Date</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+    
+    
       </div>
 
-      <div className="order-list">
-        <div className="order-container">
+        <div className=" co col-12 w">
+          <h1 className="">Parcel Orders</h1>
+          <div className='main-div'>
 
-          {orders.map((order, index) => (
-            <div className="order-item" key={index}>
-              <div>{order.customerName}</div>
-              <div>{order.itemName}</div>
-              <div>{order.date}</div>
-              <div className="Time-background">{order.time}</div>
-              <div>{order.customerPhone}</div>
-              <div>{order.quantity}</div>
-              <div className="total-bill-background" style={{ color: "rgba(57, 151, 61, 1)" }}>
-                {order.totalBill}
+
+          {/* Dropdown for actions */}
+
+
+          {/* Date Modal */}
+          <Modal show={showDateModal} onHide={handleDateModalClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Custom Date Selection</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="date-inputs">
+                <div className="date-field">
+                  <label htmlFor="from-date">From:</label>
+                  <input
+                    type="date"
+                    id="from-date"
+                    value={fromDate}
+                    onChange={handleFromDateChange}
+                  />
+                </div>
+                <div className="date-field">
+                  <label htmlFor="to-date">To:</label>
+                  <input
+                    type="date"
+                    id="to-date"
+                    value={toDate}
+                    onChange={handleToDateChange}
+                  />
+                </div>
               </div>
-              <div>
-                <button className="check-button" onClick={handleShow}>
-                  <FaEye />
-                </button>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleDateModalClose}>
+                Close
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  handleDateModalClose();
+                }}
+              >
+                Apply Filter
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          {/* Orders List */}
+          <div className="order-header">
+            <div>Customer Name</div>
+            {/* <div>Date</div>
+        <div>Time</div> */}
+            <div>Phone</div>
+            <div>Items Name</div>
+            <div>Quantity</div>
+            <div>Total Bill</div>
+            <div>Payment Type</div>
+            <div>Actions</div>
+          </div>
+
+          <div className="order-list">
+            {filteredOrders.map((order, index) => (
+              <div className="order-item" key={index}>
+                <div>{order.customerName}</div>
+                {/* <div>{order.date}</div>
+      <div>{order.time}</div> */}
+                <div>{order.customerPhone}</div>
+                <div>{order.itemName}</div>
+                <div>{order.quantity}</div>
+                <div className="total-bill-background">{order.totalBill}</div>
+                <div className='payment-background'><FaWallet />{order.paymentType}</div>
+                <div>
+                  <button className="check-button" onClick={handleOrderModalShow}>
+                    <FaEye />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div>
-          <>
-            <Modal show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Parcel Payment Bill</Modal.Title>
-
-              </Modal.Header>
+          {/* Order Details Modal */}
+          <Modal show={showOrderModal} onHide={handleOrderModalClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Parcel Payment Bill</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
               <div className="bill-container">
                 <div className="details">
                   <div className="detail-item">
@@ -282,12 +376,12 @@ function Pageorder2() {
                 <div className="invoice-summary">
                   <h3 className="section-title">Total Amount
 
-                  <span>₹ 1315.00</span>
+                    <span>₹ 1315.00</span>
                   </h3>
                   <div className="amount-details">
                     <div className="row">
-                    
-                      
+
+
                     </div>
                     <div className="row">
                       <span>SGST 2.5%:</span>
@@ -303,19 +397,16 @@ function Pageorder2() {
                     <span>₹ 1381.00</span>
                   </div>
                 </div>
-                {/* <div className="total">
-                  <span>Total: </span>
-                  <span>1128.00</span>
-                </div> */}
               </div>
-            </Modal>
-          </>
+            </Modal.Body>
+          </Modal>
         </div>
-      {/* </div> */}
-
-    </div>
-    </>
+        </div>
+      </div>
+    
   );
-}
-export default Pageorder2;
+};
 
+
+
+export default CustomDate;
