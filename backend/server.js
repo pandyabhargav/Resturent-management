@@ -16,7 +16,15 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
+// app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "http://localhost:5000"],  // Allow images from backend
+    },
+  })
+);
 app.use(morgan("dev"));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

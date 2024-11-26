@@ -6,9 +6,11 @@ import { FaTrashAlt } from "react-icons/fa";
 import { useDropzone } from 'react-dropzone';
 import { FaImage } from "react-icons/fa";
 import axios from 'axios';
+import defaultimg from '../../assets/1732641275136.png';
 
 const Managemenu = () => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [categories, setCategories] = useState([]); // Add categories state
   const [showOptions, setShowOptions] = useState({});
   const [expandedDescription, setExpandedDescription] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -24,41 +26,43 @@ const Managemenu = () => {
     price: '',
     image: null,
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoading(true);
+      const token = localStorage.getItem('jwtToken');
+      if (!token) {
+        setError('JWT token is missing');
+        setLoading(false);
+        return;
+      }
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     const token = localStorage.getItem('jwtToken');
-  //     try {
-  //       const response = await axios.get('http://localhost:5000/api/v1/category/restaurantcategorys-get', {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
+      try {
+        const response = await axios.get('http://localhost:5000/api/v1/category/restaurantcategorys-get', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-  //       if (response.data.success) {
-  //         setCategories(response.data.categories || []); // Assuming response contains a `categories` array
-  //       } else {
-  //         setError('Failed to fetch categories');
-  //       }
-  //     } catch (err) {
-  //       setError(err.response?.data?.message || 'Error fetching categories');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+        console.log('Fetched Categories Response:', response.data); // Log the entire response
 
-  //   fetchCategories();
-  // }, []);
+        if (response.data.success) {
+          setCategories(response.data.data || []); // Update this line to use response.data.data
+          console.log('Fetched Categories:', response.data.data); // Log the categories array
+        } else {
+          setError('Failed to fetch categories');
+          console.log('API Response Error:', response.data.message); // Log any error message from the API
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Error fetching categories');
+        console.error('Error during fetch:', err.response || err.message); // Log the error
+      } finally {
+        setLoading(false);
+      }
+    };
 
-
-
-
-
-
-
-
-
+    fetchCategories();
+  }, []);
 
   const handleAddBurger = () => {
     console.log('New Burger Data:', burgerData);
@@ -70,9 +74,7 @@ const Managemenu = () => {
     setShowDeleteModal(true);
   };
 
-
   const handleAddCategory = async () => {
-  
     const imageFormData = new FormData();
     imageFormData.append('image', newCategory.image);
 
@@ -93,20 +95,19 @@ const Managemenu = () => {
 
       // Check if the image upload was successful
       if (imageResponse.data.success === true) {
-        const imageUrl = imageResponse.data.imagePath; 
+        const imageUrl = imageResponse.data.imagePath;
 
         const imageName = imageUrl;
 
         const categoryFormData = new FormData();
-        
+
         const categoryData = {
           name: newCategory.name,
           image: imageName,
         };
-        
+
         const categoryResponse = await axios.post(
           'http://localhost:5000/api/v1/category/restaurantcategory-add',
-          
           categoryData,
           {
             headers: {
@@ -114,7 +115,7 @@ const Managemenu = () => {
             },
           }
         );
-      
+
 
         console.log('Category added successfully:', categoryResponse.data);
         alert("Category added successfully!");
@@ -130,18 +131,13 @@ const Managemenu = () => {
     }
   };
 
-
-
   const handleCloseDelete = () => setShowDeleteModal(false);
 
-
   const handleConfirmDelete = () => {
-
     const updatedCategories = categories.filter(category => category.key !== deleteItemId);
     setCategories(updatedCategories);
     setShowDeleteModal(false);
   };
-
 
   const handleEditClick = () => {
     setShowModal(true);
@@ -161,9 +157,6 @@ const Managemenu = () => {
     },
   });
 
-
-
-
   const indianFoods = [
     'Butter Chicken',
     'Paneer Tikka',
@@ -176,39 +169,6 @@ const Managemenu = () => {
     'Pav Bhaji',
     'Dal Makhani',
   ];
-
-
-  const categories = [
-    { key: 'all', label: 'All', icon: 'https://s3-alpha-sig.figma.com/img/ecd2/40ce/7c550720ab20af0840548a832e0f9a28?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fqlZUfKFRFu51rIF9qDNDkX0hM-6lh4dEHGSzuRhJa5Q~bKsQa-ZSz4ZwuTn-4Xk~unVxU1487GcGkXc9riyZV3incW-NPudZp5Lbmzwi4b1I6LBmnWFHGvt-Z~HeObvHK7Tgf7EcCEgLQnz6zt4PMTcGAoNAlXmbfxhM5Py6jnZcN0z0s4rS~q~My96tK9RKr1MlMRwUnwpLw~E9xPMsHlxXYTM2-h2KLnOBtgrf4JzaOVL0BFNqI7WntUwv~CVz8S8UcUPIqV17ntWoMQ0QFPr4SsMKsneujfYH1G28AvHeMRC5P7jpzo~6pu0tqYtmeRl~-Hr-n~mwru6SzGLQA__' },
-    { key: 'burger', label: 'Burger', icon: 'https://s3-alpha-sig.figma.com/img/ecd2/40ce/7c550720ab20af0840548a832e0f9a28?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fqlZUfKFRFu51rIF9qDNDkX0hM-6lh4dEHGSzuRhJa5Q~bKsQa-ZSz4ZwuTn-4Xk~unVxU1487GcGkXc9riyZV3incW-NPudZp5Lbmzwi4b1I6LBmnWFHGvt-Z~HeObvHK7Tgf7EcCEgLQnz6zt4PMTcGAoNAlXmbfxhM5Py6jnZcN0z0s4rS~q~My96tK9RKr1MlMRwUnwpLw~E9xPMsHlxXYTM2-h2KLnOBtgrf4JzaOVL0BFNqI7WntUwv~CVz8S8UcUPIqV17ntWoMQ0QFPr4SsMKsneujfYH1G28AvHeMRC5P7jpzo~6pu0tqYtmeRl~-Hr-n~mwru6SzGLQA__' },
-    { key: 'icecream', label: 'Ice Cream', icon: 'https://s3-alpha-sig.figma.com/img/05de/774e/807dd6ec092da5e280109b013c513a0d?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=EQ0cdAk8BmcXXzstEebi6ncCRnYBW-ApWef1AiVGUaIoCU0YT32QQmRbKdfNrkVvaqV36oN2Yp9Md-xjqrjKZ9f6DP9p08kV0UIYbeHIqKujEwBpxoaknwhBAAmkDPqJBDC8KhVFvzALrYhgtu9xNrdzOEmzvjVX0PRs08bLPfMncWI4QSLRiS56YW3vC3JMykMfqa9xyCAjeCXsoPFyFVXqk8S8eccAAN4mAnFTxmEtn9PCAjq0G5dYxxRfFVC-~7FDjhC5n7cdZq7t8o3Kni33fGFlzC5-WOpyRcycqp2wzCjiTqWGiPEZiYTjyL8MOi8p7XuBSxZ2MnmQNcCxQA__' },
-    { key: 'frenchfries', label: 'French Fries', icon: 'https://s3-alpha-sig.figma.com/img/c495/ed87/1338e2e608f2055840d3132745fa5027?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=YuXGjICbfNOIbMPScZ~m4vMkxNE5gJpG5eWpn6TnjEm9RdyH0gmGw1L0KPlYUD--kWvE2kxNMZ7gRrPBpoSMYDKzcEgObj3cu468XG6R1vxUPigGBbhkAba2OSSPI9GyScIaEnz5FSR0H8UNBtW~5y2U~LceWharlf1o4RKy1E~XDqUGyR-l~tWp3L~~IUvxGjq3br0VOzvtPuX0OD1pWW2CCSUJ9a5UUD2OhJT7dapZjDRlkkOV0BNk4NwIqFgJZ~CTzjOC00ibTO3HDYTXKcrX~D5Fikx6JJeG~34Q586B-XuFNEle65bJMMXx9MeXE501xDD3javZoOg5P5IgUA__' },
-    { key: 'sandwich', label: 'Sandwich', icon: 'https://s3-alpha-sig.figma.com/img/9ac5/7848/92cebe7826b91979d7ec7154dc714870?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=c2D7vqcnv5Ywz6gQgSV9cpcM4ZE7vjwBtzK52ylJuo0Fn9DnVuwYs1nCjaw92t8JoIXe091vlq8d6JnqxjsAZE6lKuafFSobpKfau8F5g0EvGvxT-s1rktxnpYLq64rihl-O9I2PiW3ePCds9fkMdg6yM78qAPei3HAlmAl6Z2DCMt4K0gUE-7CgafEHmfMv3WWf3qWS6szbzCw5sn9PbMXrO4DC6sTuHGIRHmMUEgeHTXrcWss4DM3PadXhNmbaKpy4LxZvujLwFb3vzxRswg29eN~of7fwkYrWbqZPBKuWGMOoytPK4H0DTA1BMH4POrfQhvplEJkq9oeZBWVaQg__' },
-    { key: 'drinkjuice', label: 'Drink/Juice', icon: 'https://s3-alpha-sig.figma.com/img/cecc/4fd1/3829c29c170bee25c8af06e829cde3de?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OfxfZ4fRAzEnRwdu3RpkoWOy--A22Bm7ldyJ6mdYxgbIC5n4tPJVRwdI8ElHVpGHWW2BGqlhW1qO~mVhnV2b9SWf0LgkonUbSNU5CcCkWH0VYCdSwbQVmDAXmb5-brCFVUchyzksqPbzebI4vLeQrhBDgNvXdxR6ktCeN6Tnj0~OGVWYD1xI5tAv~VglpbIhSreGuGGOzVwRiAd5Oi5Etn3O1p7-c5K9fY4PVxD1nyeQekWusbqyai~G7X3fIa~nW6PWZztwgx8LfnG0mR3pE-b8EeqjjzxlR2hBJdHKyS9R0d7zE5tnEv2K0V1nBaANBw2KXpJZSPYp6fimsRIbow__' }
-  ];
-
-
-  const categoryData = {
-    all: [
-      { title: ' Cheeseburger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$10.99', imgSrc: 'https://img.freepik.com/free-photo/view-homemade-delicious-sandwiches-black-board-gray-blurred-surface_179666-42327.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-    ],
-    burger: [
-      { title: ' Cheeseburger', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.99', imgSrc: 'https://img.freepik.com/free-photo/huge-burger-with-fried-meat-vegetables_140725-971.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-    ],
-    icecream: [
-      { title: 'Vanila', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.49', imgSrc: 'https://img.freepik.com/free-photo/ice-cream-balls-bowl_1220-571.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-    ],
-    frenchfries: [
-      { title: 'Small Fries', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$1.99', imgSrc: 'https://img.freepik.com/free-photo/french-fries-with-mayonnaise-ketchup_140725-2742.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-    ],
-    sandwich: [
-      { title: 'Club Sandwich', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$5.99', imgSrc: 'https://img.freepik.com/free-photo/front-view-delicious-ham-sandwiches-with-french-fries-seasonings-dark-surface_179666-34427.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-    ],
-    drinkjuice: [
-      { title: 'Cola', description: 'Including premium beef, freshly baked brioche buns, crisp lettuce, ripe tomatoes, savory cheese, tangy pickles.', price: '$2.49', imgSrc: 'https://img.freepik.com/free-photo/fresh-cola-drink-with-green-lime_144627-12396.jpg?ga=GA1.1.227229956.1729880268&semt=ais_hybrid' },
-    ]
-  };
-
 
   const handleDescriptionClick = (index) => {
     setExpandedDescription(expandedDescription === index ? null : index);
@@ -230,27 +190,28 @@ const Managemenu = () => {
         {categories.map((category) => (
           <Tab
             className='ml-5'
-            eventKey={category.key}
-            key={category.key}
+            eventKey={category._id} // Use category._id or a unique identifier
+            key={category._id}
             title={
               <div style={{ display: 'flex', alignItems: 'center' }} className='tab-products'>
                 <img
-                  src={category.icon}
-                  alt={`${category.label} icon`}
+                  src={category.image} // Display the image for the category
+                  alt={category.name}
                   style={{
                     width: '70px',
                     height: '50px',
                     marginRight: '8px',
-                    backgroundColor: 'rgba(31, 29, 43, 1)',
+                    backgroundColor: 'rgba(31, 29, 43, 1)', // Custom background color for icon
                   }}
                 />
-                {category.label}
+                {category.name} {/* Display the name of the category */}
               </div>
             }
           >
             <div className="tab-header">
-              <h2 className="tab-title">{category.label}</h2>
-              {category.key === 'burger' && (
+              <h2 className="tab-title">{category.name}</h2>
+              {/* Add button to add items or burgers specific to this category */}
+              {category.name === 'burger' && (
                 <button className="add-category-btn col-2" onClick={() => setShowAddBurgerPopup(true)}>
                   <span style={{ fontSize: '24px', lineHeight: '1', marginRight: '10px' }}>
                     <FaSquarePlus />
@@ -260,18 +221,14 @@ const Managemenu = () => {
               )}
             </div>
             <Container className='m-0' fluid>
-              {/* <Row className="menu-grid row-cols-1 row-cols-sm-2 row-cols-md-3"> */}
               <Row className='d-flex flex-wrap col-12'>
-                {(categoryData[category.key] || []).map((card, index) => (
+                {/* Display category items here */}
+                {(category.items || []).map((item, index) => (
                   <div className="d-flex ml-5" style={{ width: "18%" }}>
-                    <div
-                      className="card-item"
-                      key={card.key}
-                      style={{ margin: '10px', position: 'relative' }}
-                    >
-                      <Card className="h-100" style={{ border: 'none', overflow: 'hidden', }}>
+                    <div className="card-item" key={item._id} style={{ margin: '10px', position: 'relative' }}>
+                      <Card className="h-100" style={{ border: 'none', overflow: 'hidden' }}>
                         <div className="card-img-wrapper">
-                          <Card.Img variant="top" src={card.imgSrc} />
+                          <Card.Img variant="top" src={item.image} />
                           <div
                             className="three-dots"
                             onClick={() => setShowOptions(showOptions === index ? null : index)}
@@ -281,16 +238,16 @@ const Managemenu = () => {
                           {showOptions === index && (
                             <div className="card-actions" style={{ backgroundColor: 'rgba(37, 40, 54, 1)' }}>
                               <button className="edit-btn" onClick={handleEditClick}>Edit</button>
-                              <button className="delete-btn" onClick={() => handleDeleteClick(card.key)}>Delete</button>
+                              <button className="delete-btn" onClick={() => handleDeleteClick(item._id)}>Delete</button>
                             </div>
                           )}
                         </div>
                         <Card.Body>
-                          <Card.Title>{card.title}</Card.Title>
+                          <Card.Title>{item.name}</Card.Title>
                           <Card.Text style={{ color: '#bbb' }}>
                             {expandedDescription === index
-                              ? card.description
-                              : `${card.description.slice(0, 50)}...`}
+                              ? item.description
+                              : `${item.description.slice(0, 50)}...`}
                             <span
                               className="expand-text"
                               onClick={() => setExpandedDescription(expandedDescription === index ? null : index)}
@@ -298,7 +255,7 @@ const Managemenu = () => {
                               {expandedDescription === index ? ' Show Less' : ' Read More'}
                             </span>
                           </Card.Text>
-                          <Card.Text className="price">{card.price}</Card.Text>
+                          <Card.Text className="price">{item.price}</Card.Text>
                         </Card.Body>
                       </Card>
                     </div>
@@ -309,6 +266,7 @@ const Managemenu = () => {
           </Tab>
         ))}
       </Tabs>
+
       {/* Modal for Edit Form */}
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header>
