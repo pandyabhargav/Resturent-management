@@ -6,9 +6,11 @@ import { FaTrashAlt } from "react-icons/fa";
 import { useDropzone } from 'react-dropzone';
 import { FaImage } from "react-icons/fa";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import defaultimg from '../../assets/1732641275136.png';
 
 const Managemenu = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('all');
   const [categories, setCategories] = useState([]); // Add categories state
   const [showOptions, setShowOptions] = useState({});
@@ -212,7 +214,10 @@ const Managemenu = () => {
               <h2 className="tab-title">{category.name}</h2>
               {/* Add button to add items or burgers specific to this category */}
               {category.name === 'burger' && (
-                <button className="add-category-btn col-2" onClick={() => setShowAddBurgerPopup(true)}>
+                <button
+                  className="add-category-btn col-2"
+                  onClick={() => navigate('/additems')} // Use navigate to go to the additems route
+                >
                   <span style={{ fontSize: '24px', lineHeight: '1', marginRight: '10px' }}>
                     <FaSquarePlus />
                   </span>
@@ -500,13 +505,13 @@ const Managemenu = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showAddBurgerPopup} onHide={() => setShowAddBurgerPopup(false)}>
+      {/* <Modal show={showAddBurgerPopup} onHide={() => setShowAddBurgerPopup(false)}>
         <Modal.Header>
           <Modal.Title>Add New Burger</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {/* Name Field */}
+            
             <Form.Group className="mb-3">
               <Form.Label>Burger Name</Form.Label>
               <Form.Control
@@ -525,7 +530,7 @@ const Managemenu = () => {
               />
             </Form.Group>
 
-            {/* Description Field */}
+            
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -547,7 +552,7 @@ const Managemenu = () => {
               />
             </Form.Group>
 
-            {/* Price Field */}
+          
             <Form.Group className="mb-3">
               <Form.Label>Price</Form.Label>
               <Form.Control
@@ -568,7 +573,7 @@ const Managemenu = () => {
               />
             </Form.Group>
 
-            {/* Image Upload Field */}
+            
             <div
               {...getRootProps()}
               style={{
@@ -610,7 +615,7 @@ const Managemenu = () => {
             Add Burger
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

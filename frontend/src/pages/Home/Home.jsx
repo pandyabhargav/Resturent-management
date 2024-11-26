@@ -5,8 +5,11 @@ import Header from '../Header/Header';
 import Profile from '../Profile/Profile';
 import logo from '../../assets/logo.png';
 import '../Sidebar/Sidebar.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const Home = () => {
+  const navigate = useNavigate()
   const [showProfile, setShowProfile] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,6 +24,36 @@ const Home = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = async () => {
+    // Retrieve the JWT token (assuming it's stored in localStorage)
+    const token = localStorage.getItem('jwtToken'); // Replace 'jwtToken' with your actual storage key
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/logout', {
+        method: 'POST', // Assuming it's a POST request for logout
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Pass the JWT token in the Authorization header
+        },
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Handle successful logout, e.g., clear JWT token and redirect to login page
+        localStorage.removeItem('jwtToken'); // Remove token from storage
+        navigate('/login'); // Navigate to the login page
+        alert('Logged out successfully!');
+      } else {
+        // Handle error, e.g., show a message to the user
+        alert('Logout failed! Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -57,14 +90,9 @@ const Home = () => {
               </div>
 
               <div>
-                <div className="sidebar-item" onClick={() => handleToggleDropdown('manageMenu')}>
+                <Link className="sidebar-item" to="/managemenu">
                   <IoMdRestaurant className="sidebar-icon" /> Manage Menu
-                  <IoMdArrowDropdown className={`dropdown-arrow ${openDropdown === 'manageMenu' ? 'open' : ''}`} />
-                </div>
-                <div className="dropdown-menu" style={{ display: openDropdown === 'manageMenu' ? 'block' : 'none' }}>
-                  <Link to="/managemenu" className="dropdown-item">Manage Menu</Link>
-                  <Link to="/additems" className="dropdown-item">Add Items</Link>
-                </div>
+                </Link>
               </div>
 
 
@@ -84,10 +112,17 @@ const Home = () => {
               </Link>
 
               <div className="sidebar-logout">
-                <a href="#logout" className="sidebar-item text-white">
-                  <IoMdLogOut className="sidebar-icon" /> Logout
-                </a>
-              </div>
+      <a
+        href="#logout"
+        className="sidebar-item text-white"
+        onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          handleLogout(); // Trigger the logout function
+        }}
+      >
+        <IoMdLogOut className="sidebar-icon" /> Logout
+      </a>
+    </div>
             </div>
           </aside>
 
