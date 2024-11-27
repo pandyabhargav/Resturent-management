@@ -213,7 +213,7 @@ const Managemenu = () => {
             <div className="tab-header">
               <h2 className="tab-title">{category.name}</h2>
               {/* Add button to add items or burgers specific to this category */}
-              {category.name === 'burger' && (
+              {category.name === category.name && (
                 <button
                   className="add-category-btn col-2"
                   onClick={() => navigate('/additems')} // Use navigate to go to the additems route
@@ -221,7 +221,7 @@ const Managemenu = () => {
                   <span style={{ fontSize: '24px', lineHeight: '1', marginRight: '10px' }}>
                     <FaSquarePlus />
                   </span>
-                  Add Burger
+                  Add {category.name}
                 </button>
               )}
             </div>
@@ -504,118 +504,6 @@ const Managemenu = () => {
           <Button onClick={handleAddCategory}>Add Category</Button>
         </Modal.Footer>
       </Modal>
-
-      {/* <Modal show={showAddBurgerPopup} onHide={() => setShowAddBurgerPopup(false)}>
-        <Modal.Header>
-          <Modal.Title>Add New Burger</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Burger Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={burgerData.name}
-                onChange={(e) => setBurgerData({ ...burgerData, name: e.target.value })}
-                placeholder="Enter burger name"
-                style={{
-                  padding: '0.75rem 1rem',
-                  fontSize: '1rem',
-                  borderRadius: '5px',
-                  border: '1px solid #bbb',
-                  backgroundColor: 'rgba(45, 48, 62, 1)',
-                  color: '#bbb',
-                }}
-              />
-            </Form.Group>
-
-            
-            <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={burgerData.description}
-                onChange={(e) =>
-                  setBurgerData({ ...burgerData, description: e.target.value })
-                }
-                placeholder="Enter burger description"
-                style={{
-                  padding: '0.75rem 1rem',
-                  fontSize: '1rem',
-                  borderRadius: '5px',
-                  border: '1px solid #bbb',
-                  backgroundColor: 'rgba(45, 48, 62, 1)',
-                  color: '#fff',
-                }}
-              />
-            </Form.Group>
-
-          
-            <Form.Group className="mb-3">
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="number"
-                value={burgerData.price}
-                onChange={(e) =>
-                  setBurgerData({ ...burgerData, price: e.target.value })
-                }
-                placeholder="Enter price"
-                style={{
-                  padding: '0.75rem 1rem',
-                  fontSize: '1rem',
-                  borderRadius: '5px',
-                  border: '1px solid #bbb',
-                  backgroundColor: 'rgba(45, 48, 62, 1)',
-                  color: '#bbb',
-                }}
-              />
-            </Form.Group>
-
-            
-            <div
-              {...getRootProps()}
-              style={{
-                border: '2px dashed #ddd',
-                padding: '20px',
-                textAlign: 'center',
-                marginBottom: '15px',
-                cursor: 'pointer',
-                backgroundColor: 'rgba(45, 48, 62, 1)',
-                color: '#bbb',
-              }}
-            >
-              <input {...getInputProps()} />
-              {burgerData.image ? (
-                <p>Image selected: {burgerData.image.name}</p>
-              ) : (
-                <p>
-                  <span style={{ fontSize: '20px' }}>
-                    <FaImage />ㅤ
-                  </span>
-                  Drag & drop an image here, or click to select files
-                </p>
-              )}
-            </div>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowAddBurgerPopup(false)}
-            style={{ backgroundColor: 'rgba(51, 55, 72, 1)', border: '1px solid #bbb' }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddBurger}
-            style={{ backgroundColor: 'rgba(202, 146, 61, 1)' }}
-          >
-            Add Burger
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
     </div>
   );
 };

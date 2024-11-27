@@ -12,13 +12,20 @@
     padding: 15px;
     border-radius: 15px;
 }
-
+button{
+  font-size: 15px;
+}
 input.form-control {
     background-color: rgba(45, 48, 62, 1) !important;
     color: #fff; 
   }
-  
+  .bts{
+    background-color: #2A2A38;
 
+  }
+  .bts:hover{
+    background-color: #2A2A38;
+  }
   input.form-control::placeholder {
     color: #bbb; 
   }
