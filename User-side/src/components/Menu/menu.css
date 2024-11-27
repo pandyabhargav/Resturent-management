@@ -1,0 +1,118 @@
+body {
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+   height: 100%;
+  }
+  .bg {
+    background-color: rgb(11, 15, 31);
+    min-height: 100vh;
+  }
+ 
+  .custom-tabs .nav-link {
+    color: #aaa;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .custom-tabs .nav-link.active {
+    color: #fff;
+    border-bottom: 2px solid #ffcc00;
+  }
+  
+  .card {
+    border: none;
+  }
+  
+  .card .btn-warning {
+    background-color: #ffcc00;
+    border: none;
+  }
+  
+  .card img {
+    object-fit: cover;
+  }
+  
+  .position-fixed {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .icon-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333; 
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: #fff; 
+    cursor: pointer;
+  }
+  
+  .icon-circle:hover {
+    background-color: #febb02; 
+    color: #000; 
+  }
+  
+  .icon-circle svg {
+    font-size: 18px;
+  }
+  .custom-tabs {
+    border-bottom: none;
+  }
+.custom-tabs .nav-link {
+  background-color: rgba(45, 48, 62, 1);
+  color: #fff;           
+  width: 150px;
+  font-size: 16px;        
+  border-radius: 5px;     
+  margin: 0 10px;         
+  transition: all 0.3s ease; 
+  display: inline-block;
+  position: relative;
+}
+
+.custom-tabs .nav-link.active {
+  background-color: rgba(45, 48, 62, 1);  
+}
+
+.custom-tabs .category-item {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: #28a745; 
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .custom-tabs .category-item img {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px; 
+    object-fit: cover;  
+  }
+  
+  .custom-tabs .nonveg .category-item {
+    background-color: #dc3545;
+  }
+  
+
+  .custom-tabs .category-item p {
+    margin-top: 5px;
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .tabimg {
+    background-color:rgba(45, 48, 62);
+    padding: 10px;
+    display: inline-block; 
+    width: 73px; 
+    height: 72px; 
+    object-fit: cover; 
+    position: relative; 
+    border-radius: 10px;
+  }
+  

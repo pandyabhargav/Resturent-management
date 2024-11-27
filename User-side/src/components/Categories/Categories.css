@@ -1,0 +1,81 @@
+/* Main Container Styling */
+.categories-container {
+    background-color: #0e1624;
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 20px 15px;
+    font-family: "Inter", sans-serif;
+  }
+  
+  /* Header Section */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .total-count {
+    font-size: 16px;
+    color: #9fa6ad; /* Muted gray */
+  }
+  
+  /* Categories Grid */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Default: 3 columns */
+    gap: 15px;
+  }
+  
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1a2132;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.7);
+    text-align: center;
+  }
+  
+  .category-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .category-name {
+    margin: 0;
+    font-size: 14px;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .categories-grid {
+      grid-template-columns: repeat(3, 1fr); /* 3 columns on tablets & smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .categories-grid {
+      grid-template-columns: repeat(3, 1fr); /* 3 columns even on small screens */
+    }
+  }
+  
