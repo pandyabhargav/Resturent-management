@@ -16,6 +16,7 @@ import CreateQr from './pages/CreateQr/CreateQr';
 import Header from './pages/Header/Header';
 import Page2 from './pages/parsel-page/mainpage';
 import CustomDate from './pages/payment-order/Date';
+import OnsiteOrder from './pages/table-dash/Tableapp';
 // import Page2 from './pages/parsel-page/mainpage';
 
 const ProtectedRoute = ({ children }) => {
@@ -47,6 +48,7 @@ function App() {
           >
             {/* Nested routes for the Main component */}
             <Route index element={<Dashboard />} />
+            <Route path="orderdash" element={<OnsiteOrder />} />
             <Route path='page' element={<Page2/>} />
             <Route path="managemenu" element={<Managemenu />} />
             <Route path="additems" element={<Additem />} />

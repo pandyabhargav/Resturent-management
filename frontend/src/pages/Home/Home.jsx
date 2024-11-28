@@ -85,7 +85,7 @@ const Home = () => {
                 </div>
                 <div className="dropdown-menu" style={{ display: openDropdown === 'manageOrders' ? 'block' : 'none' }}>
                   <Link to={'/page'} className="dropdown-item">Parcel order</Link>
-                  <a href="#pending-orders" className="dropdown-item">Onsite Order</a>
+                  <Link to={'/orderdash'} className="dropdown-item">Onsite Order</Link>
                 </div>
               </div>
 
@@ -103,7 +103,7 @@ const Home = () => {
                 </div>
                 <div className="dropdown-menu" style={{ display: openDropdown === 'paymentHistory' ? 'block' : 'none' }}>
                   <Link to={'/parelorder'} className="dropdown-item">Parcel order</Link>
-                  <Link to={''} className="dropdown-item">Onsite Order</Link>
+                  <Link to={'/orderdash'} className="dropdown-item">Onsite Order</Link>
                 </div>
               </div>
 
