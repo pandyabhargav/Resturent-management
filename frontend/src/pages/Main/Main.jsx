@@ -19,8 +19,8 @@ const Main = ({ showProfile }) => {
          {/* <Dashboard/> */}
          <div className="wrapper">
          {/* <Managemenu /> */}
-         {/* <Additem /> */}
-         <Qr/>
+         <Additem />
+         {/* <Qr/> */}
          {/* <CreateQr/> */}
          </div>
         </div>

@@ -4,46 +4,89 @@ import './Additem.css';
 import { FaRegTrashAlt } from "react-icons/fa";
 
 const Additem = () => {
-    const [image, setImage] = useState(null);
-    const [selectedSpicyLevel, setSelectedSpicyLevel] = useState(''); // State to track selected spicy level
-    const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-        ingredients: '',
-    });
+     
+       const [image, setImage] = useState(null);
 
-    // Handle image drop
-    const handleImageDrop = (e) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            setImage(URL.createObjectURL(file));
-        }
-    };
-
-    // Handle file selection from input
-    const handleImageSelect = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImage(URL.createObjectURL(file));
-        }
-    };
-
-    // Handle spicy level selection
-    const handleSpicyLevelChange = (level) => {
-        // If the same checkbox is clicked, it will be unselected
-        setSelectedSpicyLevel(selectedSpicyLevel === level ? '' : level);
-    };
-
-    // Handle form field changes
-    const handleFormChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
+       
+       const [selectedSpicyLevel, setSelectedSpicyLevel] = useState('');
+   
+      
+       const [formData, setFormData] = useState({
+           name: '',
+           description: '',
+           ingredients: '',
+       });
+   
+  
+       const [steps, setSteps] = useState([
+           {
+               stepName: 'Step 1',
+               customizations: [{ name: '', detail: '', rate: '' }],
+           },
+       ]);
+   
+       
+       const handleImageDrop = (e) => {
+           e.preventDefault();
+           const file = e.dataTransfer.files[0];
+           if (file) {
+               setImage(URL.createObjectURL(file));
+           }
+       };
+   
+     
+       const handleImageSelect = (e) => {
+           const file = e.target.files[0];
+           if (file) {
+               setImage(URL.createObjectURL(file));
+           }
+       };
+   
+       const handleSpicyLevelChange = (level) => {
+           setSelectedSpicyLevel(selectedSpicyLevel === level ? '' : level);
+       };
+   
+       const handleFormChange = (e) => {
+           const { name, value } = e.target;
+           setFormData((prevData) => ({
+               ...prevData,
+               [name]: value,
+           }));
+       };
+   
+       const addStep = () => {
+           const newStep = {
+               stepName: `Step ${steps.length + 1}`,
+               customizations: [{ name: '', detail: '', rate: '' }],
+           };
+           setSteps([...steps, newStep]);
+       };
+   
+       const deleteStep = (index) => {
+           const updatedSteps = steps.filter((_, i) => i !== index);
+           setSteps(updatedSteps);
+       };
+   
+      
+       const addCustomization = (stepIndex) => {
+           const updatedSteps = [...steps];
+           updatedSteps[stepIndex].customizations.push({ name: '', detail: '', rate: '' });
+           setSteps(updatedSteps);
+       };
+   
+       const removeCustomization = (stepIndex, customIndex) => {
+           const updatedSteps = [...steps];
+           updatedSteps[stepIndex].customizations = updatedSteps[stepIndex].customizations.filter(
+               (_, index) => index !== customIndex
+           );
+           setSteps(updatedSteps);
+       };
+   
+       const handleInputChange = (stepIndex, customIndex, field, value) => {
+           const updatedSteps = [...steps];
+           updatedSteps[stepIndex].customizations[customIndex][field] = value;
+           setSteps(updatedSteps);
+       };
     return (
         <div className="additem container mt-4">
             {/* Header Section */}
@@ -78,9 +121,8 @@ const Additem = () => {
                     </div>
                 </div>
             </div>
-
-                        {/* Form Section */}
-                        <div className="add-form-bg mb-4">
+                  {/* Form Section */}
+                 <div className="add-form-bg mb-4">
                  <form>
                 {/* Row 1: Item Name, Ingredients, and Price */}
                 <div className="row mb-3 form-row">
@@ -184,7 +226,6 @@ const Additem = () => {
             </form>
             </div>
 
-
             <div className="customization-section mt-4">
                 <div className="d-flex gap-3">
                     <div className="form-check spicy-checkbox">
@@ -202,343 +243,229 @@ const Additem = () => {
 
             {/* Form Section after Customization Checkbox */}
             {selectedSpicyLevel && (
-                <>
-                 <div className="customization-form mt-4 p-4" style={{ backgroundColor: 'rgba(31, 29, 43, 1)' }}>
-                    <div className="addfood mb-2">
-                        <div className="padded-section">
-                            <div className="row">
-                                <div className="col-12">
-                                    <h4 className='text-light mb-2'>Step 1</h4>
-                                    <div className="hea-3">
-                                        <form className="form-layout pt-3">
-                                            <div className="form-row" style={{ display: "flex", alignItems: "center" }}>
+        <>
+          {steps.map((step, stepIndex) => (
+            <div
+              className="customization-form mt-4 p-4"
+              style={{ backgroundColor: "rgba(31, 29, 43, 1)" }}
+              key={stepIndex}
+            >
+              <div className="addfood mb-2">
+                <div className="padded-section">
+                  <div className="row">
+                    <div className="col-12">
+                    <div 
+                      className="d-flex justify-content-between align-items-center mb-2"
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                    >
+                      <h4 className="text-light mb-2">{step.stepName}</h4>
+                      <button
+                        style={{
+                          padding: "8px 16px",
+                          background: "transparent",
+                          border: "2px solid #dc3545",
+                          borderRadius: "5px",
+                          color: "#fff",
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          transition: "background-color 0.3s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#dc3545"; // Match the border color
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "transparent"; // Revert to transparent
+                        }}
+                        onClick={() => deleteStep(stepIndex)}
+                      >
+                        Delete step
+                      </button>
 
-                                                {/* Customization Title Input */}
-                                                <div className="col-12 col-md-3" style={{ marginRight: "10px" }}>
-                                                    <label htmlFor="itemname" className="form-label">Item Name</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        id="itemname"
-                                                        placeholder="Enter item name"
-                                                    />
-                                                </div>
-
-                                                {/* Checkbox Group for Selection Type */}
-                                                <div className="form-group" style={{ paddingTop: "35px", display: "flex", alignItems: "center" }}>
-                                                    <div className='checkbox-group' style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                                        <label className='text-light' style={{ display: "flex", alignItems: "center" }}>
-                                                            <input type="checkbox" value="multiple" style={{ borderRadius: "100%" }} /> Multiple
-                                                        </label>
-
-                                                        <label className='text-light' style={{ display: "flex", alignItems: "center" }}>
-                                                            <input type="checkbox" value="single" /> Single
-                                                        </label>
-                                                    </div>
-                                                </div>
-
-                                                {/* Add Customization Button */}
-                                                <div className="form-group-1 mt-3 text-end">
-                                                    <button
-                                                        className="btn-custom"
-                                                        style={{
-                                                            padding: "8px 16px",
-                                                            background: "rgba(202, 146, 61, 1)",
-                                                            border: "none",
-                                                            borderRadius: "5px",
-                                                            color: "#fff",
-                                                            marginLeft: '500px',
-                                                            fontWeight: "bold",
-                                                            cursor: "pointer",
-                                                            transition: "background-color 0.3s ease",
-                                                        }}>
-                                                        Add Customization
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                </div>
-                            </div>
-                       <br />
-                            {/* Customization Inputs in One Row (3 Inputs and Trash Icon Side by Side) */}
-                            <div className="padded-section-2 mb-2">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <div className="addddd p-2">
-                                            <form className="form-layout">
-                                                <div className="form-row" style={{ display: "flex", justifyContent: "space-between" }}>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemName" className='text-light'>Customization Name</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemName"
-                                                            placeholder="Enter Customization Name"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemIngredients" className='text-light'>Customization Detail</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemIngredients"
-                                                            placeholder="Enter Customization Detail"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1 }}>
-                                                        <label htmlFor="extraRate" className='text-light'>Extra Rate</label>
-                                                        <div style={{ position: 'relative' }}>
-                                                            <input
-                                                                type="number"
-                                                                id="extraRate"
-                                                                placeholder="Enter Extra Rate"
-                                                                className="form-control border-0"
-                                                                style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                            />
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="step-icon ">
-                                                        <FaRegTrashAlt
-                                                            className="text-light iconnn"
-
-                                                        />
-                                                    </div>
-                                                </div>
-                                           
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="padded-section-2 mb-2">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <div className="addddd p-2">
-                                            <form className="form-layout">
-                                                <div className="form-row" style={{ display: "flex", justifyContent: "space-between" }}>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemName" className='text-light'>Customization Name</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemName"
-                                                            placeholder="Enter Customization Name"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemIngredients" className='text-light'>Customization Detail</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemIngredients"
-                                                            placeholder="Enter Customization Detail"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1 }}>
-                                                        <label htmlFor="extraRate" className='text-light'>Extra Rate</label>
-                                                        <div style={{ position: 'relative' }}>
-                                                            <input
-                                                                type="number"
-                                                                id="extraRate"
-                                                                placeholder="Enter Extra Rate"
-                                                                className="form-control border-0"
-                                                                style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                            />
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="step-icon ">
-                                                        <FaRegTrashAlt
-                                                            className="text-light iconnn"
-                                                        />
-                                                    </div>
-                                                </div>
-                                           
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </div>
-            <div className="customization-form mt-4 p-4" style={{ backgroundColor: 'rgba(31, 29, 43, 1)' }}>
-                    <div className="addfood mb-2">
-                        <div className="padded-section">
-                            <div className="row">
-                                <div className="col-12">
-                                    <h4 className='text-light mb-2'>Step 2</h4>
-                                    <div className="hea-3">
-                                        <form className="form-layout pt-3">
-                                            <div className="form-row" style={{ display: "flex", alignItems: "center" }}>
-                                                <div className="col-12 col-md-3" style={{ marginRight: "10px" }}>
-                                                    <label htmlFor="itemname" className="form-label">Item Name</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        id="itemname"
-                                                        placeholder="Enter item name"
-                                                    />
-                                                </div>
 
-                                                {/* Checkbox Group for Selection Type */}
-                                                <div className="form-group" style={{ paddingTop: "35px", display: "flex", alignItems: "center" }}>
-                                                    <div className='checkbox-group' style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                                                        <label className='text-light' style={{ display: "flex", alignItems: "center" }}>
-                                                            <input type="checkbox" value="multiple" style={{ borderRadius: "100%" }} /> Multiple
-                                                        </label>
-
-                                                        <label className='text-light' style={{ display: "flex", alignItems: "center" }}>
-                                                            <input type="checkbox" value="single" /> Single
-                                                        </label>
-                                                    </div>
-                                                </div>
-
-                                                {/* Add Customization Button */}
-                                                <div className="form-group-1 mt-3 text-end">
-                                                    <button
-                                                        className="btn-custom"
-                                                        style={{
-                                                            padding: "8px 16px",
-                                                            background: "rgba(202, 146, 61, 1)",
-                                                            border: "none",
-                                                            borderRadius: "5px",
-                                                            color: "#fff",
-                                                            marginLeft: '500px',
-                                                            fontWeight: "bold",
-                                                            cursor: "pointer",
-                                                            transition: "background-color 0.3s ease",
-                                                        }}>
-                                                        Add Customization
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                </div>
+                      <div className="hea-3">
+                        <form className="form-layout pt-3">
+                          <div className="form-row" style={{ display: "flex", alignItems: "center" }}>
+                            {/* Customization Title Input */}
+                            <div className="col-12 col-md-3" style={{ marginRight: "10px" }}>
+                              <label htmlFor={`itemname-${stepIndex}`} className="form-label">
+                                Item Name
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id={`itemname-${stepIndex}`}
+                                placeholder="Enter item name"
+                              />
                             </div>
-                       <br />
-                            {/* Customization Inputs in One Row (3 Inputs and Trash Icon Side by Side) */}
-                            <div className="padded-section-2 mb-2">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <div className="addddd p-2">
-                                            <form className="form-layout">
-                                                <div className="form-row" style={{ display: "flex", justifyContent: "space-between" }}>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemName" className='text-light'>Customization Name</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemName"
-                                                            placeholder="Enter Customization Name"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemIngredients" className='text-light'>Customization Detail</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemIngredients"
-                                                            placeholder="Enter Customization Detail"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1 }}>
-                                                        <label htmlFor="extraRate" className='text-light'>Extra Rate</label>
-                                                        <div style={{ position: 'relative' }}>
-                                                            <input
-                                                                type="number"
-                                                                id="extraRate"
-                                                                placeholder="Enter Extra Rate"
-                                                                className="form-control border-0"
-                                                                style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                            />
 
-                                                        </div>
-                                                    </div>
-                                                    <div className="step-icon ">
-                                                        <FaRegTrashAlt
-                                                            className="text-light iconnn"
+                            {/* Checkbox Group for Selection Type */}
+                            <div
+                              className="form-group"
+                              style={{ paddingTop: "35px", display: "flex", alignItems: "center" }}
+                            >
+                              <div
+                                className="checkbox-group"
+                                style={{ display: "flex", gap: "10px", alignItems: "center" }}
+                              >
+                                <label className="text-light" style={{ display: "flex", alignItems: "center" }}>
+                                  <input type="checkbox" value="multiple" style={{ borderRadius: "100%" }} /> Multiple
+                                </label>
 
-                                                        />
-                                                    </div>
-                                                </div>
-                                           
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                <label className="text-light" style={{ display: "flex", alignItems: "center" }}>
+                                  <input type="checkbox" value="single" /> Single
+                                </label>
+                              </div>
                             </div>
-                            <div className="padded-section-2 mb-2">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <div className="addddd p-2">
-                                            <form className="form-layout">
-                                                <div className="form-row" style={{ display: "flex", justifyContent: "space-between" }}>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemName" className='text-light'>Customization Name</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemName"
-                                                            placeholder="Enter Customization Name"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
-                                                        <label htmlFor="itemIngredients" className='text-light'>Customization Detail</label>
-                                                        <input
-                                                            type="text"
-                                                            id="itemIngredients"
-                                                            placeholder="Enter Customization Detail"
-                                                            className="form-control border-0"
-                                                            style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group" style={{ flex: 1 }}>
-                                                        <label htmlFor="extraRate" className='text-light'>Extra Rate</label>
-                                                        <div style={{ position: 'relative' }}>
-                                                            <input
-                                                                type="number"
-                                                                id="extraRate"
-                                                                placeholder="Enter Extra Rate"
-                                                                className="form-control border-0"
-                                                                style={{ background: "rgba(45, 48, 62, 1)" }}
-                                                            />
 
-                                                        </div>
-                                                    </div>
-                                                    <div className="step-icon ">
-                                                        <FaRegTrashAlt
-                                                            className="text-light iconnn"
-
-                                                        />
-                                                    </div>
-                                                </div>
-                                           
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                            {/* Add Customization Button */}
+                            <div className="form-group-1 mt-3 text-end">
+                              <button
+                                className="btn-custom"
+                                style={{
+                                  padding: "8px 16px",
+                                  background: "rgba(202, 146, 61, 1)",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  color: "#fff",
+                                  marginLeft: "500px",
+                                  fontWeight: "bold",
+                                  cursor: "pointer",
+                                  transition: "background-color 0.3s ease",
+                                }}
+                                onClick={() => addCustomization(stepIndex)}
+                                type="button"
+                              >
+                                Add Customization
+                              </button>
                             </div>
-                        </div>
+                          </div>
+                        </form>
+                      </div>
                     </div>
+                  </div>
+                  <br />
+                  {/* Customization Inputs in One Row */}
+                  <div className="padded-section-2 mb-2">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="addddd p-2">
+                          <form className="form-layout">
+                            {step.customizations.map((custom, customIndex) => (
+                              <div
+                                className="form-row"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  marginBottom: "10px",
+                                }}
+                                key={customIndex}
+                              >
+                                <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
+                                  <label htmlFor={`name-${stepIndex}-${customIndex}`} className="text-light">
+                                    Customization Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    id={`name-${stepIndex}-${customIndex}`}
+                                    placeholder="Enter Customization Name"
+                                    className="form-control border-0"
+                                    style={{ background: "rgba(45, 48, 62, 1)" }}
+                                    value={custom.name}
+                                    onChange={(e) =>
+                                      handleInputChange(stepIndex, customIndex, "name", e.target.value)
+                                    }
+                                  />
+                                </div>
+                                <div className="form-group" style={{ flex: 1, marginRight: "10px" }}>
+                                  <label htmlFor={`detail-${stepIndex}-${customIndex}`} className="text-light">
+                                    Customization Detail
+                                  </label>
+                                  <input
+                                    type="text"
+                                    id={`detail-${stepIndex}-${customIndex}`}
+                                    placeholder="Enter Customization Detail"
+                                    className="form-control border-0"
+                                    style={{ background: "rgba(45, 48, 62, 1)" }}
+                                    value={custom.detail}
+                                    onChange={(e) =>
+                                      handleInputChange(stepIndex, customIndex, "detail", e.target.value)
+                                    }
+                                  />
+                                </div>
+                                <div className="form-group" style={{ flex: 1 }}>
+                                  <label htmlFor={`rate-${stepIndex}-${customIndex}`} className="text-light">
+                                    Extra Rate
+                                  </label>
+                                  <div style={{ position: "relative" }}>
+                                    <input
+                                      type="number"
+                                      id={`rate-${stepIndex}-${customIndex}`}
+                                      placeholder="Enter Extra Rate"
+                                      className="form-control border-0"
+                                      style={{ background: "rgba(45, 48, 62, 1)" }}
+                                      value={custom.rate}
+                                      onChange={(e) =>
+                                        handleInputChange(stepIndex, customIndex, "rate", e.target.value)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="step-icon">
+                                  <FaRegTrashAlt
+                                    className="text-light iconnn"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => removeCustomization(stepIndex, customIndex)}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                </>
-            )} 
+              </div>
+            </div>
+          ))}
+          {/* Add Step and Save Form Buttons */}
+          <div className="step-btn d-flex mt-3" style={{ gap: "16px", marginLeft: "990px" }}>
+            <button
+              className="btn-custom"
+              style={{
+                padding: "8px 16px",
+                background: "rgba(202, 146, 61, 1)",
+                border: "none",
+                borderRadius: "5px",
+                color: "#fff",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+              onClick={addStep}
+            >
+              Add Step
+            </button>
+            <button
+              className="btn-custom"
+              style={{
+                padding: "8px 16px",
+                background: "rgba(202, 146, 61, 1)",
+                border: "none",
+                borderRadius: "5px",
+                color: "#fff",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+            >
+              Save Form
+            </button>
+          </div>
+        </>
+      )} 
         </div>
     );
 };
