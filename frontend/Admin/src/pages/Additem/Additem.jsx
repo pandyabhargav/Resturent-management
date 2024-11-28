@@ -85,6 +85,23 @@ const Additem = () => {
     updatedSteps[stepIndex].customizations[customIndex][field] = value;
     setSteps(updatedSteps);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Prepare the data to be sent
+    const payload = {
+      name: formData.name,
+      description: formData.description,
+      ingredients: formData.ingredients,
+      steps: steps,
+      selected,
+      selectedSpicyLevel,
+    };
+    console.log("payload",payload);
+    
+  };
+
   return (
     <div className="additem container mt-4">
       <div className="add-bg mb-4">
@@ -93,19 +110,28 @@ const Additem = () => {
             <h1 className="h5 mb-0">Add Item</h1>
             <div className="add-btn d-flex gap-3">
               <button
-                type="button"className={`btn  d-flex px-3 align-items-center ${
+                type="button"
+                className={`btn  d-flex px-3 align-items-center ${
                   selected === "Veg"
                     ? "btn-success text-white"
                     : "btn-outline-success"
                 }`}
                 onClick={() => setSelected("Veg")}
               >
-                <span className="rounded-circle me-2"
-                  style={{width: "10px",height: "10px",backgroundColor: "green",}}></span>
+                <span
+                  className="rounded-circle me-2"
+                  style={{
+                    width: "10px",
+                    height: "10px",
+                    backgroundColor: "green",
+                  }}
+                ></span>
                 Veg
               </button>
 
-              <button type="button"className={`btn d-flex col-7 align-items-center ${
+              <button
+                type="button"
+                className={`btn d-flex col-7 align-items-center ${
                   selected === "Non-Veg"
                     ? "btn-danger text-white"
                     : "btn-outline-danger"
@@ -113,7 +139,12 @@ const Additem = () => {
                 onClick={() => setSelected("Non-Veg")}
               >
                 <span
-                  className="rounded-circle me-2"style={{width: "10px",height: "10px",backgroundColor: "red",}}
+                  className="rounded-circle me-2"
+                  style={{
+                    width: "10px",
+                    height: "10px",
+                    backgroundColor: "red",
+                  }}
                 ></span>
                 Non-Veg
               </button>
@@ -123,27 +154,39 @@ const Additem = () => {
       </div>
 
       <div className="add-form-bg mb-4">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="row mb-3 form-row">
             <div className="col-12 col-md-4">
               <label htmlFor="itemname" className="form-label">
                 Item Name
               </label>
-              <input type="text"className="form-control"id="itemname"placeholder="Enter item name"
+              <input
+                type="text"
+                className="form-control"
+                id="itemname"
+                placeholder="Enter item name"
               />
             </div>
             <div className="col-12 col-md-4">
               <label htmlFor="itemingredients" className="form-label">
                 Item Ingredients
               </label>
-              <input type="text" className="form-control" id="itemingredients" placeholder="Enter ingredients"
+              <input
+                type="text"
+                className="form-control"
+                id="itemingredients"
+                placeholder="Enter ingredients"
               />
             </div>
             <div className="col-12 col-md-4">
               <label htmlFor="itemprice" className="form-label">
                 Item Price
               </label>
-              <input type="number" className="form-control" id="itemprice" placeholder="Enter item price"
+              <input
+                type="number"
+                className="form-control"
+                id="itemprice"
+                placeholder="Enter item price"
               />
             </div>
           </div>
@@ -153,7 +196,11 @@ const Additem = () => {
               <label htmlFor="adddiscount" className="form-label">
                 Add Discount (%)
               </label>
-              <input type="number" className="form-control" id="adddiscount" placeholder="Enter discount percentage"
+              <input
+                type="number"
+                className="form-control"
+                id="adddiscount"
+                placeholder="Enter discount percentage"
               />
             </div>
             <div className="col-12 col-md-4">
@@ -171,16 +218,35 @@ const Additem = () => {
               <label className="form-label">Spicy Level</label>
               <div className="d-flex gap-3">
                 <div className="form-check">
-                  <input className="form-check-input"type="checkbox"id="lessspicy"/>
-                  <label className="form-check-label" htmlFor="lessspicy">Less Spicy</label>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="lessspicy"
+                  />
+                  <label className="form-check-label" htmlFor="lessspicy">
+                    Less Spicy
+                  </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input" type="checkbox" id="regular"/>
-                  <label className="form-check-label" htmlFor="regular"> Regular</label>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="regular"
+                  />
+                  <label className="form-check-label" htmlFor="regular">
+                    {" "}
+                    Regular
+                  </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input"type="checkbox"id="extra"/>
-                    <label className="form-check-label" htmlFor="extra">Extra</label>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="extra"
+                  />
+                  <label className="form-check-label" htmlFor="extra">
+                    Extra
+                  </label>
                 </div>
               </div>
             </div>
@@ -188,7 +254,14 @@ const Additem = () => {
 
           <div
             className="row mb-3 drop-area"
-            style={{display: "flex",justifyContent: "center",alignItems: "center",border: "2px dashed #ccc",height: "200px",position: "relative",}}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "2px dashed #ccc",
+              height: "200px",
+              position: "relative",
+            }}
             onDrop={handleImageDrop}
             onDragOver={(e) => e.preventDefault()}
             onClick={() => document.getElementById("fileInput").click()}
@@ -203,16 +276,31 @@ const Additem = () => {
               <p className="text-center">Drop Image Here or Click to Select</p>
             )}
 
-            <input type="file"id="fileInput"style={{ display: "none" }}accept="image/*"onChange={handleImageSelect}/>
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: "none" }}
+              accept="image/*"
+              onChange={handleImageSelect}
+            />
           </div>
         </form>
       </div>
 
+      {/* Customization Form */}
       <div className="customization-section mt-4">
         <div className="d-flex gap-3">
           <div className="form-check spicy-checkbox">
-            <input className="form-check-input"type="checkbox"id="lessspicy"checked={selectedSpicyLevel === "lessspicy"}onChange={() => handleSpicyLevelChange("lessspicy")}/>
-            <label className="form-check-label" htmlFor="lessspicy">Customization</label>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="lessspicy"
+              checked={selectedSpicyLevel === "lessspicy"}
+              onChange={() => handleSpicyLevelChange("lessspicy")}
+            />
+            <label className="form-check-label" htmlFor="lessspicy">
+              Customization
+            </label>
           </div>
         </div>
       </div>
@@ -220,18 +308,36 @@ const Additem = () => {
       {selectedSpicyLevel && (
         <>
           {steps.map((step, stepIndex) => (
-            <div className="customization-form mt-4 p-4"style={{ backgroundColor: "rgba(31, 29, 43, 1)" }}key={stepIndex}>
+            <div
+              className="customization-form mt-4 p-4"
+              style={{ backgroundColor: "rgba(31, 29, 43, 1)" }}
+              key={stepIndex}
+            >
               <div className="addfood mb-2">
                 <div className="padded-section">
                   <div className="row">
                     <div className="col-12">
                       <div
                         className="d-flex justify-content-between align-items-center mb-2"
-                        style={{display: "flex",justifyContent: "space-between",alignItems: "center",}}>
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
                         <h4 className="text-light mb-2">{step.stepName}</h4>
                         <button
                           className="col-1"
-                          style={{padding: "8px 16px",background: "transparent",border: "2px solid #dc3545",borderRadius: "5px",color: "#fff",fontWeight: "bold",cursor: "pointer",transition: "background-color 0.3s ease",}}
+                          style={{
+                            padding: "8px 16px",
+                            background: "transparent",
+                            border: "2px solid #dc3545",
+                            borderRadius: "5px",
+                            color: "#fff",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                            transition: "background-color 0.3s ease",
+                          }}
                           onMouseEnter={(e) => {
                             e.target.style.backgroundColor = "#dc3545"; // Match the border color
                           }}
@@ -246,18 +352,44 @@ const Additem = () => {
 
                       <div className="hea-3">
                         <form className="form-layout pt-3">
-                          <div className="form-row"style={{ display: "flex", alignItems: "center" }}>
-
-                            <div className="col-12 col-md-3"style={{ marginRight: "10px" }}>
-                            <label htmlFor={`itemname-${stepIndex}`}className="form-label">
+                          <div
+                            className="form-row"
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <div
+                              className="col-12 col-md-3"
+                              style={{ marginRight: "10px" }}
+                            >
+                              <label
+                                htmlFor={`itemname-${stepIndex}`}
+                                className="form-label"
+                              >
                                 Item Name
-                            </label>
-                              <input type="text"className="form-control"id={`itemname-${stepIndex}`}placeholder="Enter item name"/>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id={`itemname-${stepIndex}`}
+                                placeholder="Enter item name"
+                              />
                             </div>
 
-                      
-                            <div className="form-group"style={{paddingTop: "35px",display: "flex",alignItems: "center",}}>
-                                <div className="checkbox-group"style={{display: "flex",gap: "10px",alignItems: "center",}}>
+                            <div
+                              className="form-group"
+                              style={{
+                                paddingTop: "35px",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div
+                                className="checkbox-group"
+                                style={{
+                                  display: "flex",
+                                  gap: "10px",
+                                  alignItems: "center",
+                                }}
+                              >
                                 <label
                                   className="text-light"
                                   style={{
@@ -395,7 +527,15 @@ const Additem = () => {
                                     Extra Rate
                                   </label>
                                   <div style={{ position: "relative" }}>
-                                    <input type="number" id={`rate-${stepIndex}-${customIndex}`}placeholder="Enter Extra Rate"className="form-control border-0"style={{background: "rgba(45, 48, 62, 1)",}}value={custom.rate}
+                                    <input
+                                      type="number"
+                                      id={`rate-${stepIndex}-${customIndex}`}
+                                      placeholder="Enter Extra Rate"
+                                      className="form-control border-0"
+                                      style={{
+                                        background: "rgba(45, 48, 62, 1)",
+                                      }}
+                                      value={custom.rate}
                                       onChange={(e) =>
                                         handleInputChange(
                                           stepIndex,
@@ -409,7 +549,8 @@ const Additem = () => {
                                 </div>
                                 <div className="step-icon">
                                   <FaRegTrashAlt
-                                    className="text-light iconnn" style={{ cursor: "pointer" }}
+                                    className="text-light iconnn"
+                                    style={{ cursor: "pointer" }}
                                     onClick={() =>
                                       removeCustomization(
                                         stepIndex,
@@ -429,11 +570,39 @@ const Additem = () => {
               </div>
             </div>
           ))}
-          <div className="step-btn d-flex mt-3" style={{ gap: "16px", marginLeft: "990px" }}>
-            <button className="btn-custom" style={{padding: "8px 16px",background: "rgba(202, 146, 61, 1)",border: "none",borderRadius: "5px",color: "#fff",fontWeight: "bold",cursor: "pointer",transition: "background-color 0.3s ease",}} onClick={addStep}>
+          <div
+            className="step-btn d-flex mt-3"
+            style={{ gap: "16px", marginLeft: "990px" }}
+          >
+            <button
+              className="btn-custom"
+              style={{
+                padding: "8px 16px",
+                background: "rgba(202, 146, 61, 1)",
+                border: "none",
+                borderRadius: "5px",
+                color: "#fff",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+              onClick={addStep}
+            >
               Add Step
             </button>
-            <button className="btn-custom" style={{padding: "8px 16px",background: "rgba(202, 146, 61, 1)",border: "none",borderRadius: "5px",color: "#fff",fontWeight: "bold",cursor: "pointer",transition: "background-color 0.3s ease",}}>
+            <button
+              className="btn-custom"
+              style={{
+                padding: "8px 16px",
+                background: "rgba(202, 146, 61, 1)",
+                border: "none",
+                borderRadius: "5px",
+                color: "#fff",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+              }}
+            >
               Save Form
             </button>
           </div>
