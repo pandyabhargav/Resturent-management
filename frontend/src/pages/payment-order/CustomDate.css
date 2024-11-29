@@ -1,0 +1,169 @@
+/* Universal Reset */
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Barlow", sans-serif;
+  font-weight: 500;
+}
+.payment-order{
+  width: 100%;
+}
+.payment-order .w {
+  width: 90%;
+}
+
+/* Container styling */
+.payment-order .co {
+  padding: 20px;
+  background-color: #2D303E;
+  color: #fff;
+  max-width: 1500px;
+  /* margin: 0 auto; */
+  border-radius: 10px;
+}
+
+.payment-order .main-div {
+  background-color: #1F1D2B;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+/* Header component */
+.payment-order .header-component {
+  /* justify-content: center; */
+  display: flex;
+  padding: 20px 0;
+}
+
+.payment-order .custom-table {
+  text-align: center;
+  width: 1500px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #1F1D2B;
+  padding: 10px 20px;
+}
+
+.payment-order .custom-table h2 {
+  color: #CA923D;
+  font-size: 24px;
+}
+
+/* Order Header */
+.payment-order .order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: rgba(202, 146, 61, 1);
+  color: white;
+  border-radius: 20px 20px 0 0;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Order List */
+.payment-order .order-list {
+  background-color: #1F1D2B;
+}
+
+.payment-order .order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #2A2A38;
+  color: #ABBBC2;
+}
+
+.payment-order .order-item div {
+  flex: 1;
+  text-align: center;
+}
+
+/* Total Bill Background */
+.payment-order .total-bill-background {
+  position: relative;
+  text-align: center;
+  color: #218838;
+  padding: 10px;
+}
+
+.payment-order .total-bill-background::before {
+  content: '';
+  position: absolute;
+  width: 61px;
+  height: 35px;
+  top: 4px;
+  left: 65px;
+  bottom: 5px;
+  border-radius: 25px;
+  color: white;
+  background-color: rgba(37, 40, 54, 1);
+  z-index: -1;
+}
+
+/* Additional styles */
+.payment-order .check-button {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(45, 48, 62, 1);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.payment-order .check-button:hover {
+  background-color: #373d55;
+}
+
+.payment-order img, .payment-order svg {
+  vertical-align: middle;
+  color: #5678E9;
+}
+
+.payment-order .modal-content {
+  color: white !important;
+  background-color: #252836 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .payment-order .container {
+    padding: 15px;
+  }
+
+  .payment-order .custom-table {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .payment-order .custom-table h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .payment-order .order-header, .payment-order .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .payment-order .order-header div, .payment-order .order-item div {
+    text-align: left;
+    padding: 10px;
+  }
+
+  .payment-order .date-inputs {
+    flex-direction: column;
+  }
+
+  .payment-order .amount-details {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

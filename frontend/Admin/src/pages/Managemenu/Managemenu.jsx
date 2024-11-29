@@ -263,6 +263,7 @@ const Managemenu = () => {
     setExpandedDescription(expandedDescription === index ? null : index);
   };
 
+<<<<<<< HEAD
   const handleSave = async () => {
     console.log("Form Data:", formData); // Ensure formData contains all expected fields
 
@@ -360,6 +361,8 @@ const Managemenu = () => {
       console.error("Error fetching item data:", error.message || error);
     }
   };
+=======
+>>>>>>> abf3e8a1860a233114976716c0aeda60bf7082bb
   const handleButtonClick = (category) => {
     // Navigate to the next page with state
     navigate("/additems", { state: { category } });
@@ -416,6 +419,10 @@ const Managemenu = () => {
               {category.name === category.name && (
                 <button
                   className="add-category-btn col-2"
+<<<<<<< HEAD
+=======
+                  // onClick={() => navigate("/additems")}
+>>>>>>> abf3e8a1860a233114976716c0aeda60bf7082bb
                   onClick={() => handleButtonClick(category._id)}
                 >
                   <span
@@ -451,7 +458,10 @@ const Managemenu = () => {
                       style={{ border: "none", overflow: "hidden" }}
                     >
                       <div className="card-img-wrapper">
+<<<<<<< HEAD
                         {/* {console.log("item.image", item.image)} */}
+=======
+>>>>>>> abf3e8a1860a233114976716c0aeda60bf7082bb
                         <Card.Img variant="top" src={item.image} />
                         <div
                           className="three-dots"
