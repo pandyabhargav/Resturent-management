@@ -1,9 +1,10 @@
 const Category = require("../models/Category.js");
+const RestaurantItem = require("../models/Item.js");
 
 const RestaurantCategoryAdd = async (req, res) => {
   try {
     const { name, restaurant } = req.body;
-    console.log("name, restaurant", req.body);
+    console.log("req.user.restaurant", req.user.restaurant);
 
     const restaurantcategorys = await Category.findOne({
       name: name,
@@ -35,7 +36,9 @@ const RestaurantCategorysGet = async (req, res) => {
   try {
     const { name, page = 1, limit = 10 } = req.query;
 
-    const filter = {};
+    const filter = {
+      restaurant: req.user.restaurant,
+    };
     if (name) {
       filter.name = { $regex: name, $options: "i" }; // Case-insensitive regex search
     }
@@ -53,6 +56,17 @@ const RestaurantCategorysGet = async (req, res) => {
         message: "The Category data does not exist.",
       });
     }
+    const categoriesWithItems = await Promise.all(
+      existingRestaurantCategory.map(async (category) => {
+        const items = await RestaurantItem.find({
+          category: category._id,
+        }).exec();
+        return {
+          ...category.toObject(),
+          items, // Add items to the category
+        };
+      })
+    );
 
     const totalCategories = await Category.countDocuments(filter);
 
@@ -64,7 +78,7 @@ const RestaurantCategorysGet = async (req, res) => {
         limit: parseInt(limit),
         totalPages: Math.ceil(totalCategories / limit),
       },
-      data: existingRestaurantCategory,
+      data: categoriesWithItems,
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

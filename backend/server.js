@@ -25,7 +25,7 @@ app.use(
     },
   })
 );
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -42,11 +42,11 @@ app.use(
 );
 
 // Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // Limit each IP to 100 requests per windowMs
+// });
+// app.use(limiter);
 
 // Routes
 app.use("/", require("./routes/index.js"));

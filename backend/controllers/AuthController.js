@@ -20,7 +20,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Password Dose not match" });
     }
     const token = jwt.sign({ user: restaurantowner }, process.env.JWT_SECRET, {
-      expiresIn: "7day",
+      expiresIn: "30day",
     });
 
     res.status(200).json({
