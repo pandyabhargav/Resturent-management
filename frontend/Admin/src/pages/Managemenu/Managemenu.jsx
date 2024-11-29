@@ -195,6 +195,11 @@ const Managemenu = () => {
     setExpandedDescription(expandedDescription === index ? null : index);
   };
 
+  const handleButtonClick = (category) => {
+    // Navigate to the next page with state
+    navigate("/additems", { state: { category } });
+  };
+
   return (
     <div className="menu-wrapper mb-5">
       <div className="tab-header">
@@ -246,7 +251,8 @@ const Managemenu = () => {
               {category.name === category.name && (
                 <button
                   className="add-category-btn col-2"
-                  onClick={() => navigate("/additems")}
+                  // onClick={() => navigate("/additems")}
+                  onClick={() => handleButtonClick(category._id)}
                 >
                   <span
                     style={{
@@ -281,7 +287,6 @@ const Managemenu = () => {
                       style={{ border: "none", overflow: "hidden" }}
                     >
                       <div className="card-img-wrapper">
-                        {console.log("item.image", item.image)}
                         <Card.Img variant="top" src={item.image} />
                         <div
                           className="three-dots"
