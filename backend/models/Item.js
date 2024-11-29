@@ -11,6 +11,7 @@ const itemSchema = new mongoose.Schema(
     ingredients: { type: String },
     price: { type: Number, required: true },
     discount: { type: Number, default: 0 },
+    itemType: { type: String, enum: ["Veg", "Nonveg"], required: true },
     type: { type: String, enum: ["Spicy", "Sweet"], required: true },
     options: {
       type: String,
@@ -27,7 +28,6 @@ const itemSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Customization",
-        required: true,
       },
     ],
     createdBy: { type: String },

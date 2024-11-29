@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate to navigate to login page
+import { useNavigate } from 'react-router-dom'; 
 import './Changepass.css';
 
 const Changepass = () => {
@@ -9,8 +9,8 @@ const Changepass = () => {
     confirmPassword: '',
   });
 
-  const [errorMessage, setErrorMessage] = useState(''); // State for error message
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,13 +29,13 @@ const Changepass = () => {
     }
 
     try {
-      const token = localStorage.getItem('jwtToken'); // Retrieve JWT token from localStorage
+      const token = localStorage.getItem('jwtToken');
 
       const response = await fetch('http://localhost:5000/api/v1/auth/password-reset-currant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Add JWT token to the Authorization header
+          'Authorization': `Bearer ${token}`, 
         },
         body: JSON.stringify({
           currantPassword: formData.currentPassword,
@@ -51,7 +51,7 @@ const Changepass = () => {
         alert("Password changed successfully!");
         navigate('/login');
       } else {
-        // Set error message from API response
+        
         setErrorMessage(data.message || 'Something went wrong, please try again.');
       }
     } catch (error) {

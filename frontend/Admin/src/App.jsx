@@ -17,7 +17,7 @@ import Header from './pages/Header/Header';
 import Page2 from './pages/parsel-page/mainpage';
 import CustomDate from './pages/payment-order/Date';
 import OnsiteOrder from './pages/table-dash/Tableapp';
-// import Page2 from './pages/parsel-page/mainpage';
+
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('jwtToken');

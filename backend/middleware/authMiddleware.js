@@ -34,6 +34,39 @@ const authMiddleware = (req, res, next) => {
       .json({ ErrorCode: "INVALID TOKEN", ErrorMessage: "Token not provided" });
   }
 };
+const userAuthMiddleware = (req, res, next) => {
+  const bearerHeader = req.headers["authorization"];
+
+  if (typeof bearerHeader !== "undefined") {
+    const token = bearerHeader.startsWith("Bearer ")
+      ? bearerHeader.split(" ")[1]
+      : bearerHeader;
+
+    if (blacklist.has(token)) {
+      return res.status(401).json({
+        ErrorCode: "TOKEN_BLACKLISTED",
+        ErrorMessage: "Token has been valid. Please log in again.",
+      });
+    }
+
+    jwt.verify(token, process.env.USER_JWT_SECRET, (err, decoded) => {
+      if (err) {
+        res.status(400).json({
+          ErrorCode: "INVALID TOKEN",
+          ErrorMessage: "Token is invalid",
+          Error: err,
+        });
+      } else {
+        req.user = decoded.user;
+        next();
+      }
+    });
+  } else {
+    res
+      .status(400)
+      .json({ ErrorCode: "INVALID TOKEN", ErrorMessage: "Token not provided" });
+  }
+};
 
 const logout = async (req, res) => {
   try {
@@ -71,4 +104,4 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { authMiddleware, logout, authorize };
+module.exports = { authMiddleware, logout, authorize, userAuthMiddleware };

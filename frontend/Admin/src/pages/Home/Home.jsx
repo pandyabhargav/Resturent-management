@@ -27,12 +27,12 @@ const Home = () => {
   };
 
   const handleLogout = async () => {
-    // Retrieve the JWT token (assuming it's stored in localStorage)
-    const token = localStorage.getItem('jwtToken'); // Replace 'jwtToken' with your actual storage key
+    
+    const token = localStorage.getItem('jwtToken');
     
     try {
       const response = await fetch('http://localhost:5000/api/v1/auth/logout', {
-        method: 'POST', // Assuming it's a POST request for logout
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`, // Pass the JWT token in the Authorization header
@@ -47,7 +47,6 @@ const Home = () => {
         navigate('/login'); // Navigate to the login page
         alert('Logged out successfully!');
       } else {
-        // Handle error, e.g., show a message to the user
         alert('Logout failed! Please try again.');
       }
     } catch (error) {
@@ -103,7 +102,7 @@ const Home = () => {
                 </div>
                 <div className="dropdown-menu" style={{ display: openDropdown === 'paymentHistory' ? 'block' : 'none' }}>
                   <Link to={'/parelorder'} className="dropdown-item">Parcel order</Link>
-                  <Link to={'/orderdash'} className="dropdown-item">Onsite Order</Link>
+                  <Link to={'/parelorder'} className="dropdown-item">Onsite Order</Link>
                 </div>
               </div>
 

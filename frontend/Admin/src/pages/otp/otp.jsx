@@ -52,7 +52,7 @@ const Otp = () => {
             console.error('Error saving OTP to localStorage:', error);
           }
         }
-        navigate('/Resetpass'); // Redirect to change password page
+        navigate('/Resetpass'); 
       } else {
         console.error('Failed to submit OTP and password.');
       }
@@ -96,7 +96,6 @@ const Otp = () => {
               </Form>
             </div>
             <div className="background-image">
-              {/* Add your background image here */}
             </div>
           </Col>
           <Col xs={12} md={6}>

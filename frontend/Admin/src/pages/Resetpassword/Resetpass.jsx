@@ -12,7 +12,7 @@ function Resetpassword() {
     const [msg, setMsg] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const navigate = useNavigate(); // useNavigate hook
+    const navigate = useNavigate(); 
 
     const pwdconfirm = (e) => {
         const { name, value } = e.target;

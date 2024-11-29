@@ -112,7 +112,7 @@ function Page2() {
       quantity: '900 G.M',
       totalBill: '₹500',
     },
-    // Add more orders...
+
   ];
   const handleTabClick = (tab) => {
     setActiveTab(tab); // Update active tab state when clicked

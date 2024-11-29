@@ -33,6 +33,7 @@ const Managemenu = () => {
   const [showAddCategoryPopup, setShowAddCategoryPopup] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: "", image: null });
   const [showAddBurgerPopup, setShowAddBurgerPopup] = useState(false);
+
   const [burgerData, setBurgerData] = useState({
     name: "",
     description: "",
@@ -42,62 +43,52 @@ const Managemenu = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchCategoriesAndItems = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      setError("JWT token is missing");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Fetch categories
+      const categoryResponse = await axios.get(
+        "http://localhost:5000/api/v1/category/restaurantcategorys-get",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (categoryResponse.data.success) {
+        setCategories(categoryResponse.data.data || []);
+      } else {
+        setError("Failed to fetch categories");
+      }
+
+      // Fetch items
+      const itemResponse = await axios.get(
+        "http://localhost:5000/api/v1/item/restaurantitems-get",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (itemResponse.data.success) {
+        setItems(itemResponse.data.data || []);
+      } else {
+        setError("Failed to fetch items");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Error fetching categories and items"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Use effect to call the function when the component mounts
   useEffect(() => {
-    const fetchCategoriesAndItems = async () => {
-      setLoading(true);
-      const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        setError("JWT token is missing");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        // Fetch categories
-        const categoryResponse = await axios.get(
-          "http://localhost:5000/api/v1/category/restaurantcategorys-get",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        console.log("Fetched Categories Response:", categoryResponse.data);
-
-        if (categoryResponse.data.success) {
-          setCategories(categoryResponse.data.data || []);
-          console.log("Fetched Categories:", categoryResponse.data.data);
-        } else {
-          setError("Failed to fetch categories");
-          console.log("API Response Error:", categoryResponse.data.message);
-        }
-
-        // Fetch items
-        const itemResponse = await axios.get(
-          "http://localhost:5000/api/v1/item/restaurantitems-get",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        console.log("Fetched Items Response:", itemResponse.data);
-
-        if (itemResponse.data.success) {
-          setItems(itemResponse.data.data || []); // Set items data
-          console.log("Fetched Items:", itemResponse.data.data);
-        } else {
-          setError("Failed to fetch items");
-          console.log("API Response Error:", itemResponse.data.message);
-        }
-      } catch (err) {
-        setError(
-          err.response?.data?.message || "Error fetching categories and items"
-        );
-        console.error("Error during fetch:", err.response || err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCategoriesAndItems();
   }, []); // Run once when the component mounts
 
@@ -151,6 +142,7 @@ const Managemenu = () => {
         alert("Category added successfully!");
         setNewCategory({ name: "", image: null });
         setShowAddCategoryPopup(false);
+        fetchCategoriesAndItems();
       } else {
         alert("Error uploading image. Please try again.");
       }
@@ -165,24 +157,100 @@ const Managemenu = () => {
 
   const handleCloseDelete = () => setShowDeleteModal(false);
 
-  const handleConfirmDelete = () => {
-    const updatedCategories = categories.filter(
-      (category) => category.key !== deleteItemId
-    );
-    setCategories(updatedCategories);
-    setShowDeleteModal(false);
+  const handleConfirmDelete = async () => {
+    if (!deleteItemId) {
+      console.error("No item selected for deletion.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("jwtToken"); // Assuming token is stored in localStorage
+      if (!token) {
+        console.error("No token found. Please log in.");
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/v1/item/restaurantitem-delete/${deleteItemId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log("Item deleted successfully.");
+        setItems((prevItems) =>
+          prevItems.filter((item) => item._id !== deleteItemId)
+        );
+      } else {
+        const errorData = await response.json();
+        console.error("Error deleting item:", errorData);
+      }
+    } catch (error) {
+      console.error("Error during deletion:", error);
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteItemId(null);
+    }
   };
 
-  const handleEditClick = () => {
-    setShowModal(true);
-  };
+  // const handleEditClick = () => {
+  //   setShowModal(true);
+  // };
 
   const handleClose = () => {
     setShowModal(false); // Close modal
   };
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        console.error("No token found. Please log in.");
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:5000/api/v1/upload/img-upload",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Image uploaded successfully:", result);
+        setFormData((prevData) => ({
+          ...prevData,
+          image: result.imageUrl, // Assume the API returns the uploaded image's URL in `imageUrl`
+        }));
+      } else {
+        console.error("Error uploading image:", result);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -193,6 +261,108 @@ const Managemenu = () => {
 
   const handleDescriptionClick = (index) => {
     setExpandedDescription(expandedDescription === index ? null : index);
+  };
+
+  const handleSave = async () => {
+    console.log("Form Data:", formData); // Ensure formData contains all expected fields
+
+    const updatedItem = {
+      name: formData.title,
+      price: formData.rate,
+      ingredients: formData.ingredients,
+      discount: formData.discount,
+      availability:
+        formData.availability === "Available" ? "Available" : "Unavailable",
+      image: formData.image, // Include the uploaded image URL
+    };
+
+    console.log("Updated Item:", updatedItem);
+
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      console.error("No token found. Please log in.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/item/restaurantitem-update/${formData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedItem),
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Item updated successfully:", result);
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item._id === formData.id ? { ...item, ...updatedItem } : item
+          )
+        );
+      } else {
+        console.error("Error response:", result);
+      }
+    } catch (error) {
+      console.error("Error updating item:", error);
+    }
+  };
+
+  const handleEditClick = async (itemId) => {
+    console.log("Fetching item data for ID:", itemId); // Log itemId
+    const url = `http://localhost:5000/api/v1/item/restaurantitem-get/${itemId}`;
+    console.log("Fetching from URL:", url); // Log URL
+
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem("jwtToken"); // Assuming the token is stored as 'token' in localStorage
+
+    try {
+      const response = await fetch(url, {
+        method: "GET", // The default method is GET, so it's optional
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Add the token in the Authorization header
+        },
+      });
+
+      const data = await response.json();
+      console.log("API Response:", data); // Log full API response
+
+      if (response.ok) {
+        console.log("API returned successful response.");
+
+        // Log the image before setting form data
+        console.log("Image URL:", data.data.image); // Log the image URL
+
+        // Populate the form data with the API response
+        setFormData({
+          id: data.data._id,
+          title: data.data.name, // Set item name
+          image: data.data.image, // Set image
+          ingredients: data.data.ingredients, // Set ingredients
+          rate: data.data.price, // Set price as rate
+          discount: data.data.discount || 0, // Set discount (default to 0 if not present)
+          availability: data.data.availability, // Set availability
+        });
+        setShowModal(true); // Show the modal after setting form data
+      } else {
+        console.error(
+          "Failed to fetch item data:",
+          data.message || "Unknown error"
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching item data:", error.message || error);
+    }
+  };
+  const handleButtonClick = (category) => {
+    // Navigate to the next page with state
+    navigate("/additems", { state: { category } });
   };
 
   return (
@@ -246,7 +416,7 @@ const Managemenu = () => {
               {category.name === category.name && (
                 <button
                   className="add-category-btn col-2"
-                  onClick={() => navigate("/additems")}
+                  onClick={() => handleButtonClick(category._id)}
                 >
                   <span
                     style={{
@@ -265,10 +435,10 @@ const Managemenu = () => {
             na postman ma thi tari api post kari ti
             chale   j   che img  valu ok   */}
             <Container className="m-0" fluid>
-              <Row className="menu-grid row-cols-1 row-cols-sm-2 row-cols-md-3">
+              <Row className="menu-grid col-12 d-flex flex-wrap row-cols-1 row-cols-sm-2 row-cols-md-3">
                 {(items || []).map((item, index) => (
                   <div
-                    className="card-item"
+                    className="card-item col-3"
                     key={item._id}
                     style={{
                       width: "18rem",
@@ -277,11 +447,11 @@ const Managemenu = () => {
                     }}
                   >
                     <Card
-                      className="h-100"
+                      className="h-100 col-12 "
                       style={{ border: "none", overflow: "hidden" }}
                     >
                       <div className="card-img-wrapper">
-                        {console.log("item.image", item.image)}
+                        {/* {console.log("item.image", item.image)} */}
                         <Card.Img variant="top" src={item.image} />
                         <div
                           className="three-dots"
@@ -297,14 +467,32 @@ const Managemenu = () => {
                             style={{ backgroundColor: "rgba(37, 40, 54, 1)" }}
                           >
                             <button
-                              className="edit-btn"
-                              onClick={handleEditClick}
+                              className="edit-btn "
+                              onClick={() => {
+                                console.log(
+                                  "Edit button clicked for ID:",
+                                  item._id
+                                ); // Debugging
+                                if (item._id) {
+                                  handleEditClick(item._id);
+                                } else {
+                                  console.error("Item ID is undefined");
+                                }
+                              }}
                             >
                               Edit
                             </button>
                             <button
                               className="delete-btn"
                               onClick={() => handleDeleteClick(item._id)}
+                              style={{
+                                backgroundColor: "#d9534f",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "4px",
+                                padding: "5px 10px",
+                                cursor: "pointer",
+                              }}
                             >
                               Delete
                             </button>
@@ -322,7 +510,7 @@ const Managemenu = () => {
                                   : ""
                               }...`}
                           <span
-                            className="expand-text"
+                            className="expand-text text-white"
                             onClick={() =>
                               setExpandedDescription(
                                 expandedDescription === index ? null : index
@@ -334,7 +522,7 @@ const Managemenu = () => {
                               : " Read More"}
                           </span>
                         </Card.Text>
-                        <Card.Text className="price">{item.price}</Card.Text>
+                        <Card.Text className="price">₹{item.price}</Card.Text>
                       </Card.Body>
                     </Card>
                   </div>
@@ -344,234 +532,275 @@ const Managemenu = () => {
           </Tab>
         ))}
       </Tabs>
+
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header>
+          <Modal.Title className="text-start">Edit Item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <div
+              {...getRootProps()}
+              style={{
+                border: "2px dashed #ddd",
+                padding: "20px",
+                textAlign: "center",
+                marginBottom: "15px",
+              }}
+            >
+              <input
+                {...getInputProps()}
+                onChange={(e) => handleImageChange(e)} // Handles image upload
+              />
+              {formData.image ? (
+                <div>
+                  <p>Image selected:</p>
+                  <img
+                    src={formData.image} // Display the uploaded or selected image
+                    alt="Selected"
+                    style={{
+                      width: "100px",
+                      height: "auto",
+                      marginBottom: "10px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                </div>
+              ) : (
+                <p>
+                  <span style={{ fontSize: "20px" }}>
+                    <FaImage />ㅤ
+                  </span>
+                  Choose Image
+                </p>
+              )}
+            </div>
+
+            <Row className="mb-3">
+              <Form.Group className="mb-3">
+                <Form.Label>Item Name</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  style={{
+                    padding: "0.75rem 1rem",
+                    fontSize: "1rem",
+                    borderRadius: "5px",
+                    border: "1px solid #bbb",
+                    color: "#bbb",
+                  }}
+                >
+                  <option value="" disabled>
+                    Select Item
+                  </option>
+                  {(items || []).map((item, index) => (
+                    <option key={index} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Row>
+              <Form.Group>
+                <Form.Label>Ingredients</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="ingredients"
+                  value={formData.ingredients}
+                  onChange={handleInputChange}
+                  placeholder="Enter ingredients"
+                  style={{
+                    padding: "0.75rem 1rem",
+                    fontSize: "1rem",
+                    borderRadius: "5px",
+                    border: "1px solid #bbb",
+                    backgroundColor: "rgba(45, 48, 62, 1)",
+                  }}
+                />
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Col>
+                <Form.Group>
+                  <Form.Label>Rate</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="rate"
+                    value={formData.rate}
+                    onChange={handleInputChange}
+                    placeholder="Enter rate"
+                    style={{
+                      padding: "0.75rem 1rem",
+                      fontSize: "1rem",
+                      borderRadius: "5px",
+                      border: "1px solid #bbb",
+                      backgroundColor: "rgba(45, 48, 62, 1)",
+                    }}
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>Discount</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="discount"
+                    value={formData.discount}
+                    onChange={handleInputChange}
+                    placeholder="Enter discount"
+                    style={{
+                      padding: "0.75rem 1rem",
+                      fontSize: "1rem",
+                      borderRadius: "5px",
+                      border: "1px solid #bbb",
+                      backgroundColor: "rgba(45, 48, 62, 1)",
+                    }}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Availability</Form.Label>
+              <Form.Control
+                as="select"
+                name="availability"
+                value={formData.availability}
+                onChange={handleInputChange}
+                style={{
+                  padding: "0.75rem 1rem",
+                  fontSize: "1rem",
+                  borderRadius: "5px",
+                  border: "1px solid #bbb",
+                  color: "#bbb",
+                }}
+              >
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={handleClose}
+            style={{
+              backgroundColor: "rgba(51, 55, 72, 1)",
+              border: "1px solid #bbb",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            style={{ backgroundColor: "rgba(202, 146, 61, 1)" }}
+          >
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDeleteModal} onHide={handleCloseDelete}>
+        <Modal.Header>
+          <Modal.Title className="text-start">Delete Item</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="delete-confirmation">
+            <center>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '90px',
+                  height: '90px',
+                  borderRadius: '50%',
+                  backgroundColor: '#d9534f',
+                  marginBottom: '10px',
+                }}
+              >
+                <FaTrashAlt style={{ fontSize: '3rem', color: '#fff' }} />
+              </div>
+              <p>Are you sure you want to delete this item?</p>
+            </center>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={handleCloseDelete}
+            style={{
+              backgroundColor: 'rgba(51, 55, 72, 1)',
+              border: '1px solid #bbb',
+            }}
+          >
+            No
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            style={{ backgroundColor: 'rgba(202, 146, 61, 1)' }}
+          >
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+       <Modal show={showAddCategoryPopup} onHide={() => setShowAddCategoryPopup(false)}>
+    <Modal.Header>
+      <Modal.Title>Add New Category</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <Form>
+  
+        <Form.Group className="mb-3">
+          <Form.Label>Category Name</Form.Label>
+          <Form.Control
+            type="text"
+            value={newCategory.name}
+            onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+            placeholder="Enter category name"
+          />
+        </Form.Group>
+  
+        <div
+          {...getRootProps()}
+          style={{
+            border: '2px dashed #ddd',
+            padding: '20px',
+            textAlign: 'center',
+            marginBottom: '15px',
+            cursor: 'pointer',
+          }}
+        >
+          <input {...getInputProps()} />
+          {newCategory.image ? (
+            <p>Image selected: {newCategory.image.name}</p>
+          ) : (
+            <p>
+              <span style={{ fontSize: '20px' }}>
+                <FaImage /> ㅤ
+              </span>
+              Drag & drop an image here, or click to select files
+            </p>
+          )}
+        </div>
+      </Form>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={() => setShowAddCategoryPopup(false)}>
+        Cancel
+      </Button>
+      <Button onClick={handleAddCategory}>Add Category</Button>
+    </Modal.Footer>
+  </Modal> 
     </div>
   );
 };
 
 export default Managemenu;
-
-// <Modal show={showModal} onHide={handleClose}>
-//   <Modal.Header>
-//     <Modal.Title className="text-start">Edit Item</Modal.Title>
-//   </Modal.Header>
-//   <Modal.Body>
-//     <Form>
-
-//       <div {...getRootProps()} style={{ border: '2px dashed #ddd', padding: '20px', textAlign: 'center', marginBottom: '15px' }}>
-//         <input {...getInputProps()} />
-//         {formData.image ? (
-//           <p>Image selected: {formData.image.name}</p>
-//         ) : (
-//           <p><span style={{ fontSize: '20px' }}><FaImage />ㅤ</span>Choose Image</p>
-//         )}
-//       </div>
-
-//       <Row className="mb-3">
-
-//         <Form.Group className='mb-3'>
-//           <Form.Label>Item Name</Form.Label>
-//           <Form.Control
-//             as="select"
-//             name="title"
-//             value={formData.title}
-//             onChange={handleInputChange}
-//             style={{
-//               padding: '0.75rem 1rem',
-//               fontSize: '1rem',
-//               borderRadius: '5px',
-//               border: '1px solid #bbb',
-//               color: '#bbb'
-//             }}
-//           >
-//             <option value="">Select Item</option>
-//             {indianFoods.map((food, index) => (
-//               <option key={index} value={food}>
-//                 {food}
-//               </option>
-
-//             ))}
-
-//           </Form.Control>
-//         </Form.Group>
-//       </Row>
-
-//       <Row>
-//         <Form.Group>
-//           <Form.Label>Ingredients</Form.Label>
-//           <Form.Control
-//             type="text"
-//             name="ingredients"
-//             value={formData.ingredients}
-//             onChange={handleInputChange}
-//             placeholder="Enter ingredients"
-//             style={{
-//               padding: '0.75rem 1rem',
-//               fontSize: '1rem',
-//               borderRadius: '5px',
-//               border: '1px solid #bbb',
-//               backgroundColor: 'rgba(45, 48, 62, 1)',
-//             }}
-//           />
-//         </Form.Group>
-//       </Row>
-//       <Row className="mb-3">
-
-//         <Col>
-//           <Form.Group>
-//             <Form.Label>Rate</Form.Label>
-//             <Form.Control
-//               type="number"
-//               name="rate"
-//               value={formData.rate}
-//               onChange={handleInputChange}
-//               placeholder="Enter rate"
-//               style={{
-//                 padding: '0.75rem 1rem',
-//                 fontSize: '1rem',
-//                 borderRadius: '5px',
-//                 border: '1px solid #bbb',
-//                 backgroundColor: 'rgba(45, 48, 62, 1)',
-//               }}
-//             />
-//           </Form.Group>
-//         </Col>
-
-//         <Col>
-//           <Form.Group>
-//             <Form.Label>Discount</Form.Label>
-//             <Form.Control
-//               type="number"
-//               name="discount"
-//               value={formData.discount}
-//               onChange={handleInputChange}
-//               placeholder="Enter discount"
-//               style={{
-//                 padding: '0.75rem 1rem',
-//                 fontSize: '1rem',
-//                 borderRadius: '5px',
-//                 border: '1px solid #bbb',
-//                 backgroundColor: 'rgba(45, 48, 62, 1)',
-
-//               }}
-//             />
-//           </Form.Group>
-//         </Col>
-//       </Row>
-
-//       <Form.Group className="mb-3">
-//         <Form.Label>Availability</Form.Label>
-//         <Form.Control
-//           as="select"
-//           name="availability"
-//           value={formData.availability}
-//           onChange={handleInputChange}
-//           style={{
-//             padding: '0.75rem 1rem',
-//             fontSize: '1rem',
-//             borderRadius: '5px',
-//             border: '1px solid #bbb',
-//             color: '#bbb'
-//           }}
-//         >
-//           <option value="available">Available</option>
-//           <option value="not_available">Not Available</option>
-//         </Form.Control>
-//       </Form.Group>
-//     </Form>
-//   </Modal.Body>
-//   <Modal.Footer>
-
-//     <Button variant="secondary" onClick={handleClose} style={{ backgroundColor: 'rgba(51, 55, 72, 1)', border: '1px solid #bbb' }}>
-//       Cancel
-//     </Button>
-
-//     <Button onClick={handleClose} style={{ backgroundColor: 'rgba(202, 146, 61, 1)' }}>
-//       Save
-//     </Button>
-//   </Modal.Footer>
-// </Modal>
-
-// <Modal show={showDeleteModal} onHide={handleCloseDelete}>
-//   <Modal.Header>
-//     <Modal.Title className="text-start">Delete Item</Modal.Title>
-//   </Modal.Header>
-//   <Modal.Body>
-//     <div className="delete-confirmation">
-//       <center>
-//         <div
-//           style={{
-//             display: 'inline-flex',
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//             width: '90px',
-//             height: '90px',
-//             borderRadius: '50%',
-//             backgroundColor: '#d9534f',
-//             marginBottom: '10px',
-//           }}
-//         >
-//           <FaTrashAlt style={{ fontSize: '3rem', color: '#fff' }} />
-//         </div>
-//         <p>Are you sure you want to delete this item?</p>
-//       </center>
-
-//     </div>
-//   </Modal.Body>
-//   <Modal.Footer>
-//     <Button variant="secondary" onClick={handleCloseDelete} style={{ backgroundColor: 'rgba(51, 55, 72, 1)', border: '1px solid #bbb' }}>
-//       No
-//     </Button>
-//     <Button onClick={handleConfirmDelete} style={{ backgroundColor: 'rgba(202, 146, 61, 1)' }}>
-//       Yes
-//     </Button>
-//   </Modal.Footer>
-// </Modal>
-
-// <Modal show={showAddCategoryPopup} onHide={() => setShowAddCategoryPopup(false)}>
-//   <Modal.Header>
-//     <Modal.Title>Add New Category</Modal.Title>
-//   </Modal.Header>
-//   <Modal.Body>
-//     <Form>
-
-//       <Form.Group className="mb-3">
-//         <Form.Label>Category Name</Form.Label>
-//         <Form.Control
-//           type="text"
-//           value={newCategory.name}
-//           onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-//           placeholder="Enter category name"
-//         />
-//       </Form.Group>
-
-//       <div
-//         {...getRootProps()}
-//         style={{
-//           border: '2px dashed #ddd',
-//           padding: '20px',
-//           textAlign: 'center',
-//           marginBottom: '15px',
-//           cursor: 'pointer',
-//         }}
-//       >
-//         <input {...getInputProps()} />
-//         {newCategory.image ? (
-//           <p>Image selected: {newCategory.image.name}</p>
-//         ) : (
-//           <p>
-//             <span style={{ fontSize: '20px' }}>
-//               <FaImage /> ㅤ
-//             </span>
-//             Drag & drop an image here, or click to select files
-//           </p>
-//         )}
-//       </div>
-//     </Form>
-//   </Modal.Body>
-//   <Modal.Footer>
-//     <Button variant="secondary" onClick={() => setShowAddCategoryPopup(false)}>
-//       Cancel
-//     </Button>
-//     <Button onClick={handleAddCategory}>Add Category</Button>
-//   </Modal.Footer>
-// </Modal>

@@ -13,9 +13,9 @@ const Registration = () => {
         email: '',
         phoneNumber: '',
         country: '',
-        state: '',       // Newly added
-        city: '',        // Newly added
-        restaurant: '',  // Newly added
+        state: '',       
+        city: '',        
+        restaurant: '',  
         password: '',
         confirmPassword: '',
         agree: false,
@@ -163,7 +163,7 @@ const Registration = () => {
         zipCode: '',
     });
 
-    // Fetch all restaurants from the API on component mount
+    
     useEffect(() => {
         fetchRestaurants();
     }, []);
@@ -171,29 +171,29 @@ const Registration = () => {
     const fetchRestaurants = async () => {
         try {
             const response = await axios.get('http://localhost:5000/api/v1/restaurant/restaurants-get');
-            console.log('Fetched restaurants:', response.data); // Debug log
+            console.log('Fetched restaurants:', response.data); 
 
-            // Check if the API response contains the 'data' field and use it to set the restaurants state
+           
             if (response.data.success && Array.isArray(response.data.data)) {
-                setRestaurants(response.data.data); // Set restaurants state with the data array
+                setRestaurants(response.data.data); 
             } else {
                 console.error("Invalid data format:", response.data);
-                setRestaurants([]); // Fallback to empty array if the data format is incorrect
+                setRestaurants([]);
             }
         } catch (error) {
             console.error("Error fetching restaurants:", error);
-            setRestaurants([]); // Fallback to empty array in case of error
+            setRestaurants([]);
         }
     };
 
     const handleRestaurantChange = (e) => {
         const selectedValue = e.target.value;
         if (selectedValue === "addNewRestaurant") {
-            setShowModal(true); // Show the modal when "+ Add New Restaurant" is selected
+            setShowModal(true);
         } else {
             setFormData({
                 ...formData,
-                restaurant: selectedValue, // Set the selected restaurant ID
+                restaurant: selectedValue,
             });
         }
     };
@@ -213,13 +213,11 @@ const Registration = () => {
             );
             console.log("Restaurant added:", response.data);
 
-            // Add the newly added restaurant to the list without refetching
             setRestaurants((prevRestaurants) => [
                 ...prevRestaurants,
                 response.data.restaurant
             ]);
 
-            // Close the modal and reset the new restaurant form
             window.location.reload();
             setShowModal(false);
             setNewRestaurant({
@@ -257,7 +255,7 @@ const Registration = () => {
         return countryData ? countryData.states : [];
     };
 
-    // Get cities based on the selected state
+ 
     const getCities = () => {
         const stateData = getStates().find(
             (state) => state.state === formData.state
@@ -267,16 +265,16 @@ const Registration = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Log the current form data to the console
+
         console.log("Form Data:", formData);
 
-        // Check if passwords match
+
         if (formData.password !== formData.confirmPassword) {
             alert("Passwords do not match!");
             return;
         }
 
-        // Check if all fields are filled and agree is checked
+
         if (!formData.agree) {
             alert("You must agree to the T&C and Privacy Policies.");
             return;
@@ -288,7 +286,7 @@ const Registration = () => {
         }
 
         try {
-            // Prepare data to send to the backend
+
             const dataToSend = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -299,19 +297,18 @@ const Registration = () => {
                 city: formData.city,
                 restaurant: formData.restaurant,
                 phoneNumber: formData.phoneNumber,
-                confirmPassword: formData.confirmPassword,  // Add confirmPassword if needed
-                agree: formData.agree  // Add agree if needed
+                confirmPassword: formData.confirmPassword, 
+                agree: formData.agree  
             };
 
-            // Log the data that will be sent to the backend
             console.log("Data to send:", dataToSend);
 
-            // Send form data to the backend API
+
             const response = await axios.post('http://localhost:5000/api/v1/owner/owner-add', dataToSend);
 
             if (response.status === 201) {
                 alert("Registration successful!");
-                navigate('/login'); // Navigate to the login page on successful registration
+                navigate('/login');
             }
         } catch (error) {
             console.error('Error during registration:', error);
@@ -384,7 +381,7 @@ const Registration = () => {
                             style={{ color: '#fff', backgroundColor: '#2D303E' }}
                         >
                             <option value="" disabled>Select a Country</option>
-                            {/* Map through countries data */}
+                            
                             {countriesData.map((location, index) => (
                                 <option key={index} value={location.country}>
                                     {location.country}

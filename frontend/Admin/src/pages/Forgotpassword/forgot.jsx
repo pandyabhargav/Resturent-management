@@ -59,7 +59,7 @@ function Forget() {
               )}
             </div>
             <div className="background-image">
-              {/* Add your background image here */}
+              
             </div>
           </Col>
           <Col xs={12} md={6}>

@@ -1,11 +1,23 @@
 const RestaurantItem = require("../models/Item.js");
 const RestaurantItemCustomization = require("../models/Customization.js");
+const RestaurantCategory = require("../models/Category.js");
 
 const RestaurantItemAdd = async (req, res) => {
   try {
-    const { name, customization } = req.body;
+    const { name, customization, category } = req.body;
 
-    const restaurantitems = await RestaurantItem.findOne({ name });
+    const restaurantcategory = await RestaurantCategory.findById(category);
+    if (!restaurantcategory) {
+      return res.status(400).json({
+        success: false,
+        message: "This Restaurant Category has not found.",
+      });
+    }
+    const restaurantitems = await RestaurantItem.findOne({
+      name: name,
+      restaurant: req.user.restaurant,
+      category: category,
+    });
     if (restaurantitems) {
       return res.status(400).json({
         success: false,
@@ -26,16 +38,14 @@ const RestaurantItemAdd = async (req, res) => {
       customizationIds = savedCustomizations; // Store all IDs
     }
 
-    if (customizationIds.length > 0) {
-      const restaurantitem = new RestaurantItem({
-        ...req.body,
-        customization: customizationIds,
-      });
-      await restaurantitem.save();
-      res.status(201).json({ success: true, data: restaurantitem });
-    }
+    const restaurantitem = new RestaurantItem({
+      ...req.body,
+      customization: customizationIds.length > 0 ? customizationIds : undefined,
+    });
+    await restaurantitem.save();
+    return res.status(201).json({ success: true, data: restaurantitem });
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ success: false, error: error, message: error.message });
   }
@@ -49,6 +59,11 @@ const RestaurantItemsGet = async (req, res) => {
 
     const existingRestaurantItem = await RestaurantItem.find()
       .populate("customization")
+      .populate({
+        path: "category",
+        select: "_id restaurant",
+        match: { restaurant: req.user.restaurant },
+      })
       .skip(skip)
       .limit(parseInt(limit))
       .exec();
@@ -59,10 +74,12 @@ const RestaurantItemsGet = async (req, res) => {
         message: "The Restaurant Item data does not exist.",
       });
     }
+    const filteredRestaurantItems = existingRestaurantItem.filter(
+      (item) => item.category !== null
+    );
+    const totalCategories = filteredRestaurantItems.length;
 
-    const totalCategories = await RestaurantItem.countDocuments();
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       pagination: {
         total: totalCategories,
@@ -70,26 +87,28 @@ const RestaurantItemsGet = async (req, res) => {
         limit: parseInt(limit),
         totalPages: Math.ceil(totalCategories / limit),
       },
-      data: existingRestaurantItem,
+      data: filteredRestaurantItems,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 const RestaurantItemGet = async (req, res) => {
   try {
     const { id } = req.params;
-    const restaurantitems = await RestaurantItem.findById(id).populate("customization");
+    const restaurantitems = await RestaurantItem.findById(id).populate(
+      "customization"
+    );
     if (!restaurantitems) {
       return res.status(400).json({
         success: false,
         message: "The Restaurant Item data does not exist.",
       });
     }
-    res.status(200).json({ success: true, data: restaurantitems });
+    return res.status(200).json({ success: true, data: restaurantitems });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -112,9 +131,9 @@ const RestaurantItemUpdate = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    res.status(200).json({ success: true, data: updatedRestaurantItem });
+    return res.status(200).json({ success: true, data: updatedRestaurantItem });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -128,9 +147,11 @@ const RestaurantItemDelete = async (req, res) => {
         message: "The Restaurant Item data does not exist.",
       });
     }
-    res.status(200).json({ success: true, data: "Restaurant Item Delete" });
+    return res
+      .status(200)
+      .json({ success: true, data: "Restaurant Item Delete" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 

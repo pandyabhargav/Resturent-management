@@ -15,7 +15,7 @@ const { authMiddleware, logout } = require("../middleware/authMiddleware.js");
 const router = express.Router();
 
 router.post("/restaurant-add", AddValidation, RestaurantAdd);
-router.get("/restaurants-get", RestaurantsGet);
+router.get("/restaurants-get", authMiddleware, RestaurantsGet);
 router.get("/restaurant-get/:id", authMiddleware, RestaurantGet);
 router.put(
   "/restaurant-update/:id",

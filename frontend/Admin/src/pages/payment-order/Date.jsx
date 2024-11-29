@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaWallet } from 'react-icons/fa';
 import { Modal, Button, Dropdown } from 'react-bootstrap';
-import './CustomDate.css'; // Import CSS for styling
+import './CustomDate.css'; 
 
 
 const CustomDate = () => {
@@ -155,7 +155,7 @@ const CustomDate = () => {
       totalBill: '₹500',
       paymentType: "Online"
     },
-    // Add other orders here...
+
   ];
 
   const handleDateModalClose = () => setShowDateModal(false);
@@ -201,10 +201,7 @@ const CustomDate = () => {
           <div className='main-div'>
 
 
-          {/* Dropdown for actions */}
-
-
-          {/* Date Modal */}
+          
           <Modal show={showDateModal} onHide={handleDateModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>Custom Date Selection</Modal.Title>
@@ -249,8 +246,6 @@ const CustomDate = () => {
           {/* Orders List */}
           <div className="order-header">
             <div>Customer Name</div>
-            {/* <div>Date</div>
-        <div>Time</div> */}
             <div>Phone</div>
             <div>Items Name</div>
             <div>Quantity</div>
@@ -263,8 +258,6 @@ const CustomDate = () => {
             {filteredOrders.map((order, index) => (
               <div className="order-item" key={index}>
                 <div>{order.customerName}</div>
-                {/* <div>{order.date}</div>
-      <div>{order.time}</div> */}
                 <div>{order.customerPhone}</div>
                 <div>{order.itemName}</div>
                 <div>{order.quantity}</div>

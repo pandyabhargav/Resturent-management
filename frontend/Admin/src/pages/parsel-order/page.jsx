@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { Row, Col, } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button'; // Add this line
-import Modal from 'react-bootstrap/Modal'; // Add this line
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal'; 
 import { FaEye } from "react-icons/fa";
 import "./page.css"
 
@@ -143,13 +143,12 @@ function Pageorder() {
       totalBill: '₹500',
     },
 
-    // Add more orders...
+    
   ];
 
   return (
     <>
-    {/* <div className="container mt-4"> */}
-     {/* <h1 className="text-center">Parcel Orders</h1> */}
+    
       <div className="order-header hello-wold">
         <div>Customer Name</div>
         <div>Item</div>
@@ -303,16 +302,11 @@ function Pageorder() {
                     <span>₹ 1381.00</span>
                   </div>
                 </div>
-                {/* <div className="total">
-                  <span>Total: </span>
-                  <span>1128.00</span>
-                </div> */}
+                
               </div>
             </Modal>
           </>
         </div>
-      {/* </div> */}
-
     </div>
     </>
   );

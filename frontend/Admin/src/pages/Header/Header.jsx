@@ -10,12 +10,11 @@ const Header = ({ onProfileClick }) => {
   const [firstName, setFirstName] = useState('');
 
   useEffect(() => {
-    // Retrieve firstName from localStorage
     const storedFirstName = localStorage.getItem('firstName');
     if (storedFirstName) {
       setFirstName(storedFirstName);
     }
-  }, []); // Empty dependency array to run this once on component mount
+  }, []); 
 
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);

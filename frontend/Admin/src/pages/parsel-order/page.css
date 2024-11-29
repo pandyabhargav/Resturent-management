@@ -9,7 +9,7 @@
 
   .container {
     padding: 20px; /* Padding around the container */
-    /* background-color: #212529; */
+    /* background-color: #1F1D2B !important; */
     color: #fff;
     max-width: 1600px; /* Set a maximum width for the container */
     margin: 0 auto; /* Center the container horizontally */
@@ -20,14 +20,14 @@
     padding: 10px;
     display: block;
   }
-  .table-background {
+  .order-header .table-background {
     border: rgba(31, 29, 43, 1);
-    background-color: rgba(31, 29, 43, 1); /* Light gray background for the table */
+    background-color: rgb(84, 57, 239); /* Light gray background for the table */
   }
   .table-bordered:not(caption){
     border-width: 0 var(--bs-border-width);
 }
-  .table-background{
+.order-header .table-background{
     width: 1550px;
     height: 62px;
     background-color: rgba(202, 146, 61, 1); /* Blue background for header */
@@ -35,17 +35,17 @@
   }
   
 
-  .table-background th, .table-background td {
+  .order-header .table-background th, .table-background td {
     border: 2px solid rgba(42, 42, 56, 1); /* Change this to your desired border color */
   }
-  .table-background td .time{
+  .order-header .table-background td .time{
     background-color: red;
   }
   /* .box{
     margin: 20px;
     border-radius: 10px 0 0 0;
   } */
-  .box2{
+  .order-header .box2{
     margin: 20px;
     border-radius: 0 10px 0 0;
   }
@@ -71,24 +71,24 @@
   /* Page.css */
 
   /* .table-background */
-  .table-background {
+  .order-header .table-background {
     border-collapse: collapse; /* Ensure borders collapse together */
   }
   
-  .table-background th,
-  .table-background td {
+  .order-header .table-background th,
+  .order-header .table-background td {
     border: none; /* Remove all borders */
   }
   
-  .table-background th:first-child,
-  .table-background td:first-child,
-  .table-background th:last-child,
-  .table-background td:last-child {
+  .order-header .table-background th:first-child,
+  .order-header .table-background td:first-child,
+  .order-header .table-background th:last-child,
+  .order-header .table-background td:last-child {
     border-left: none; /* Remove left border */
     border-right: none; /* Remove right border */
   }
   
-  .table-background td {
+  .order-header .table-background td {
     text-align: center;
     background-color: rgba(31, 29, 43, 1);
     color: rgba(171, 187, 194, 1);
@@ -96,11 +96,11 @@
    
   }
   
-  .table-background th {
+  .order-header .table-background th {
     border-bottom: 2px solid rgba(42, 42, 56, 1); /* Bottom border for header cells */
   }
   
-  .total-bill-background {
+  .order-header .total-bill-background {
     position: relative;
     text-align: center;
     color: rgba(171, 187, 194, 1);
@@ -108,7 +108,7 @@
     padding: 10px; /* Adds space inside the background */
   }
   
-  .total-bill-background::before {
+  .order-header  .total-bill-background::before {
    
     content: '';
     position: absolute;
@@ -122,13 +122,13 @@
     background-color: rgba(37, 40, 54, 1);
     z-index: -1;
   }
-  .total-bill-background {
+  .order-header .total-bill-background {
     color: white;
     z-index: 1; /* Bring text above the inner background */
 
   }
   /* Time  background */
-  .Time-background {
+  .order-header .Time-background {
     position: relative;
     text-align: center;
     color: rgba(171, 187, 194, 1);

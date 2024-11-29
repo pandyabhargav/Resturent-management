@@ -26,7 +26,7 @@ const Profilepage = () => {
 
   useEffect(() => {
     if (!userId) {
-      navigate('/login'); // Redirect to login page if no user ID
+      navigate('/login'); 
       return;
     }
 
@@ -94,18 +94,17 @@ const Profilepage = () => {
       restaurant: formData.restaurant._id,  // Pass restaurant._id instead of restaurantName
     };
   
-    const token = localStorage.getItem('jwtToken'); // Get the JWT token from localStorage
+    const token = localStorage.getItem('jwtToken'); 
   
     axios
       .put(`http://localhost:5000/api/v1/owner/owner-update/${userId}`, updatedData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         console.log('Profile updated successfully', response.data);
-  
-        // After successful update, switch the button to 'Edit Profile' and disable editing
+
         setIsEditing(false);
       })
       .catch((error) => {
@@ -206,7 +205,7 @@ const Profilepage = () => {
               type="text"
               id="restaurant"
               name="restaurant"
-              value={formData.restaurant} // Display restaurant name (editable)
+              value={formData.restaurant} 
               onChange={handleChange}
               placeholder="Enter your restaurant name"
               style={{ backgroundColor: isEditing ? 'rgb(31, 29, 43)' : 'transparent', color: 'white' }}

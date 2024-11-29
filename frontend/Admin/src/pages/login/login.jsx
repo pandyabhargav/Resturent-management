@@ -9,8 +9,8 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null); // State for tracking login errors
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [error, setError] = useState(null); 
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,35 +21,35 @@ function Login() {
         password,
       });
   
-      console.log("Response:", response); // Log the response for debugging
+      console.log("Response:", response); 
   
-      // Check if the response is successful
+      
       if (response.data.message === "restaurantowner successfully login") {
         alert('Login successful!');
-        setError(null); // Clear any previous error
+        setError(null); 
   
-        // Save token to localStorage (if needed)
+        
         const token = response.data.token;
         if (token) {
           localStorage.setItem('jwtToken', token);
-          console.log("Token saved:", token); // Log token for checking
+          console.log("Token saved:", token); 
         }
   
-        // Save userId to localStorage (from response.data.data._id)
+        
         const userId = response.data.data._id;
         if (userId) {
           localStorage.setItem('userId', userId);
-          console.log("User ID saved:", userId); // Log user ID for checking
+          console.log("User ID saved:", userId); 
         }
   
-        // Redirect to Home page
+        
         navigate('/');
       } else {
-        setError('Invalid email or password'); // If there's no success message, set error
+        setError('Invalid email or password'); 
       }
     } catch (err) {
-      console.error("Error:", err); // Log error details for debugging
-      setError('An error occurred. Please try again later'); // General error message
+      console.error("Error:", err); 
+      setError('An error occurred. Please try again later'); 
     }
   };
   

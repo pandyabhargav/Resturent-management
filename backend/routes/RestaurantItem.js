@@ -32,8 +32,9 @@ function AddValidation(req, res, next) {
       .regex(/^[0-9a-fA-F]{24}$/),
     name: Joi.string().min(1).max(100).required(),
     ingredients: Joi.string().optional(),
-    price: Joi.number().positive().required(),
-    discount: Joi.number().positive().min(0).max(100).optional(),
+    price: Joi.number().min(0).max(999).required(),
+    discount: Joi.number().min(0).max(100).optional(),
+    itemType: Joi.string().valid("Veg", "Nonveg").required(),
     type: Joi.string().valid("Spicy", "Sweet").required(),
     options: Joi.string().valid("Less", "Regular", "Extra").required(),
     image: Joi.string().uri().optional(),
@@ -47,7 +48,7 @@ function AddValidation(req, res, next) {
               Joi.object({
                 name: Joi.string().required(),
                 detail: Joi.string().optional(),
-                extraRate: Joi.number().positive().optional(),
+                extraRate: Joi.number().min(0).max(999).required(),
               })
             )
             .optional(),
@@ -71,6 +72,7 @@ function UpdateValidation(req, res, next) {
     ingredients: Joi.string().optional(),
     price: Joi.number().positive().optional(),
     discount: Joi.number().positive().min(0).max(100).optional(),
+    itemType: Joi.string().valid("Veg", "Nonveg").optional(),
     type: Joi.string().valid("Spicy", "Sweet").optional(),
     options: Joi.string().valid("Less", "Regular", "Extra").optional(),
     image: Joi.string().uri().optional(),
