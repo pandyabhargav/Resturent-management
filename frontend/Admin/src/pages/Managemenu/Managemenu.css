@@ -238,3 +238,11 @@
     margin: 0px 10px;
   }
   
+  .nav-tabs .nav-link.active {
+    background-color: rgba(202, 146, 61, 1);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 20px;
+}

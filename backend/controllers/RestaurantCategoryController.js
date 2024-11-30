@@ -37,7 +37,7 @@ const RestaurantCategorysGet = async (req, res) => {
     const { name, page = 1, limit = 10 } = req.query;
 
     const filter = {
-      restaurant: req.user.restaurant,
+      restaurant: req.body.restaurant,
     };
     if (name) {
       filter.name = { $regex: name, $options: "i" }; // Case-insensitive regex search
