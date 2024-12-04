@@ -241,8 +241,6 @@ const Additem = () => {
         formPayload.customization = customizationData;
       }
 
-      // console.log("Payload before sending to API:", formPayload);
-
       const itemAddResponse = await axios.post(
         "http://localhost:5000/api/v1/item/restaurantitem-add",
         formPayload,

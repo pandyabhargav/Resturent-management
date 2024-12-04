@@ -21,7 +21,6 @@ import defaultimg from "../../assets/1732641275136.png";
 
 const Managemenu = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState("all");
   const [categories, setCategories] = useState([]); // Add categories state
   const [items, setItems] = useState([]); // New state to store items
   const [showOptions, setShowOptions] = useState({});
@@ -33,6 +32,7 @@ const Managemenu = () => {
   const [showAddCategoryPopup, setShowAddCategoryPopup] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: "", image: null });
   const [showAddBurgerPopup, setShowAddBurgerPopup] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("allCategories"); // Default category is "All Categories"
 
   const [burgerData, setBurgerData] = useState({
     name: "",
@@ -91,11 +91,6 @@ const Managemenu = () => {
   useEffect(() => {
     fetchCategoriesAndItems();
   }, []); // Run once when the component mounts
-
-  const handleAddBurger = () => {
-    console.log("New Burger Data:", burgerData);
-    setShowAddBurgerPopup(false);
-  };
 
   const handleDeleteClick = (itemId) => {
     setDeleteItemId(itemId);
@@ -196,10 +191,6 @@ const Managemenu = () => {
       setDeleteItemId(null);
     }
   };
-
-  // const handleEditClick = () => {
-  //   setShowModal(true);
-  // };
 
   const handleClose = () => {
     setShowModal(false); // Close modal
@@ -360,15 +351,27 @@ const Managemenu = () => {
       console.error("Error fetching item data:", error.message || error);
     }
   };
+
   const handleButtonClick = (category) => {
     // Navigate to the next page with state
     navigate("/additems", { state: { category } });
   };
 
+  const filterItemsByCategory = (categoryId) => {
+    if (categoryId === "allCategories") {
+      return items; // Return all items for "All Categories"
+    }
+
+    // Ensure that you're using the correct property name for category ID
+    return items.filter(
+      (item) => item.category && item.category._id === categoryId
+    );
+  };
+
   return (
     <div className="menu-wrapper mb-5">
       <div className="tab-header">
-        <h2 className="tab-title">Categories (250)</h2>
+        <h2 className="tab-title">Categories ({categories.length})</h2>
         <button
           className="add-category-btn col-2"
           onClick={() => setShowAddCategoryPopup(true)}
@@ -384,12 +387,141 @@ const Managemenu = () => {
       <br />
       <Tabs
         activeKey={activeCategory}
-        onSelect={(category) => setActiveCategory(category)}
-        className="mb-3"
+        onSelect={(category) => setActiveCategory(category)} // Update activeCategory when a tab is clicked
+        className="mb-3 m-3"
       >
+        <Tab
+          eventKey="allCategories"
+          title={
+            <div
+              style={{ display: "flex", alignItems: "center" }}
+              className="tab-products"
+            >
+              <img
+                src={categories[0]?.image}
+                alt="All Categories"
+                style={{
+                  width: "70px",
+                  height: "50px",
+                  marginRight: "8px",
+                  backgroundColor: "rgba(31, 29, 43, 1)",
+                }}
+              />
+              All
+            </div>
+          }
+        >
+          <div className="tab-header">
+            <h2 className="tab-title">All Categories</h2>
+            <button
+              className="add-category-btn col-2 d-none"
+              onClick={() => handleButtonClick("allCategories")}
+            >
+              <span
+                style={{
+                  fontSize: "24px",
+                  lineHeight: "1",
+                  marginRight: "10px",
+                }}
+              >
+                <FaSquarePlus />
+              </span>
+              Add Item to All Categories
+            </button>
+          </div>
+
+          <Container className="m-0" fluid>
+            <Row className="menu-grid col-12 d-flex flex-wrap row-cols-1 row-cols-sm-2 row-cols-md-3">
+              {(filterItemsByCategory("allCategories") || []).map((item) => (
+                <div
+                  className="card-item col-3"
+                  key={item._id}
+                  style={{
+                    width: "18rem",
+                    margin: "10px",
+                    position: "relative",
+                  }}
+                >
+                  <Card
+                    className="h-100 col-12"
+                    style={{ border: "none", overflow: "hidden" }}
+                  >
+                    <div className="card-img-wrapper">
+                      <Card.Img variant="top" src={item.image} />
+                      <div
+                        className="three-dots"
+                        onClick={() =>
+                          setShowOptions(
+                            showOptions === item._id ? null : item._id
+                          )
+                        }
+                      >
+                        <span>...</span>
+                      </div>
+                      {showOptions === item._id && (
+                        <div
+                          className="card-actions"
+                          style={{ backgroundColor: "rgba(37, 40, 54, 1)" }}
+                        >
+                          <button
+                            className="edit-btn"
+                            onClick={() => handleEditClick(item._id)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="delete-btn"
+                            onClick={() => handleDeleteClick(item._id)}
+                            style={{
+                              backgroundColor: "#d9534f",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "4px",
+                              padding: "5px 10px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <Card.Body>
+                      <Card.Title>{item.name}</Card.Title>
+                      <Card.Text style={{ color: "#bbb" }}>
+                        {expandedDescription === item._id
+                          ? item.ingredients
+                          : `${
+                              item.ingredients
+                                ? item.ingredients.slice(0, 50)
+                                : ""
+                            }...`}
+                        <span
+                          className="expand-text text-white"
+                          onClick={() =>
+                            setExpandedDescription(
+                              expandedDescription === item._id ? null : item._id
+                            )
+                          }
+                        >
+                          {expandedDescription === item._id
+                            ? " Show Less"
+                            : " Read More"}
+                        </span>
+                      </Card.Text>
+                      <Card.Text className="price">₹{item.price}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </div>
+              ))}
+            </Row>
+          </Container>
+        </Tab>
+
+        {/* Loop through other categories */}
         {categories.map((category) => (
           <Tab
-            className="ml-5"
+            className="mt-5"
             eventKey={category._id}
             key={category._id}
             title={
@@ -413,30 +545,27 @@ const Managemenu = () => {
           >
             <div className="tab-header">
               <h2 className="tab-title">{category.name}</h2>
-              {category.name === category.name && (
-                <button
-                  className="add-category-btn col-2"
-                  onClick={() => handleButtonClick(category._id)}
+              <button
+                className="add-category-btn col-2"
+                onClick={() => handleButtonClick(category._id)}
+              >
+                <span
+                  style={{
+                    fontSize: "24px",
+                    lineHeight: "1",
+                    marginRight: "10px",
+                  }}
                 >
-                  <span
-                    style={{
-                      fontSize: "24px",
-                      lineHeight: "1",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <FaSquarePlus />
-                  </span>
-                  Add {category.name}
-                </button>
-              )}
+                  <FaSquarePlus />
+                </span>
+                Add {category.name}
+              </button>
             </div>
-            {/* a imgpela upload ni api ma upload  kari ti
-            na postman ma thi tari api post kari ti
-            chale   j   che img  valu ok   */}
+
+            {/* Show filtered items for the selected category */}
             <Container className="m-0" fluid>
               <Row className="menu-grid col-12 d-flex flex-wrap row-cols-1 row-cols-sm-2 row-cols-md-3">
-                {(items || []).map((item, index) => (
+                {(filterItemsByCategory(category._id) || []).map((item) => (
                   <div
                     className="card-item col-3"
                     key={item._id}
@@ -447,38 +576,29 @@ const Managemenu = () => {
                     }}
                   >
                     <Card
-                      className="h-100 col-12 "
+                      className="h-100 col-12"
                       style={{ border: "none", overflow: "hidden" }}
                     >
                       <div className="card-img-wrapper">
-                        {/* {console.log("item.image", item.image)} */}
                         <Card.Img variant="top" src={item.image} />
                         <div
                           className="three-dots"
                           onClick={() =>
-                            setShowOptions(showOptions === index ? null : index)
+                            setShowOptions(
+                              showOptions === item._id ? null : item._id
+                            )
                           }
                         >
                           <span>...</span>
                         </div>
-                        {showOptions === index && (
+                        {showOptions === item._id && (
                           <div
                             className="card-actions"
                             style={{ backgroundColor: "rgba(37, 40, 54, 1)" }}
                           >
                             <button
-                              className="edit-btn "
-                              onClick={() => {
-                                console.log(
-                                  "Edit button clicked for ID:",
-                                  item._id
-                                ); // Debugging
-                                if (item._id) {
-                                  handleEditClick(item._id);
-                                } else {
-                                  console.error("Item ID is undefined");
-                                }
-                              }}
+                              className="edit-btn"
+                              onClick={() => handleEditClick(item._id)}
                             >
                               Edit
                             </button>
@@ -502,7 +622,7 @@ const Managemenu = () => {
                       <Card.Body>
                         <Card.Title>{item.name}</Card.Title>
                         <Card.Text style={{ color: "#bbb" }}>
-                          {expandedDescription === index
+                          {expandedDescription === item._id
                             ? item.ingredients
                             : `${
                                 item.ingredients
@@ -513,11 +633,13 @@ const Managemenu = () => {
                             className="expand-text text-white"
                             onClick={() =>
                               setExpandedDescription(
-                                expandedDescription === index ? null : index
+                                expandedDescription === item._id
+                                  ? null
+                                  : item._id
                               )
                             }
                           >
-                            {expandedDescription === index
+                            {expandedDescription === item._id
                               ? " Show Less"
                               : " Read More"}
                           </span>
@@ -532,7 +654,6 @@ const Managemenu = () => {
           </Tab>
         ))}
       </Tabs>
-
       <Modal show={showModal} onHide={handleClose}>
         <Modal.Header>
           <Modal.Title className="text-start">Edit Item</Modal.Title>
@@ -715,17 +836,17 @@ const Managemenu = () => {
             <center>
               <div
                 style={{
-                  display: 'inline-flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '90px',
-                  height: '90px',
-                  borderRadius: '50%',
-                  backgroundColor: '#d9534f',
-                  marginBottom: '10px',
+                  display: "inline-flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "90px",
+                  height: "90px",
+                  borderRadius: "50%",
+                  backgroundColor: "#d9534f",
+                  marginBottom: "10px",
                 }}
               >
-                <FaTrashAlt style={{ fontSize: '3rem', color: '#fff' }} />
+                <FaTrashAlt style={{ fontSize: "3rem", color: "#fff" }} />
               </div>
               <p>Are you sure you want to delete this item?</p>
             </center>
@@ -736,69 +857,76 @@ const Managemenu = () => {
             variant="secondary"
             onClick={handleCloseDelete}
             style={{
-              backgroundColor: 'rgba(51, 55, 72, 1)',
-              border: '1px solid #bbb',
+              backgroundColor: "rgba(51, 55, 72, 1)",
+              border: "1px solid #bbb",
             }}
           >
             No
           </Button>
           <Button
             onClick={handleConfirmDelete}
-            style={{ backgroundColor: 'rgba(202, 146, 61, 1)' }}
+            style={{ backgroundColor: "rgba(202, 146, 61, 1)" }}
           >
             Yes
           </Button>
         </Modal.Footer>
       </Modal>
 
-       <Modal show={showAddCategoryPopup} onHide={() => setShowAddCategoryPopup(false)}>
-    <Modal.Header>
-      <Modal.Title>Add New Category</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      <Form>
-  
-        <Form.Group className="mb-3">
-          <Form.Label>Category Name</Form.Label>
-          <Form.Control
-            type="text"
-            value={newCategory.name}
-            onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-            placeholder="Enter category name"
-          />
-        </Form.Group>
-  
-        <div
-          {...getRootProps()}
-          style={{
-            border: '2px dashed #ddd',
-            padding: '20px',
-            textAlign: 'center',
-            marginBottom: '15px',
-            cursor: 'pointer',
-          }}
-        >
-          <input {...getInputProps()} />
-          {newCategory.image ? (
-            <p>Image selected: {newCategory.image.name}</p>
-          ) : (
-            <p>
-              <span style={{ fontSize: '20px' }}>
-                <FaImage /> ㅤ
-              </span>
-              Drag & drop an image here, or click to select files
-            </p>
-          )}
-        </div>
-      </Form>
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant="secondary" onClick={() => setShowAddCategoryPopup(false)}>
-        Cancel
-      </Button>
-      <Button onClick={handleAddCategory}>Add Category</Button>
-    </Modal.Footer>
-  </Modal> 
+      <Modal
+        show={showAddCategoryPopup}
+        onHide={() => setShowAddCategoryPopup(false)}
+      >
+        <Modal.Header>
+          <Modal.Title>Add New Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Category Name</Form.Label>
+              <Form.Control
+                type="text"
+                value={newCategory.name}
+                onChange={(e) =>
+                  setNewCategory({ ...newCategory, name: e.target.value })
+                }
+                placeholder="Enter category name"
+              />
+            </Form.Group>
+
+            <div
+              {...getRootProps()}
+              style={{
+                border: "2px dashed #ddd",
+                padding: "20px",
+                textAlign: "center",
+                marginBottom: "15px",
+                cursor: "pointer",
+              }}
+            >
+              <input {...getInputProps()} />
+              {newCategory.image ? (
+                <p>Image selected: {newCategory.image.name}</p>
+              ) : (
+                <p>
+                  <span style={{ fontSize: "20px" }}>
+                    <FaImage /> ㅤ
+                  </span>
+                  Drag & drop an image here, or click to select files
+                </p>
+              )}
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowAddCategoryPopup(false)}
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleAddCategory}>Add Category</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
