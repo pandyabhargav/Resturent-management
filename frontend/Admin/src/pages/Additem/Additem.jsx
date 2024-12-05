@@ -295,24 +295,22 @@ const Additem = () => {
                 </button>
 
                 <button
-                  type="button"
-                  className={`btn d-flex align-items-center ${
-                    formData.itemType === "Non-Veg"
-                      ? "btn-danger"
-                      : "btn-outline-danger"
-                  }`}
-                  onClick={() => handleItemType("Non-Veg")}
-                >
-                  <span
-                    className="rounded-circle me-2"
-                    style={{
-                      width: "10px",
-                      height: "10px",
-                      backgroundColor: "red",
-                    }}
-                  ></span>
-                  Non-Veg
-                </button>
+              type="button"
+              className={`btn d-flex align-items-center ${
+                formData.itemType === "Nonveg" ? "btn-danger" : "btn-outline-danger"
+              }`}
+              onClick={() => handleItemType("Nonveg")}
+            >
+              <span
+                className="rounded-circle me-2"
+                style={{
+                  width: "10px",
+                  height: "10px",
+                  backgroundColor: "red",
+                }}
+              ></span>
+              Non-Veg
+            </button>
               </div>
             </div>
           </div>

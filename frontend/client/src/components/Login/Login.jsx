@@ -57,16 +57,24 @@ function Login() {
             phoneNumber: phoneNumber,
           }),
         });
-
+  
         const data = await response.json();
         if (response.ok) {
+          // Extract the token from the response
+          const token = data.token;
+  
+          // Store the token in localStorage
+          localStorage.setItem('authToken', token);
+  
           setSuccessMessage('User added successfully!');
+          console.log("Login data:", data);
+  
+          // Clear form fields
           setUsername('');
           setPhoneNumber('');
-          
-          
-          navigate('/'); // Redirect to the homepage
-          window.location.reload();
+  
+          // Navigate to the homepage
+          navigate('/');
         } else {
           setErrorMessage(data.message || 'Failed to add user.');
         }
@@ -78,7 +86,7 @@ function Login() {
     }
   };
 
-  //  hide success/error after  5 seconds
+  //  Hide success/error after  5 seconds
   useEffect(() => {
     if (successMessage || errorMessage) {
       const timer = setTimeout(() => {

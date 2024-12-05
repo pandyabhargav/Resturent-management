@@ -49,7 +49,7 @@ function App() {
           ) : (
             <Routes>
               <Route path="/" element={<Menu />} />
-              <Route path="/details" element={<Details />} />
+              <Route path="/details/:id" element={<Details />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<Searchpage />} />
               <Route path="/trending" element={<Trending />} />

@@ -18,12 +18,7 @@ const Menu = () => {
 
   // Fetch categories and items on component mount
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
 
-    if (!token) {
-      navigate("/login"); // Redirect to login if no token is found
-      return;
-    }
 
     const fetchCategoriesAndItems = async () => {
       try {
@@ -60,9 +55,11 @@ const Menu = () => {
     })
     .filter((category) => category.items.length > 0); // Only categories with items to display
 
-  const handleOrderNow = () => {
-    navigate("/details");
-  };
+    const handleOrderNow = (orderId) => {
+      console.log("Order ID sent:", orderId); // Log the ID to the console
+      navigate(`/details/${orderId}`); // Navigate to the Details page with orderId in the URL
+    };
+    
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
@@ -219,8 +216,8 @@ const Menu = () => {
                     </h5>
                   </div>
                   <div className="ms-auto">
-                    <Button
-                      onClick={handleOrderNow}
+                  <Button
+                      onClick={() => handleOrderNow(item._id)} // Pass the item ID
                       className="text-white"
                       variant="warning"
                     >

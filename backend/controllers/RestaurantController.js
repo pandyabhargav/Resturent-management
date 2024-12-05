@@ -28,9 +28,7 @@ const RestaurantAdd = async (req, res) => {
 
 const RestaurantsGet = async (req, res) => {
   try {
-    console.log("restaurant", req.user.restaurant);
-
-    const existingRestaurant = await Restaurant.findById(req.user.restaurant);
+    const existingRestaurant = await Restaurant.find();
     if (!existingRestaurant) {
       return res.status(400).json({
         success: false,
