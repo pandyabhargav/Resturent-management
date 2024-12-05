@@ -55,10 +55,10 @@ app.use("/", require("./routes/index.js"));
 app.get("/", (req, res) => {
   res.send(`
     <center>
-        <h1>Welcome to Restaurant Managment System!</h1>
+        <h1>Welcome to Restaurant Management System!</h1>
         <br>
         <p>
-            Get Restaurant Managment: 
+            Get Restaurant Management: 
         <a href="https://github.com/MaulikPatel63" target="_blank">
         </a>
         </p>

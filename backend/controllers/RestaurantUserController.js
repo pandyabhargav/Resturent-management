@@ -10,13 +10,13 @@ const RestaurantUserAdd = async (req, res) => {
       name: { $regex: new RegExp(name, "i") },
       phoneNumber: phoneNumber,
     });
-    
+
     if (restaurantUsers) {
       const token = jwt.sign(
         { user: restaurantUsers },
         process.env.USER_JWT_SECRET,
         {
-          expiresIn: "7day",
+          expiresIn: "30day",
         }
       );
       return res
