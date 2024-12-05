@@ -13,6 +13,10 @@ const RestaurantUserItemsGet = async (req, res) => {
             .populate({
                 path: "category",
                 select: "_id restaurant",
+<<<<<<< HEAD
+=======
+                match: { restaurant: req.user.restaurant },
+>>>>>>> f252d322f86300329252685c828efa076b1ca23e
             })
             .skip(skip)
             .limit(parseInt(limit))
