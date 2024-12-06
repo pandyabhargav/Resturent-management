@@ -94,7 +94,6 @@ const Home = () => {
                 </Link>
               </div>
 
-
               <div>
                 <div className="sidebar-item" onClick={() => handleToggleDropdown('paymentHistory')}>
                   <IoMdCash className="sidebar-icon" /> Payment History
