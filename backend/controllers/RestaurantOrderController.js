@@ -1,42 +1,6 @@
 const RestaurantOrder = require("../models/Order.js");
 const RestaurantCart = require("../models/Cart.js");
 
-const RestaurantOrderAdd = async (req, res) => {
-  try {
-    const { user } = req.body;
-
-    const restaurantcart = await RestaurantCart.findOne({
-      user,
-      status: "Visible",
-    });
-    if (!restaurantcart) {
-      return res.status(400).json({
-        success: false,
-        message: "The cart is currently empty. Please add items to your cart.",
-      });
-    }
-
-    const restaurantorder = new RestaurantOrder({
-      ...req.body,
-      cart: restaurantcart._id,
-      restaurant: restaurantcart.restaurant,
-    });
-
-    await restaurantorder.save();
-    await RestaurantCart.findOneAndUpdate(
-      { user: user }, // Query to find the document
-      { $set: { status: "Hide" } }, // Update operation
-      { new: true, useFindAndModify: false } // Options
-    );
-
-    res.status(201).json({ success: true, data: restaurantorder });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, error: error, message: error.message });
-  }
-};
-
 const RestaurantOrdersGet = async (req, res) => {
   try {
     const { type, page = 1, limit = 10, paymentStatus, status } = req.query;
@@ -133,7 +97,6 @@ const RestaurantOrderDelete = async (req, res) => {
 };
 
 module.exports = {
-  RestaurantOrderAdd,
   RestaurantOrdersGet,
   RestaurantOrderUpdate,
   RestaurantOrderDelete,
