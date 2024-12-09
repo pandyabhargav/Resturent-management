@@ -36,7 +36,13 @@ router.use("/api/v1/paymentrequest", require("./RestaurantPaymentRequest.js"));
 //! Restaurant User Category Router
 router.use("/api/v1/usercategory", require("./RestaurantUserCategory.js"));
 
-//! Restaurant User Category Router
+//! Restaurant User Item Router
 router.use("/api/v1/useritem", require("./RestaurantUserItem.js"));
+
+//! Restaurant User Cart Router
+router.use("/api/v1/usercart", require("./RestaurantUserCart.js"));
+
+//! Restaurant User Order Router
+router.use("/api/v1/userorder", require("./RestaurantUserOrder.js"));
 
 module.exports = router;

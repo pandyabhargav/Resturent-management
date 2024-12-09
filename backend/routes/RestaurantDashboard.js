@@ -10,7 +10,6 @@ const validateRequest = require("../middleware/validate-request.js");
 const { authMiddleware, logout } = require("../middleware/authMiddleware.js");
 const router = express.Router();
 
-router.use(authMiddleware);
-router.get("/restaurantdashboard-get", RestaurantDashboardGet);
+router.get("/restaurantdashboard-get", authMiddleware, RestaurantDashboardGet);
 
 module.exports = router;
