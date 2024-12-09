@@ -1,4 +1,4 @@
-Restaurant Management
+#Restaurant Management
 This project is a restaurant management system with both frontend and backend components. It allows restaurant admins to manage data, users, and events, and it enables customers to access the service through a client interface.
 
 Folder Structure
