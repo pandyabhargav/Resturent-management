@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { TiTick } from "react-icons/ti";
 import { MdCancel } from "react-icons/md";
-import '../parsel-page/Mainpage.css';
+import './mapage.css';
 import { Link } from 'react-router-dom';
 import Pageorder from '../parsel-order/page';
 import Pageorder2 from '../parsel-order/parselorder2';
