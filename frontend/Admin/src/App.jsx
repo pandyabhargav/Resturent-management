@@ -14,7 +14,7 @@ import Additem from './pages/Additem/Additem';
 import Qr from './pages/Qr/Qr';
 import CreateQr from './pages/CreateQr/CreateQr';
 import Header from './pages/Header/Header';
-import Page2 from './pages/parsel-page/mainpage';
+import Page2 from './pages/parsel-page/mapage';
 import CustomDate from './pages/payment-order/Date';
 import OnsiteOrder from './pages/table-dash/Tableapp';
 
