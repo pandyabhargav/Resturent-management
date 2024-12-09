@@ -4,6 +4,7 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import "./Details.css";
+import { BASE_URL } from "../../config";
 
 const Details = () => {
   const [counter, setCounter] = useState(1);
@@ -32,7 +33,7 @@ const Details = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:5000/api/v1/useritem/restaurantuseritem-get/${id}`,
+          `${BASE_URL}/api/v1/useritem/restaurantuseritem-get/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -114,7 +115,7 @@ const Details = () => {
   
         
         const response = await axios.post(
-          "http://localhost:5000/api/v1/cart/restaurantcart-add",
+          `${BASE_URL}/api/v1/cart/restaurantcart-add`,
           payload,
           {
             headers: {

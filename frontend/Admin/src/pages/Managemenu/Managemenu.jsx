@@ -18,6 +18,7 @@ import { FaImage } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import defaultimg from "../../assets/1732641275136.png";
+import { BASE_URL } from "../../config";
 
 const Managemenu = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Managemenu = () => {
     try {
       // Fetch categories
       const categoryResponse = await axios.get(
-        "http://localhost:5000/api/v1/category/restaurantcategorys-get",
+        `${BASE_URL}/api/v1/category/restaurantcategorys-get`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -68,7 +69,7 @@ const Managemenu = () => {
 
       // Fetch items
       const itemResponse = await axios.get(
-        "http://localhost:5000/api/v1/item/restaurantitems-get",
+        `${BASE_URL}/api/v1/item/restaurantitems-get`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -105,7 +106,7 @@ const Managemenu = () => {
 
     try {
       const imageResponse = await axios.post(
-        "http://localhost:5000/api/v1/upload/img-upload",
+        `${BASE_URL}/api/v1/upload/img-upload`,
         imageFormData,
         {
           headers: {
@@ -124,7 +125,7 @@ const Managemenu = () => {
         };
 
         const categoryResponse = await axios.post(
-          "http://localhost:5000/api/v1/category/restaurantcategory-add",
+          `${BASE_URL}/api/v1/category/restaurantcategory-add`,
           categoryData,
           {
             headers: {
@@ -166,7 +167,7 @@ const Managemenu = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/v1/item/restaurantitem-delete/${deleteItemId}`,
+        `${BASE_URL}/api/v1/item/restaurantitem-delete/${deleteItemId}`,
         {
           method: "DELETE",
           headers: {
@@ -218,7 +219,7 @@ const Managemenu = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/v1/upload/img-upload",
+        `${BASE_URL}/api/v1/upload/img-upload`,
         {
           method: "POST",
           headers: {
@@ -277,7 +278,7 @@ const Managemenu = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/item/restaurantitem-update/${formData.id}`,
+        `${BASE_URL}/api/v1/item/restaurantitem-update/${formData.id}`,
         {
           method: "PUT",
           headers: {
@@ -306,7 +307,7 @@ const Managemenu = () => {
 
   const handleEditClick = async (itemId) => {
     console.log("Fetching item data for ID:", itemId); // Log itemId
-    const url = `http://localhost:5000/api/v1/item/restaurantitem-get/${itemId}`;
+    const url = `${BASE_URL}/api/v1/item/restaurantitem-get/${itemId}`;
     console.log("Fetching from URL:", url); // Log URL
 
     // Retrieve the token from localStorage

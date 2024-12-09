@@ -4,6 +4,7 @@ import { Form, Row, Col, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './otp.css';
 import axios from 'axios';
+import { BASE_URL } from '../../config';
 
 const Otp = () => {
   const [otp, setOtp] = useState(Array(6).fill(''));
@@ -39,7 +40,7 @@ const Otp = () => {
   
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/v1/auth/password-reset-otp-check',
+        `${BASE_URL}/api/v1/auth/password-reset-otp-check`,
         { otp: otpCode, password }, // Request body
         {
           headers: {

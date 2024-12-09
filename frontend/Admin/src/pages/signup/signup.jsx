@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../../assets/logo.png';
 import { Modal, Button, Row, Col, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../../config.js';
 
 const Registration = () => {
     const [formData, setFormData] = useState({
@@ -170,7 +171,7 @@ const Registration = () => {
 
     const fetchRestaurants = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/v1/restaurant/restaurants-get');
+            const response = await axios.get(`${BASE_URL}/api/v1/restaurant/restaurants-get`);
             console.log('Fetched restaurants:', response.data); 
 
            
@@ -208,7 +209,7 @@ const Registration = () => {
     const handleAddRestaurant = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:5000/api/v1/restaurant/restaurant-add',
+                `${BASE_URL}/api/v1/restaurant/restaurant-add`,
                 newRestaurant
             );
             console.log("Restaurant added:", response.data);
@@ -304,7 +305,7 @@ const Registration = () => {
             console.log("Data to send:", dataToSend);
 
 
-            const response = await axios.post('http://localhost:5000/api/v1/owner/owner-add', dataToSend);
+            const response = await axios.post(`${BASE_URL}/api/v1/owner/owner-add`, dataToSend);
 
             if (response.status === 201) {
                 alert("Registration successful!");

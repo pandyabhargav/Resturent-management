@@ -4,6 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './login.css';
 import { Link, useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../../config';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ function Login() {
     e.preventDefault();
   
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
+      const response = await axios.post(`${BASE_URL}/api/v1/auth/login`, {
         email,
         password,
       });

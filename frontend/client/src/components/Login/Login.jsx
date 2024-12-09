@@ -9,6 +9,7 @@ import stock3 from '../../assets/stock3.png';
 import stock5 from '../../assets/stock5.png';
 import stock6 from '../../assets/stock6.png';
 import './Login.css';
+import { BASE_URL } from '../../config';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -47,7 +48,7 @@ function Login() {
       setSuccessMessage('');
       setErrorMessage('');
       try {
-        const response = await fetch('http://localhost:5000/api/v1/user/user-add', {
+        const response = await fetch(`${BASE_URL}/api/v1/user/user-add`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ function Login() {
           // Clear form fields
           setUsername('');
           setPhoneNumber('');
-  
+          window.location.reload();
           // Navigate to the homepage
           navigate('/');
         } else {

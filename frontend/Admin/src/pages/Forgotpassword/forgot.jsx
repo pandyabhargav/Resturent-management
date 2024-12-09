@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import './forgot.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { BASE_URL } from '../../config';
 
 function Forget() {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -19,7 +20,7 @@ function Forget() {
   
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/v1/auth/password-reset',
+        `${BASE_URL}/api/v1/auth/password-reset`,
         { email: emailOrPhone }, // Request body
         {
           headers: {

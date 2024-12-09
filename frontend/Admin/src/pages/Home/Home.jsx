@@ -6,6 +6,7 @@ import Profile from '../Profile/Profile';
 import logo from '../../assets/logo.png';
 import '../Sidebar/Sidebar.css';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../../config';
 
 
 const Home = () => {
@@ -31,7 +32,7 @@ const Home = () => {
     const token = localStorage.getItem('jwtToken');
     
     try {
-      const response = await fetch('http://localhost:5000/api/v1/auth/logout', {
+      const response = await fetch(`${BASE_URL}/api/v1/auth/logout`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json',

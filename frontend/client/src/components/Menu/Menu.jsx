@@ -7,6 +7,7 @@ import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo-main.png";
 import { FaLeaf, FaDrumstickBite } from 'react-icons/fa';
 import { MdOutlineRestaurantMenu } from "react-icons/md";
+import { BASE_URL } from "../../config";
 
 const Menu = () => {
   const [activeTab, setActiveTab] = useState("veg"); // Default to Veg tab
@@ -23,7 +24,7 @@ const Menu = () => {
     const fetchCategoriesAndItems = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/v1/usercategory/restaurantusercategorys-get"
+          `${BASE_URL}/api/v1/usercategory/restaurantusercategorys-get`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch categories and items");

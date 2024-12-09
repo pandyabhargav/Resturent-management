@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './Changepass.css';
 import axios from 'axios';
+import { BASE_URL } from '../../config';
 
 const Changepass = () => {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ const Changepass = () => {
       const token = localStorage.getItem('jwtToken');
   
       const response = await axios.post(
-        'http://localhost:5000/api/v1/auth/password-reset-currant',
+        `${BASE_URL}/api/v1/auth/password-reset-currant`,
         {
           currantPassword: formData.currentPassword,
           password: formData.newPassword,

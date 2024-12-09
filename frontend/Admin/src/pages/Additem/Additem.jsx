@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Additem.css";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../config";
 
 const Additem = () => {
   const location = useLocation();
@@ -81,7 +82,7 @@ const Additem = () => {
     try {
       console.log("Uploading image...");
       const imageResponse = await axios.post(
-        "http://localhost:5000/api/v1/upload/img-upload",
+        `${BASE_URL}/api/v1/upload/img-upload`,
         uploadData,
         {
           headers: {
@@ -260,7 +261,7 @@ const Additem = () => {
       console.log("formPayload", formPayload);
 
       const itemAddResponse = await axios.post(
-        "http://localhost:5000/api/v1/item/restaurantitem-add",
+        `${BASE_URL}/api/v1/item/restaurantitem-add`,
         formPayload,
         {
           headers: {

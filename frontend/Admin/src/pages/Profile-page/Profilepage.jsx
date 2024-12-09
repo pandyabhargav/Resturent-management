@@ -4,6 +4,7 @@ import { FaEdit } from 'react-icons/fa';
 import profileImage from '../../assets/avtar.jpeg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../../config';
 
 const Profilepage = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Profilepage = () => {
       const token = localStorage.getItem('jwtToken');
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/owner/owner-get/${userId}`,
+          `${BASE_URL}/api/v1/owner/owner-get/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -97,7 +98,7 @@ const Profilepage = () => {
     const token = localStorage.getItem('jwtToken'); 
   
     axios
-      .put(`http://localhost:5000/api/v1/owner/owner-update/${userId}`, updatedData, {
+      .put(`${BASE_URL}/api/v1/owner/owner-update/${userId}`, updatedData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Categories.css';
 import { NavLink } from 'react-router-dom';
+import { BASE_URL } from '../../config';
 
 const Categories = () => {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         // Fetch categories from API
-        fetch("http://localhost:5000/api/v1/usercategory/restaurantusercategorys-get")
+        fetch(`${BASE_URL}/api/v1/usercategory/restaurantusercategorys-get`)
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {

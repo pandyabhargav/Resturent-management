@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './Resetpass.css';
 import axios from 'axios';
+import { BASE_URL } from '../../config';
 
 function Resetpassword() {
     const [input, setInput] = useState({ passwd: '', confirmpwd: '' });
@@ -46,7 +47,7 @@ function Resetpassword() {
           
           try {
             const response = await axios.post(
-              'http://localhost:5000/api/v1/auth/password-reset-otp',
+              `${BASE_URL}/api/v1/auth/password-reset-otp`,
               {
                 otp,
                 password: input.passwd,
