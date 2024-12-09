@@ -6,77 +6,173 @@ import axios from "axios";
 import "./Details.css";
 
 const Details = () => {
-  const [counter, setCounter] = useState(1); // Quantity counter (starts from 1)
-  const [step, setStep] = useState(0); // Step for customization
+  const [counter, setCounter] = useState(1);
+  const [step, setStep] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({
     crust: "",
     size: "",
     toppings: [],
+    customizationPrice: 0, // Track customization price
   });
-  const [product, setProduct] = useState(null); // Store fetched product data
-  const [loading, setLoading] = useState(true); // Loading state for product fetch
-  const [error, setError] = useState(""); // Error state for fetching product
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { id } = useParams(); // Extract the `id` from the URL
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const token = localStorage.getItem("authToken"); // Get token from localStorage
-        const response = await axios.get(`http://localhost:5000/api/v1/useritem/restaurantuseritem-get/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Add token to the Authorization header
-          },
-        });
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setError("No authentication token found.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:5000/api/v1/useritem/restaurantuseritem-get/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log("Fetched product data:", response.data);
-        setProduct(response.data); // Set fetched data to state
-        setLoading(false); // Stop loading once data is fetched
-      } catch (error) {
+        setProduct(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching product data:", err);
         setError("Error fetching product data.");
-        setLoading(false); // Stop loading in case of error
-        console.error("Error fetching product data:", error);
+        setLoading(false);
       }
     };
 
     if (id) {
-      fetchProduct(); // Fetch data only if `id` is available
+      fetchProduct();
     }
   }, [id]);
 
   const incrementCounter = () => setCounter((prev) => prev + 1);
-  const decrementCounter = () => setCounter((prev) => (prev > 1 ? prev - 1 : 1)); // Minimum 1
+  const decrementCounter = () => setCounter((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const handleAddToCart = () => {
-    if (step === 3) {
-      navigate("/cart");
+  const handleAddToCart = async () => {
+    // Ensure user has completed all customization steps
+    if (step === product?.data?.customization?.length) {
+      try {
+        const token = localStorage.getItem("authToken");
+  
+        
+        if (!token) {
+          alert("User not authenticated");
+          return;
+        }
+  
+     
+        const customizationIds = selectedOptions.toppings.map((topping) => {
+          const custom = product?.data?.customization.find((c) =>
+            c.list.some((item) => item.name === topping)
+          );
+          const item = custom?.list.find((item) => item.name === topping);
+          return item?._id; 
+        });
+  
+        // Include crust and size selections in the customization list if available
+        const crustId = selectedOptions.crust
+          ? product?.data?.customization
+              .find((custom) => custom.list.some((item) => item.name === selectedOptions.crust))
+              ?.list.find((item) => item.name === selectedOptions.crust)?._id
+          : null;
+  
+        const sizeId = selectedOptions.size
+          ? product?.data?.customization
+              .find((custom) => custom.list.some((item) => item.name === selectedOptions.size))
+              ?.list.find((item) => item.name === selectedOptions.size)?._id
+          : null;
+  
+        // Combine all selected customizations
+        const allCustomizationIds = [
+          ...(crustId ? [crustId] : []),
+          ...(sizeId ? [sizeId] : []),
+          ...customizationIds,
+        ];
+  
+        
+        const payload = {
+          restaurant: product?.data.restaurantid,
+          items: [
+            {
+              item: product?.data._id,
+              customizationList: allCustomizationIds,
+              quantity: counter,
+            },
+          ],
+        };
+  
+        console.log("Payload being sent to API:", payload);
+  
+        
+        const response = await axios.post(
+          "http://localhost:5000/api/v1/cart/restaurantcart-add",
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("API Response:", response.data);
+        alert("Item added to cart successfully!");
+        navigate("/cart"); 
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert(
+          error?.response?.data?.message || "Failed to add item to cart. Please try again."
+        );
+      }
     } else {
       handleNextStep();
     }
   };
+  
+  
 
   const handleNextStep = () => {
-    if (step < 3) {
+    if (step < product?.data?.customization?.length) {
       setStep((prev) => prev + 1);
     }
   };
 
   const handleClose = () => setStep(0);
 
-  const handleOptionSelect = (stepName, optionValue) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [stepName]: optionValue,
-    }));
+  const handleOptionSelect = (stepName, optionValue, extraRate) => {
+    console.log(`Handling option select for step: ${stepName}, option: ${optionValue}`);
+    if (stepName === "toppings") {
+      const isSelected = selectedOptions.toppings.includes(optionValue);
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [stepName]: isSelected
+          ? prev.toppings.filter((t) => t !== optionValue)
+          : [...prev.toppings, optionValue],
+        customizationPrice: isSelected
+          ? prev.customizationPrice - extraRate
+          : prev.customizationPrice + extraRate,
+      }));
+    } else {
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [stepName]: optionValue,
+        customizationPrice: prev.customizationPrice + extraRate,
+      }));
+    }
   };
 
-  // Calculate the total price
   const calculateTotalPrice = () => {
-    const basePrice = product?.data.price || 0; // Fetched base price
-    return counter * basePrice;
+    const basePrice = product?.data.price || 0;
+    return counter * (basePrice + selectedOptions.customizationPrice);
   };
 
-  // Show loading or error if applicable
   if (loading) {
     return (
       <Container className="text-center py-5">
@@ -99,8 +195,8 @@ const Details = () => {
         <Row className="justify-content-center mb-4">
           <Col xs={10} md={6} className="text-center">
             <img
-              src={product.data.image || "https://via.placeholder.com/150"} // Use fetched image URL or fallback
-              alt={product?.data.name || "Product Name"} // Fallback to a default name
+              src={product.data.image || "https://via.placeholder.com/150"}
+              alt={product?.data.name || "Product Name"}
               className="img-fluid shadow-lg"
               width={209}
             />
@@ -109,7 +205,7 @@ const Details = () => {
         <Card className="text-dark" style={{ backgroundColor: "#2d303e", borderRadius: "15px" }}>
           <Card.Body>
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <Button variant="outline-light" size="sm" onClick={handleAddToCart}>
+              <Button variant="outline-light" size="sm" onClick={handleNextStep}>
                 Customization
               </Button>
               <span
@@ -154,13 +250,12 @@ const Details = () => {
                 <h5 className="mb-2 text-light">Ingredients</h5>
                 <ol className="mx-0 ps-3">
                   {product?.data.ingredients
-                    ? product.data.ingredients.split(',').map((ingredient, index) => (
-                      <li key={index} className="mb-2 text-light">
-                        {ingredient.trim()}
-                      </li>
-                    ))
-                    : <li className="mb-2 text-light">No ingredients available</li>
-                  }
+                    ? product.data.ingredients.split(",").map((ingredient, index) => (
+                        <li key={index} className="mb-2 text-light">
+                          {ingredient.trim()}
+                        </li>
+                      ))
+                    : <li className="mb-2 text-light">No ingredients available</li>}
                 </ol>
               </div>
               <div className="d-flex justify-content-between mt-2">
@@ -171,6 +266,7 @@ const Details = () => {
             <Button
               className="w-100 mt-3 text-dark add-to-cart-btn"
               style={{ borderRadius: "10px", backgroundColor: "rgb(202, 146, 61)" }}
+              onClick={handleAddToCart}
             >
               Add To Cart
             </Button>
@@ -180,60 +276,31 @@ const Details = () => {
 
       <Modal show={step > 0} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{`Step ${step} / 3`}</Modal.Title>
+          <Modal.Title>{`Step ${step} / ${product?.data?.customization?.length}`}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {step === 1 && (
-            <>
-              <h5>Select Crust</h5>
-              <div className="d-flex flex-wrap gap-2">
-                {["Wheat Crust", "Cheese Burst", "Pan Pizza", "Hand Tossed"].map((crust, idx) => (
-                  <Button
-                    key={idx}
-                    variant={selectedOptions.crust === crust ? "primary" : "outline-secondary"}
-                    onClick={() => handleOptionSelect("crust", crust)}
-                    className="px-3 py-2"
-                  >
-                    {crust}
-                  </Button>
-                ))}
-              </div>
-            </>
-          )}
-          {step === 2 && (
-            <>
-              <h5>Select Size</h5>
-              <div className="d-flex flex-wrap gap-2">
-                {["Medium - ₹200", "Large - ₹700", "Regular - ₹300"].map((size, idx) => (
-                  <Button
-                    key={idx}
-                    variant={selectedOptions.size === size ? "primary" : "outline-secondary"}
-                    onClick={() => handleOptionSelect("size", size)}
-                    className="px-3 py-2"
-                  >
-                    {size}
-                  </Button>
-                ))}
-              </div>
-            </>
-          )}
-          {step === 3 && (
-            <>
-              <h5>Select Toppings</h5>
-              <div className="d-flex flex-wrap gap-2">
-                {["Jalapeno", "Onion", "Black Olive"].map((topping, idx) => (
-                  <Button
-                    key={idx}
-                    variant={selectedOptions.toppings.includes(topping) ? "primary" : "outline-secondary"}
-                    onClick={() => handleOptionSelect("toppings", topping)}
-                    className="px-3 py-2"
-                  >
-                    {topping}
-                  </Button>
-                ))}
-              </div>
-            </>
-          )}
+          {product?.data?.customization?.map((custom, idx) => {
+            if (idx + 1 === step) {
+              return (
+                <div key={custom._id}>
+                  <h5>{custom.list[0]?.name || "Customization Option"}</h5>
+                  <div className="d-flex flex-wrap gap-2">
+                    {custom.list.map((item, i) => (
+                      <Button
+                        key={item._id}
+                        variant={selectedOptions.toppings.includes(item.name) ? "primary" : "outline-secondary"}
+                        onClick={() => handleOptionSelect("toppings", item.name, item.extraRate)}
+                        className="px-3 py-2"
+                      >
+                        {item.name} - ₹{item.extraRate}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

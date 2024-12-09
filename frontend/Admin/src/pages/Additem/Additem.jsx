@@ -226,20 +226,38 @@ const Additem = () => {
           extraRate: custom.rate,
         })),
       }));
+      console.log("customizationData", customizationData);
 
+      // if (
+      //   customizationData.selection !== undefined &&
+      //   customizationData.title !== undefined
+      // ) {
+      //   formPayload.customization = customizationData;
+      // }
       // Prepare formPayload without customization initially
+      // const formPayload = {
+      //   ...formData,
+      //   price: Number(formData.price),
+      //   discount: Number(formData.discount),
+      //   customization: customizationData
+      // };
+
+      // Check if customizationData has valid content
+      const hasValidCustomizations = customizationData.some(
+        (step) =>
+          step.title && // Ensure the step has a title
+          step.list.length > 0 && // Ensure there are customizations
+          step.list.some((custom) => custom.name || custom.detail || custom.extraRate) // At least one valid customization field
+      );
+
+      // Prepare formPayload
       const formPayload = {
         ...formData,
         price: Number(formData.price),
         discount: Number(formData.discount),
+        ...(hasValidCustomizations && { customization: customizationData }), // Conditionally add customization
       };
-
-      if (
-        customizationData.selection !== undefined &&
-        customizationData.title !== undefined
-      ) {
-        formPayload.customization = customizationData;
-      }
+      console.log("formPayload", formPayload);
 
       const itemAddResponse = await axios.post(
         "http://localhost:5000/api/v1/item/restaurantitem-add",
@@ -276,11 +294,10 @@ const Additem = () => {
               <div className="add-btn d-flex gap-3">
                 <button
                   type="button"
-                  className={`btn d-flex align-items-center ${
-                    formData.itemType === "Veg"
-                      ? "btn-success"
-                      : "btn-outline-success"
-                  }`}
+                  className={`btn d-flex align-items-center ${formData.itemType === "Veg"
+                    ? "btn-success"
+                    : "btn-outline-success"
+                    }`}
                   onClick={() => handleItemType("Veg")}
                 >
                   <span
@@ -295,22 +312,21 @@ const Additem = () => {
                 </button>
 
                 <button
-              type="button"
-              className={`btn d-flex align-items-center ${
-                formData.itemType === "Nonveg" ? "btn-danger" : "btn-outline-danger"
-              }`}
-              onClick={() => handleItemType("Nonveg")}
-            >
-              <span
-                className="rounded-circle me-2"
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  backgroundColor: "red",
-                }}
-              ></span>
-              Non-Veg
-            </button>
+                  type="button"
+                  className={`btn d-flex align-items-center ${formData.itemType === "Nonveg" ? "btn-danger" : "btn-outline-danger"
+                    }`}
+                  onClick={() => handleItemType("Nonveg")}
+                >
+                  <span
+                    className="rounded-circle me-2"
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "red",
+                    }}
+                  ></span>
+                  Non-Veg
+                </button>
               </div>
             </div>
           </div>

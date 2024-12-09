@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Form, Row, Col, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './otp.css';
+import axios from 'axios';
 
 const Otp = () => {
   const [otp, setOtp] = useState(Array(6).fill(''));
@@ -35,16 +36,22 @@ const Otp = () => {
     e.preventDefault();
     const otpCode = otp.join('');
     console.log('OTP Entered:', otpCode);
-    
+  
     try {
-      const response = await fetch('http://localhost:5000/api/v1/auth/password-reset-otp-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ otp: otpCode, password }),
-      });
-
-      if (response.ok) {
+      const response = await axios.post(
+        'http://localhost:5000/api/v1/auth/password-reset-otp-check',
+        { otp: otpCode, password }, // Request body
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      if (response.status === 200) {
         console.log('OTP and Password submitted successfully.');
+  
+        // Save OTP to localStorage
         if (typeof window !== 'undefined') {
           try {
             window.localStorage.setItem('OTP', otpCode);
@@ -52,12 +59,17 @@ const Otp = () => {
             console.error('Error saving OTP to localStorage:', error);
           }
         }
-        navigate('/Resetpass'); 
+  
+        // Navigate to Reset password page
+        navigate('/Resetpass');
       } else {
         console.error('Failed to submit OTP and password.');
       }
     } catch (error) {
-      console.error('Error submitting OTP:', error, error.message);
+      console.error('Error submitting OTP:', error);
+      if (error.response) {
+        console.error('Server Error:', error.response.data);
+      }
     }
   };
 

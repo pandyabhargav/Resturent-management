@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './forgot.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Forget() {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -15,23 +16,30 @@ function Forget() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
     try {
-      const response = await fetch('http://localhost:5000/api/v1/auth/password-reset', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: emailOrPhone }),
-      });
-
-      if (response.ok) {
+      const response = await axios.post(
+        'http://localhost:5000/api/v1/auth/password-reset',
+        { email: emailOrPhone }, // Request body
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      if (response.status === 200) {
         setOtpSent(true);
-        navigate('/otp')
+        navigate('/otp'); // Navigate to OTP page
       } else {
         console.error('Error sending OTP:', response.status);
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
+  
+      if (error.response) {
+        console.error('Server Error:', error.response.data);
+      }
     }
   };
 

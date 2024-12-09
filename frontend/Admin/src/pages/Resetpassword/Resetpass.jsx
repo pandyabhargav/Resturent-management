@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './Resetpass.css';
+import axios from 'axios';
 
 function Resetpassword() {
     const [input, setInput] = useState({ passwd: '', confirmpwd: '' });
@@ -37,38 +38,40 @@ function Resetpassword() {
         return isValid;
     };
 
-    const handlesubmit = (e) => {
+    const handlesubmit = async (e) => {
         e.preventDefault();
-
+      
         if (validation()) {
-            const otp = localStorage.getItem('OTP');
-            fetch('http://localhost:5000/api/v1/auth/password-reset-otp', {
-                method: 'POST',
+          const otp = localStorage.getItem('OTP');
+          
+          try {
+            const response = await axios.post(
+              'http://localhost:5000/api/v1/auth/password-reset-otp',
+              {
+                otp,
+                password: input.passwd,
+                confirmPassword: input.confirmpwd,
+              },
+              {
                 headers: {
-                    'Content-Type': 'application/json',
+                  'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ otp, password: input.passwd, confirmPassword: input.confirmpwd }),
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data) {
-                        console.log('Password reset response:', data);
-                        navigate('/login'); // Navigate to login page
-                    }
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-
-            setInput({ passwd: "", confirmpwd: "" });
-            setMsg({});
+              }
+            );
+      
+            if (response.status === 200) {
+              console.log('Password reset response:', response.data);
+              navigate('/login'); 
+            }
+          } catch (error) {
+            console.error('There was a problem with the request:', error);
+          }
+      
+          
+          setInput({ passwd: "", confirmpwd: "" });
+          setMsg({});
         }
-    };
+      };
 
     return (
         <section className="Reset">

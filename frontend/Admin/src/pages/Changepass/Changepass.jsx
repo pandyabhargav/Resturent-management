@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './Changepass.css';
+import axios from 'axios';
 
 const Changepass = () => {
   const [formData, setFormData] = useState({
@@ -20,45 +21,47 @@ const Changepass = () => {
     }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData.newPassword !== formData.confirmPassword) {
       setErrorMessage("New passwords do not match!");
       return;
     }
-
+  
     try {
       const token = localStorage.getItem('jwtToken');
-
-      const response = await fetch('http://localhost:5000/api/v1/auth/password-reset-currant', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, 
-        },
-        body: JSON.stringify({
+  
+      const response = await axios.post(
+        'http://localhost:5000/api/v1/auth/password-reset-currant',
+        {
           currantPassword: formData.currentPassword,
           password: formData.newPassword,
           confirmPassword: formData.confirmPassword,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Successfully changed password, navigate to login page
-        alert("Password changed successfully!");
-        navigate('/login');
-      } else {
-        
-        setErrorMessage(data.message || 'Something went wrong, please try again.');
-      }
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+  
+      // Handle successful password change
+      alert("Password changed successfully!");
+      navigate('/login');
     } catch (error) {
       console.error('Error changing password:', error);
-      setErrorMessage('An error occurred while changing the password.');
+  
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message || 'Something went wrong, please try again.');
+      } else {
+        setErrorMessage('An error occurred while changing the password.');
+      }
     }
   };
+  
 
   return (
     <div className="changepass-form-wrapper">
