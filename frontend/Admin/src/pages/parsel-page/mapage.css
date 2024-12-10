@@ -6,7 +6,9 @@
   font-weight: 500;
 }
 
-
+.par-ord th{
+  text-align: center;
+}
 
 .par-ord .container {
   padding: 10px;

@@ -148,7 +148,7 @@ function Pageorder2() {
 
   return (
     <>
-   
+
       <div className="order-header hello-wold">
         <div>Customer Name </div>
         <div>Item</div>
@@ -161,10 +161,10 @@ function Pageorder2() {
       </div>
 
       <div className="order-list">
-        <div className="order-container">
+        <div className="order-container m-0">
 
           {orders.map((order, index) => (
-            <div className="order-item" key={index}>
+            <div className="order-item text-center" key={index}>
               <div>{order.customerName}</div>
               <div>{order.itemName}</div>
               <div>{order.date}</div>
@@ -281,12 +281,12 @@ function Pageorder2() {
                 <div className="invoice-summary">
                   <h3 className="section-title">Total Amount
 
-                  <span>₹ 1315.00</span>
+                    <span>₹ 1315.00</span>
                   </h3>
                   <div className="amount-details">
                     <div className="row">
-                    
-                      
+
+
                     </div>
                     <div className="row">
                       <span>SGST 2.5%:</span>
@@ -302,12 +302,12 @@ function Pageorder2() {
                     <span>₹ 1381.00</span>
                   </div>
                 </div>
-                
+
               </div>
             </Modal>
           </>
         </div>
-    </div>
+      </div>
     </>
   );
 }

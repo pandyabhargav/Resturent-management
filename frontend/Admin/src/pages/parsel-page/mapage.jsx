@@ -158,7 +158,7 @@ function Page2() {
               <th>Phone</th>
               <th>Quantity</th>
               <th className='total-bill-header'>Total Bill</th>
-              <th className='box2'>Actions</th>
+              <th className='box2 mx-auto'>Actions</th>
             </tr>
           </thead>
           <tbody>

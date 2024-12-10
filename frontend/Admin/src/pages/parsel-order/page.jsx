@@ -161,10 +161,10 @@ function Pageorder() {
       </div>
 
       <div className="order-list">
-        <div className="order-container">
+        <div className="order-container text-center m-0">
 
           {orders.map((order, index) => (
-            <div className="order-item" key={index}>
+            <div className="order-item text-center" key={index}>
               <div>{order.customerName}</div>
               <div>{order.itemName}</div>
               <div>{order.date}</div>
