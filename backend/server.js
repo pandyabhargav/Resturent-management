@@ -21,7 +21,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "http://localhost:5000"],  // Allow images from backend
+      imgSrc: ["'self'", "http://localhost:5000","https://resturent-management-fg3v.vercel.app"],  // Allow images from backend
     },
   })
 );
