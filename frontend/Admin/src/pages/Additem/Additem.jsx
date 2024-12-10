@@ -66,7 +66,8 @@ const Additem = () => {
   const handleImageSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) {
-      alert("Please select an image.");
+      console.log
+      ("Please select an image.");
       return;
     }
 
@@ -101,14 +102,14 @@ const Additem = () => {
 
         console.log("Image uploaded successfully:", imageUrl);
       } else {
-        alert("Error uploading image. Please try again.");
+        console.log("Error uploading image. Please try again.");
       }
     } catch (error) {
       console.error(
         "Error uploading image:",
         error.response?.data || error.message
       );
-      alert("Failed to upload image. Please try again.");
+      console.log("Failed to upload image. Please try again.");
     }
   };
 
@@ -271,7 +272,7 @@ const Additem = () => {
       );
 
       console.log("Item added successfully:", itemAddResponse.data);
-      alert("Item added successfully!");
+      console.log("Item added successfully!");
 
       setTimeout(() => {
         navigate("/managemenu"); // Redirect after 2 seconds
@@ -281,7 +282,7 @@ const Additem = () => {
         "Error adding items:",
         error.response?.data || error.message
       );
-      alert("Error adding items. Please try again.");
+      console.log("Error adding items. Please try again.");
     }
   };
 

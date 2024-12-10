@@ -135,19 +135,19 @@ const Managemenu = () => {
         );
 
         console.log("Category added successfully:", categoryResponse.data);
-        alert("Category added successfully!");
+        console.log("Category added successfully!");
         setNewCategory({ name: "", image: null });
         setShowAddCategoryPopup(false);
         fetchCategoriesAndItems();
       } else {
-        alert("Error uploading image. Please try again.");
+        console.log("Error uploading image. Please try again.");
       }
     } catch (error) {
       console.error(
         "Error adding category:",
         error.response?.data || error.message
       );
-      alert("Error adding category. Please try again.");
+      console.log("Error adding category. Please try again.");
     }
   };
 

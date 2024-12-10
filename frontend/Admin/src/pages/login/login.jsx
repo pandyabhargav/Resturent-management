@@ -26,7 +26,7 @@ function Login() {
   
       
       if (response.data.message === "restaurantowner successfully login") {
-        alert('Login successful!');
+        console.log('Login successful!');
         setError(null); 
   
         

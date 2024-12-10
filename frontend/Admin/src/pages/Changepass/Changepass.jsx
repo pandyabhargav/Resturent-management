@@ -50,7 +50,7 @@ const Changepass = () => {
       );
   
       // Handle successful password change
-      alert("Password changed successfully!");
+      console.log("Password changed successfully!");
       navigate('/login');
     } catch (error) {
       console.error('Error changing password:', error);

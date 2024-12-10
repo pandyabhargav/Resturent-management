@@ -13,7 +13,7 @@ const AddItems = () => {
   };
 
   const handlePayNow = () => {
-    alert("Proceed to Payment");
+    console.log("Proceed to Payment");
   };
 
   return (

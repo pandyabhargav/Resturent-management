@@ -46,13 +46,13 @@ const Home = () => {
         // Handle successful logout, e.g., clear JWT token and redirect to login page
         localStorage.removeItem('jwtToken'); // Remove token from storage
         navigate('/login'); // Navigate to the login page
-        alert('Logged out successfully!');
+        console.log('Logged out successfully!');
       } else {
-        alert('Logout failed! Please try again.');
+        console.log('Logout failed! Please try again.');
       }
     } catch (error) {
       console.error('Error during logout:', error);
-      alert('An error occurred. Please try again.');
+      console.log('An error occurred. Please try again.');
     }
   };
 

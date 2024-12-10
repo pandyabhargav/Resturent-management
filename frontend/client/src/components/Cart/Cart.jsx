@@ -76,7 +76,7 @@ const Cart = () => {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h5>Cart</h5>
           <NavLink to={'/details'} style={{color:'#fff'}}>
-          <button className="btn btn-secondary" onClick={() => alert("Go back")}>
+          <button className="btn btn-secondary" onClick={() =>   console.log("Go back")}>
             &#8592; Back
           </button>
           </NavLink>

@@ -66,7 +66,7 @@ const Details = () => {
   
         
         if (!token) {
-          alert("User not authenticated");
+          console.log("User not authenticated");
           return;
         }
   
@@ -124,11 +124,11 @@ const Details = () => {
           }
         );
         console.log("API Response:", response.data);
-        alert("Item added to cart successfully!");
+        console.log("Item added to cart successfully!");
         navigate("/cart"); 
       } catch (error) {
         console.error("Error adding to cart:", error);
-        alert(
+        console.log(
           error?.response?.data?.message || "Failed to add item to cart. Please try again."
         );
       }

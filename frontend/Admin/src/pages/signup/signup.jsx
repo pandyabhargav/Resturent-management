@@ -271,18 +271,18 @@ const Registration = () => {
 
 
         if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
+            console.log("Passwords do not match!");
             return;
         }
 
 
         if (!formData.agree) {
-            alert("You must agree to the T&C and Privacy Policies.");
+            console.log("You must agree to the T&C and Privacy Policies.");
             return;
         }
 
         if (!formData.firstName || !formData.lastName || !formData.email || !formData.phoneNumber || !formData.country || !formData.state || !formData.city || !formData.restaurant || !formData.password) {
-            alert("Please fill all the required fields.");
+            console.log("Please fill all the required fields.");
             return;
         }
 
@@ -308,12 +308,12 @@ const Registration = () => {
             const response = await axios.post(`${BASE_URL}/api/v1/owner/owner-add`, dataToSend);
 
             if (response.status === 201) {
-                alert("Registration successful!");
+                console.log("Registration successful!");
                 navigate('/login');
             }
         } catch (error) {
             console.error('Error during registration:', error);
-            alert("Registration failed. Please try again.");
+            console.log("Registration failed. Please try again.");
         }
     };
 
